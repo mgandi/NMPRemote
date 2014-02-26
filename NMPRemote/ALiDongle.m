@@ -162,7 +162,7 @@
 
 - (void)deviceInfoReceived:(NSDictionary *)dict
 {
-    NSLog(@"Device information received");
+    [self.delegate deviceInformationReceived:self dict:dict];
 }
 
 

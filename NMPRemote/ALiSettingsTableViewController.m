@@ -42,12 +42,23 @@
 
 - (void)appInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
 {
-    NSLog(@"Received device information");
+    NSLog(@"Received app information");
 }
 
 - (void)deviceInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
 {
     NSLog(@"Received device information");
+    
+    /* Device Configuration */
+    self.deviceConfigurationLabel1.text = [NSString stringWithFormat:@"Device Name : %@", [dict valueForKey:@"ssid"]];
+    self.deviceConfigurationLabel2.text = [NSString stringWithFormat:@"Password : %@", [dict valueForKey:@"password"]];
+    
+    /* Device Information */
+    self.deviceInformationLabel1.text = [NSString stringWithFormat:@"Model Name : %@", [dict valueForKey:@"name"]];
+    self.deviceInformationLabel2.text = [NSString stringWithFormat:@"MAC : %@", [dict valueForKey:@"mac"]];
+    
+    /* Software Information */
+    self.softwareInformationDetail.text = [NSString stringWithFormat:@"Software Version : %@.%@.%@", [dict valueForKey:@"majorver"], [dict valueForKey:@"minorver"], [dict valueForKey:@"minorver2"]];
 }
 
 @end
