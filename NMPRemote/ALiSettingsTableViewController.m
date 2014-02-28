@@ -26,16 +26,25 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.dongle.delegate = self;
-    [self.dongle start];
-    [self.dongle getDeviceInfo];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.dongle.delegate = self;
+    [self.dongle getDeviceInfo];
+    [self.dongle getDeviceWifiInfo];
+    [self.dongle getDeviceWifiChannelInfo];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    self.dongle.delegate = nil;
 }
 
 #pragma mark - ALi Dongle delegate
@@ -59,6 +68,26 @@
     
     /* Software Information */
     self.softwareInformationDetail.text = [NSString stringWithFormat:@"Software Version : %@.%@.%@", [dict valueForKey:@"majorver"], [dict valueForKey:@"minorver"], [dict valueForKey:@"minorver2"]];
+}
+
+- (void)deviceWifiInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+    NSLog(@"Received device wifi information");
+    
+    /* Wi-Fi Network */
+    if ([[dict valueForKey:@"isconnected"] boolValue]) {
+        self.wifiNetworkDetail.text = [dict valueForKey:@"ssid"];
+    } else {
+        self.wifiNetworkDetail.text = @"Not connected";
+    }
+}
+
+- (void)deviceWifiChannelInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+    NSLog(@"Received device wifi channel information");
+    
+    /* Device Hotspot Channel */
+    self.deviceHotspotChannelDetail.text = [NSString stringWithFormat:@"Channel: %ld", (long)[[dict valueForKey:@"channel"] integerValue]];
 }
 
 @end

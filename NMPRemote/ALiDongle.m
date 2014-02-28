@@ -8,6 +8,9 @@
 
 #import "ALiDongle.h"
 #import "ALiJSONCmd.h"
+#import <dispatch/dispatch.h>
+
+#define DONGLE_POR 13912
 
 @implementation ALiDongle
 {
@@ -15,6 +18,7 @@
     NSOutputStream *outputStream;
     NSData *syncWord;
     ALiJSONCmd *cmd;
+    dispatch_queue_t network_queue;
 }
 
 - (id)init
@@ -25,144 +29,208 @@
     
     /* Initialize JSON command object */
     cmd = [[ALiJSONCmd alloc] init];
-    cmd.delegate = self;
+    
+    /* Create network dispatch queue */
+    network_queue = dispatch_queue_create("tw.com.ali.network", NULL);
     
     return self;
 }
 
-- (void)start
-{
-    /* Create input and output streams */
-    CFReadStreamRef readStream;
-    CFWriteStreamRef writeStream;
-    CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)self.address, 13912, &readStream, &writeStream);
-    inputStream = (__bridge NSInputStream *)readStream;
-    outputStream = (__bridge NSOutputStream *)writeStream;
-    
-    /* Assign self as delegate for input and output streams */
-    [inputStream setDelegate:self];
-    [outputStream setDelegate:self];
-    
-    /* Schedule the stream to receive events in a run loop */
-    [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    
-    /* Open streams */
-    [inputStream open];
-    [outputStream open];
-}
 
-- (void)sendMessage:(Boolean)encode message:(NSString *)message
+- (void)queryInformation:(Boolean)encode message:(NSString *)message
 {
-    NSLog(@"send json cmd: %@", message);
+    dispatch_async(network_queue, ^{
+        /* Create input and output streams */
+        CFReadStreamRef readStream;
+        CFWriteStreamRef writeStream;
+        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)self.address, DONGLE_POR, &readStream, &writeStream);
+        inputStream = (__bridge NSInputStream *)readStream;
+        outputStream = (__bridge NSOutputStream *)writeStream;
+        
+        /* Open streams */
+        [inputStream open];
+        [outputStream open];
+        
+        NSLog(@"send json cmd: %@", message);
+        
+        /* Prepare message */
+        NSString *msg = message;
+        if (encode) {
+            msg = [[ALiDongle class] base64String:message];
+        }
+        NSLog(@"Send message: %@", msg);
+        NSData *data = [[NSData alloc] initWithData:[msg dataUsingEncoding:NSASCIIStringEncoding]];
+        
+        /* Send sync word */
+        [outputStream write:[syncWord bytes] maxLength:[syncWord length]];
+        
+        /* Send length of message */
+        int messageLength = CFSwapInt32HostToBig([data length]);
+        NSData *syncLen = [NSData dataWithBytes:&messageLength length:sizeof(messageLength)];
+        [outputStream write:[syncLen bytes] maxLength:[syncLen length]];
+        
+        /* Send message */
+        [outputStream write:[data bytes] maxLength:[data length]];
+        const uint8_t buffer = 0;
+        [outputStream write:&buffer maxLength:sizeof(char)];
     
-    /* Prepare message */
-    NSString *msg = message;
-    if (encode) {
-        msg = [[ALiDongle class] base64String:message];
-    }
-    NSLog(@"Send message: %@", msg);
-	NSData *data = [[NSData alloc] initWithData:[msg dataUsingEncoding:NSASCIIStringEncoding]];
     
-    /* Send sync word */
-	[outputStream write:[syncWord bytes] maxLength:[syncWord length]];
     
-    /* Send length of message */
-    int messageLength = CFSwapInt32HostToBig([data length]);
-    NSData *syncLen = [NSData dataWithBytes:&messageLength length:sizeof(messageLength)];
-	[outputStream write:[syncLen bytes] maxLength:[syncLen length]];
-    
-    /* Send message */
-	[outputStream write:[data bytes] maxLength:[data length]];
-    const uint8_t buffer = 0;
-	[outputStream write:&buffer maxLength:sizeof(char)];
-}
-
-- (void)stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent {
-    //NSLog(@"stream event %i from %@", streamEvent, (theStream == inputStream) ? @"Input stream" : @"Output stream");
-    switch (streamEvent) {
+        /* Read answer */
+        uint8_t inBuffer[4];
+        uint32_t syncLength;
+        int len = 0;
+        
+        /* Wait for bytes available */
+        while (![inputStream hasBytesAvailable]);
+        
+        /* Check syncword */
+        len = [inputStream read:inBuffer maxLength:sizeof(inBuffer)];
+        if (len != 4) {
+            NSLog(@"Syncword length should be 4, but got data length: %d!", len);
+            return;
+        }
+        NSData *receivedSyncWord = [NSData dataWithBytes:inBuffer length:sizeof(inBuffer)];
+        if (![receivedSyncWord isEqualToData:syncWord]) {
+            NSLog(@"Syncword error!");
+            return;
+        }
+        
+        /* Wait for bytes available */
+        while (![inputStream hasBytesAvailable]);
+        
+        /* Get length of message */
+        len = [inputStream read:(uint8_t *)&syncLength maxLength:sizeof(syncLength)];
+        if (len != 4) {
+            NSLog(@"Synclen length should be 4, but got data length: %d!", len);
+            return;
+        }
+        syncLength = CFSwapInt32BigToHost(syncLength);
+        NSLog(@"Size of data: %d", syncLength);
+        
+        /* Wait for bytes available */
+        while (![inputStream hasBytesAvailable]);
+        
+        /* Read data */
+        NSMutableData *dataIn = [NSMutableData dataWithLength:syncLength];
+        len = [inputStream read:(uint8_t *)[dataIn bytes] maxLength:[dataIn length]];
+        if (len > 0) {
             
-		case NSStreamEventOpenCompleted:
-			//NSLog(@"Stream opened");
-			break;
+            NSString *input = [[NSString alloc] initWithBytes:[dataIn bytes] length:len - 1 encoding:NSASCIIStringEncoding];
             
-		case NSStreamEventHasBytesAvailable:
-            if (theStream == inputStream) {
-                uint8_t buffer[4];
-                uint32_t syncLen;
-                int len;
-                
-                while ([inputStream hasBytesAvailable]) {
+            if (nil != input) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    //NSLog(@"server said: %@", input);
+                    NSDictionary *dict = [cmd parse:input];
                     
-                    /* Check syncword */
-                    len = [inputStream read:buffer maxLength:sizeof(buffer)];
-                    if (len != 4) {
-                        NSLog(@"Syncword length should be 4, but got data length: %d!", len);
-                        return;
-                    }
-                    NSData *receivedSyncWord = [NSData dataWithBytes:buffer length:sizeof(buffer)];
-                    if (![receivedSyncWord isEqualToData:syncWord]) {
-                        NSLog(@"Syncword error!");
-                        return;
-                    }
-                    
-                    /* Get length of message */
-                    len = [inputStream read:(uint8_t *)&syncLen maxLength:sizeof(syncLen)];
-                    if (len != 4) {
-                        NSLog(@"Synclen length should be 4, but got data length: %d!", len);
-                        return;
-                    }
-                    syncLen = CFSwapInt32BigToHost(syncLen);
-                    NSLog(@"Size of data: %d", syncLen);
-                    
-                    /* Read data */
-                    NSMutableData *data = [NSMutableData dataWithLength:syncLen];
-                    len = [inputStream read:(uint8_t *)[data bytes] maxLength:[data length]];
-                    if (len > 0) {
+                    if (dict != nil) {
+                        NSNumber *ID = [dict valueForKey:@"id"];
                         
-                        NSString *input = [[NSString alloc] initWithBytes:[data bytes] length:len - 1 encoding:NSASCIIStringEncoding];
-                        
-                        if (nil != input) {
-                            //NSLog(@"server said: %@", input);
-                            [cmd parse:input];
+                        //Do Something
+                        switch ([ID unsignedIntValue]) {
+                            case NMP_CMD_ID_APKINFO:
+                                [self.delegate appInformationReceived:self dict:dict];
+                                break;
+                                
+                            case NMP_CMD_ID_DEVICEINFO:
+                                [self.delegate deviceInformationReceived:self dict:dict];
+                                break;
+                                
+                            case NMP_CMD_ID_WIFIISCONNECTED:
+                                [self.delegate deviceWifiInformationReceived:self dict:dict];
+                                break;
+                                
+                            case NMP_CMD_ID_GETCHANNEL:
+                                [self.delegate deviceWifiChannelInformationReceived:self dict:dict];
+                                break;
+                                
+                            default:
+                                break;
                         }
                     }
-                }
+                });
             }
-            break;
-            
-		case NSStreamEventErrorOccurred:
-			//NSLog(@"Can not connect to the host!");
-			break;
-            
-		case NSStreamEventEndEncountered:
-			break;
-            
-		default:
-			//NSLog(@"Unknown event");
-            break;
-	}
+        }
+        
+        /* Close streams */
+        [inputStream close];
+        [outputStream close];
+    });
+}
+
+- (void)sendCommand:(Boolean)encode message:(NSString *)message
+{
+    dispatch_async(network_queue, ^{
+        /* Create input and output streams */
+        CFReadStreamRef readStream;
+        CFWriteStreamRef writeStream;
+        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)self.address, DONGLE_POR, &readStream, &writeStream);
+        inputStream = (__bridge NSInputStream *)readStream;
+        outputStream = (__bridge NSOutputStream *)writeStream;
+        
+        /* Open streams */
+        [inputStream open];
+        [outputStream open];
+        
+        NSLog(@"send json cmd: %@", message);
+        
+        /* Prepare message */
+        NSString *msg = message;
+        if (encode) {
+            msg = [[ALiDongle class] base64String:message];
+        }
+        NSLog(@"Send message: %@", msg);
+        NSData *data = [[NSData alloc] initWithData:[msg dataUsingEncoding:NSASCIIStringEncoding]];
+        
+        /* Send sync word */
+        [outputStream write:[syncWord bytes] maxLength:[syncWord length]];
+        
+        /* Send length of message */
+        int messageLength = CFSwapInt32HostToBig([data length]);
+        NSData *syncLen = [NSData dataWithBytes:&messageLength length:sizeof(messageLength)];
+        [outputStream write:[syncLen bytes] maxLength:[syncLen length]];
+        
+        /* Send message */
+        [outputStream write:[data bytes] maxLength:[data length]];
+        const uint8_t buffer = 0;
+        [outputStream write:&buffer maxLength:sizeof(char)];
+        
+        /* Close streams */
+        [inputStream close];
+        [outputStream close];
+    });
 }
 
 
-- (void)checkAppMatchDongleVersion
+- (void)getAppVersionInfo
 {
-    [self sendMessage:false message:[cmd generateAppInfoRequest]];
+    [self queryInformation:true message:[cmd generateAppInfoRequest]];
 }
 
 - (void)getDeviceInfo
 {
-    [self sendMessage:true message:[cmd generateDeviceInfoRequest]];
+    [self queryInformation:true message:[cmd generateDeviceInfoRequest]];
 }
 
-- (void)appInfoReceived:(NSDictionary *)dict
+- (void)getDeviceWifiInfo
 {
-    [self.delegate appInformationReceived:self dict:dict];
+    [self queryInformation:true message:[cmd generateDeviceWifiInfoRequest]];
 }
 
-- (void)deviceInfoReceived:(NSDictionary *)dict
+- (void)getDeviceWifiChannelInfo
 {
-    [self.delegate deviceInformationReceived:self dict:dict];
+    [self queryInformation:true message:[cmd generateDeviceWifiChannelInfoRequest]];
+}
+
+
+- (void)playback:(NSString *)url
+{
+    [self sendCommand:true message:[cmd generatePlaybackRequest:url]];
+}
+
+- (void)stopPlayback
+{
+    [self sendCommand:true message:[cmd generateStopPlaybackRequest]];
 }
 
 

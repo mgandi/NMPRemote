@@ -10,6 +10,7 @@
 #import "ALiDongleDashboardTabBarController.h"
 #import "ALiDongle.h"
 #import "ALiSettingsTableViewController.h"
+#import "ALiLiveTableViewController.h"
 
 @interface ALiDongleSelectionTableViewcontroller ()
 
@@ -73,8 +74,7 @@
     /* Initialize corresponding dongle */
     ALiDongle *dongle = self.dongles[indexPath.row];
     dongle.delegate = self;
-    [dongle start];
-    [dongle checkAppMatchDongleVersion];
+    [dongle getAppVersionInfo];
 }
 
 #pragma mark - ALi Dongle delegate
@@ -89,19 +89,16 @@
         
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         ALiDongleDashboardTabBarController *dongleDashboardTabBarController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"DongleDashboard"];
-        //    NSLog(@"Selected dongle: %@", cell.textLabel.text);
-        //    NSLog(@"Class of UIViewController %@", NSStringFromClass([dongleDashboardTabBarController class]));
-        
         dongleDashboardTabBarController.dongle = dongle;
-        //    NSLog(@"Dongle dashboard has %d controllers.", [[dongleDashboardTabBarController viewControllers] count]);
         
         ALiSettingsTableViewController *settings = (ALiSettingsTableViewController *)[dongleDashboardTabBarController viewControllers][0];
-        //    NSLog(@"Class of UIViewController %@", NSStringFromClass([settings class]));
         settings.dongle = dongle;
         
-        // TODO: must stop dongle before starting again
+        UINavigationController *liveNavigationController = (UINavigationController *)[dongleDashboardTabBarController viewControllers][1];
+        ALiLiveTableViewController *live = (ALiLiveTableViewController *)[liveNavigationController viewControllers][0];
+        live.dongle = dongle;
         
-        [self presentViewController:dongleDashboardTabBarController animated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:nil];
     } else {
         // Display error message
     }
@@ -111,11 +108,17 @@
 {
 }
 
+- (void)deviceWifiInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+}
+
+- (void)deviceWifiChannelInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+}
+
 - (IBAction)cancel:(id)sender
 {
-    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *dongleSelectionNavigationController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"DongleSearchViewController"];
-    [self presentViewController:dongleSelectionNavigationController animated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

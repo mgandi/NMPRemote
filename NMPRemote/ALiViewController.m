@@ -19,13 +19,23 @@
 {
     GCDAsyncUdpSocket *udpSocket;
     NSMutableArray *dongles;
+    ALiDongle *selectedDongle;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     dongles = [NSMutableArray arrayWithCapacity:0];
-    [self searchForDongles];
+    selectedDongle = nil;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    if (selectedDongle == nil) {
+        [self searchForDongles];
+    } else {
+        
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -34,25 +44,34 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"DongleSelectionSegue"]) {
+        UINavigationController *dongleSelectionNavigationController = segue.destinationViewController;
+        ALiDongleSelectionTableViewcontroller *dongleSelectionTableViewController = [dongleSelectionNavigationController viewControllers][0];
+        dongleSelectionTableViewController.dongles = dongles;
+    }
+}
+
 - (void)searchForDonglesTimeout
 {
     [udpSocket close];
     
+    [_indicator stopAnimating];
+    
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     if ([dongles count]) {
-        UINavigationController *dongleSelectionNavigationController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"DongleSelectionNavigationController"];
-        ALiDongleSelectionTableViewcontroller *dongleSelectionTableViewController = [dongleSelectionNavigationController viewControllers][0];
-        dongleSelectionTableViewController.dongles = dongles;
-        [self presentViewController:dongleSelectionNavigationController animated:YES completion:nil];
+        [self performSegueWithIdentifier:@"DongleSelectionSegue" sender:self];
     } else {
         UIViewController *noDongleViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"NoDongleViewController"];
-        [self presentViewController:noDongleViewController animated:YES completion:nil];
+        [self presentViewController:noDongleViewController animated:NO completion:nil];
     }
 }
 
 - (void)searchForDongles
 {
     [_indicator startAnimating];
+    [dongles removeAllObjects];
     
     udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     [udpSocket enableBroadcast:YES error:nil];
@@ -97,13 +116,6 @@ withFilterContext:(id)filterContext
     dongle.address = [[GCDAsyncUdpSocket class] hostFromAddress:address];
     NSLog(@"didReceiveData %@ from address %@", dongle.name, dongle.address);
     [dongles addObject:dongle];
-    
-    /*
-    NSString *addressString = [[GCDAsyncUdpSocket class] hostFromAddress:address];
-    NSString *dataString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-    NSLog(@"didReceiveData %@ from address %@", dataString, addressString);
-    [dongles addObject:dataString];
-    */
 }
 
 - (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error

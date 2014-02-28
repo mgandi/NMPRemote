@@ -34,6 +34,12 @@
 		22CEC0AD18BB9E320031DB99 /* ALiDongle.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CEC0AC18BB9E320031DB99 /* ALiDongle.m */; };
 		22CEC0B018BC9CF30031DB99 /* ALiJSONCmd.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CEC0AF18BC9CF30031DB99 /* ALiJSONCmd.m */; };
 		22CEC0B318BCB7A70031DB99 /* ALiSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CEC0B218BCB7A70031DB99 /* ALiSettingsTableViewController.m */; };
+		22FCA11A18C096C20085CAC3 /* Abilis.m3u in Resources */ = {isa = PBXBuildFile; fileRef = 22FCA11718C096C10085CAC3 /* Abilis.m3u */; };
+		22FCA11B18C096C20085CAC3 /* Cable-Demo.m3u in Resources */ = {isa = PBXBuildFile; fileRef = 22FCA11818C096C20085CAC3 /* Cable-Demo.m3u */; };
+		22FCA11C18C096C20085CAC3 /* mux_fr2.m3u in Resources */ = {isa = PBXBuildFile; fileRef = 22FCA11918C096C20085CAC3 /* mux_fr2.m3u */; };
+		22FCA12018C097B70085CAC3 /* ALiLiveTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */; };
+		22FCA12318C0994F0085CAC3 /* ALiM3uParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */; };
+		22FCA12618C0BD1E0085CAC3 /* ALiM3uItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +92,15 @@
 		22CEC0AF18BC9CF30031DB99 /* ALiJSONCmd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiJSONCmd.m; sourceTree = "<group>"; };
 		22CEC0B118BCB7A70031DB99 /* ALiSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSettingsTableViewController.h; sourceTree = "<group>"; };
 		22CEC0B218BCB7A70031DB99 /* ALiSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSettingsTableViewController.m; sourceTree = "<group>"; };
+		22FCA11718C096C10085CAC3 /* Abilis.m3u */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Abilis.m3u; sourceTree = "<group>"; };
+		22FCA11818C096C20085CAC3 /* Cable-Demo.m3u */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Cable-Demo.m3u"; sourceTree = "<group>"; };
+		22FCA11918C096C20085CAC3 /* mux_fr2.m3u */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mux_fr2.m3u; sourceTree = "<group>"; };
+		22FCA11E18C097B70085CAC3 /* ALiLiveTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiLiveTableViewController.h; sourceTree = "<group>"; };
+		22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiLiveTableViewController.m; sourceTree = "<group>"; };
+		22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiM3uParser.h; sourceTree = "<group>"; };
+		22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiM3uParser.m; sourceTree = "<group>"; };
+		22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiM3uItem.h; path = ../ALiM3uItem.h; sourceTree = "<group>"; };
+		22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiM3uItem.m; path = ../ALiM3uItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,9 +160,11 @@
 		22CEC05818B796920031DB99 /* NMPRemote */ = {
 			isa = PBXGroup;
 			children = (
-				22CEC09618B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m */,
+				22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */,
+				22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */,
+				22FCA11D18C096C90085CAC3 /* m3u */,
 				22CEC09518B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.h */,
-				22CEC08A18B7ACE30031DB99 /* ALiViewController.m */,
+				22CEC09618B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m */,
 				22CEC0AB18BB9E320031DB99 /* ALiDongle.h */,
 				22CEC0AC18BB9E320031DB99 /* ALiDongle.m */,
 				22CEC0AE18BC9CF30031DB99 /* ALiJSONCmd.h */,
@@ -155,6 +172,10 @@
 				22CEC06118B796920031DB99 /* ALiAppDelegate.h */,
 				22CEC06218B796920031DB99 /* ALiAppDelegate.m */,
 				22CEC06418B796920031DB99 /* Main.storyboard */,
+				22FCA11E18C097B70085CAC3 /* ALiLiveTableViewController.h */,
+				22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */,
+				22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */,
+				22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */,
 				22CEC0B118BCB7A70031DB99 /* ALiSettingsTableViewController.h */,
 				22CEC0B218BCB7A70031DB99 /* ALiSettingsTableViewController.m */,
 				22CEC09E18BB5FD00031DB99 /* Images */,
@@ -163,6 +184,7 @@
 				22CEC08C18B7B0C50031DB99 /* ALiNoDongleViewController.h */,
 				22CEC08D18B7B0C50031DB99 /* ALiNoDongleViewController.m */,
 				22CEC06718B796920031DB99 /* ALiViewController.h */,
+				22CEC08A18B7ACE30031DB99 /* ALiViewController.m */,
 				22CEC08718B798A90031DB99 /* GCDAsyncUdpSocket.h */,
 				22CEC08818B798A90031DB99 /* GCDAsyncUdpSocket.m */,
 				22CEC06A18B796930031DB99 /* Images.xcassets */,
@@ -211,6 +233,17 @@
 				22CEC0A018BB5FD00031DB99 /* Settings@2x.png */,
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		22FCA11D18C096C90085CAC3 /* m3u */ = {
+			isa = PBXGroup;
+			children = (
+				22FCA11718C096C10085CAC3 /* Abilis.m3u */,
+				22FCA11818C096C20085CAC3 /* Cable-Demo.m3u */,
+				22FCA11918C096C20085CAC3 /* mux_fr2.m3u */,
+			);
+			name = m3u;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,8 +324,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				22CEC0AA18BB7B0D0031DB99 /* Playback@2x.png in Resources */,
+				22FCA11A18C096C20085CAC3 /* Abilis.m3u in Resources */,
 				22CEC0A118BB5FD00031DB99 /* Settings.png in Resources */,
+				22FCA11B18C096C20085CAC3 /* Cable-Demo.m3u in Resources */,
 				22CEC06B18B796930031DB99 /* Images.xcassets in Resources */,
+				22FCA11C18C096C20085CAC3 /* mux_fr2.m3u in Resources */,
 				22CEC0A218BB5FD00031DB99 /* Settings@2x.png in Resources */,
 				22CEC0A418BB65D70031DB99 /* Live.png in Resources */,
 				22CEC05D18B796920031DB99 /* InfoPlist.strings in Resources */,
@@ -321,10 +357,13 @@
 				22CEC08E18B7B0C50031DB99 /* ALiNoDongleViewController.m in Sources */,
 				22CEC08918B798A90031DB99 /* GCDAsyncUdpSocket.m in Sources */,
 				22CEC0B018BC9CF30031DB99 /* ALiJSONCmd.m in Sources */,
+				22FCA12018C097B70085CAC3 /* ALiLiveTableViewController.m in Sources */,
+				22FCA12618C0BD1E0085CAC3 /* ALiM3uItem.m in Sources */,
 				22CEC09718B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m in Sources */,
 				22CEC05F18B796920031DB99 /* main.m in Sources */,
 				22CEC09D18B7C1050031DB99 /* ALiDongleDashboardTabBarController.m in Sources */,
 				22CEC0AD18BB9E320031DB99 /* ALiDongle.m in Sources */,
+				22FCA12318C0994F0085CAC3 /* ALiM3uParser.m in Sources */,
 				22CEC08B18B7ACE30031DB99 /* ALiViewController.m in Sources */,
 				22CEC06318B796920031DB99 /* ALiAppDelegate.m in Sources */,
 			);
@@ -535,6 +574,7 @@
 				22CEC08318B796930031DB99 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		22CEC08418B796930031DB99 /* Build configuration list for PBXNativeTarget "NMPRemoteTests" */ = {
 			isa = XCConfigurationList;
@@ -543,6 +583,7 @@
 				22CEC08618B796930031DB99 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

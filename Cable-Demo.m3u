@@ -1,0 +1,25 @@
+#EXTM3U
+
+#EXTINF:0,0. FR2
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=1&pids=0,110,120,130
+
+#EXTINF:0,0. FR3
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=2&pids=0,210,220,230
+
+#EXTINF:0,0. FR5
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=3&pids=0,310,320,330
+
+#EXTINF:0,0. FRÔ
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=4&pids=0,510,520,530
+
+#EXTINF:0,0. LCP
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=5&pids=0,610,620,630
+
+#EXTINF:0,0. FR3
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=6&pids=0,710,720,730
+
+#EXTINF:0,0. FR2
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=7&pids=0,110,120,130
+
+#EXTINF:0,0. FR5
+http://192.168.19.204/?sr=6875&msys=dvbc_ac&mtype=qam16&freq=666000&fe=8&pids=0,510,520,530

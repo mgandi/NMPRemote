@@ -13,7 +13,7 @@
                         <viewControllerLayoutGuide type="bottom" id="oE1-Vj-abO"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Searching for dongles on LAN..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8I2-ep-6pQ">
@@ -32,6 +32,7 @@
                     </view>
                     <connections>
                         <outlet property="indicator" destination="WFH-mO-ZCz" id="nkh-BB-Tpf"/>
+                        <segue destination="fH4-xY-nSC" kind="modal" identifier="DongleSelectionSegue" id="rx2-p6-0Wi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -46,7 +47,7 @@
                         <viewControllerLayoutGuide type="bottom" id="ruX-t4-Zwa"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="btK-RN-2xP">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="No dongle available" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDu-BB-pzw">
@@ -78,7 +79,7 @@
             <objects>
                 <tableViewController id="0Sh-PD-r6l" customClass="ALiDongleSelectionTableViewcontroller" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Pzf-5a-3NA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -115,7 +116,7 @@
                     <navigationItem key="navigationItem" title="Local LAN Dongle" id="4Kn-bZ-SFe">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="qzX-kk-nbO">
                             <connections>
-                                <action selector="cancel:" destination="0Sh-PD-r6l" id="QCe-Lh-abS"/>
+                                <action selector="cancel:" destination="0Sh-PD-r6l" id="I20-eU-iYc"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -136,7 +137,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="6Od-WY-tg3" kind="relationship" relationship="viewControllers" id="Pbe-a1-SiG"/>
-                        <segue destination="2kF-2S-QPi" kind="relationship" relationship="viewControllers" id="ov5-PS-L12"/>
+                        <segue destination="IFZ-6x-1ex" kind="relationship" relationship="viewControllers" id="ov5-PS-L12"/>
                         <segue destination="WUP-TG-IwC" kind="relationship" relationship="viewControllers" id="CoI-TI-Xfa"/>
                     </connections>
                 </tabBarController>
@@ -149,7 +150,7 @@
             <objects>
                 <tableViewController id="6Od-WY-tg3" customClass="ALiSettingsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="j0b-Vu-O8U">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
@@ -337,17 +338,17 @@
             </objects>
             <point key="canvasLocation" x="2545" y="-591"/>
         </scene>
-        <!--Table View Controller - Live-->
+        <!--Li Live Table View Controller - Live-->
         <scene sceneID="kkG-cN-bD8">
             <objects>
-                <tableViewController id="2kF-2S-QPi" sceneMemberID="viewController">
+                <tableViewController id="2kF-2S-QPi" customClass="ALiLiveTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Gdb-5S-90J">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="qdR-9I-S3u">
-                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="M3uItemCell" id="qdR-9I-S3u">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qdR-9I-S3u" id="xOK-Tp-2vk">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -360,11 +361,20 @@
                             <outlet property="delegate" destination="2kF-2S-QPi" id="2rN-O2-chk"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Live" image="Live.png" id="Lcm-qW-lC6"/>
+                    <navigationItem key="navigationItem" title="Live" id="Pfw-cy-ajh">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Stop" style="done" id="gOg-Eg-CcM">
+                            <connections>
+                                <action selector="stop:" destination="2kF-2S-QPi" id="Mdv-Wv-GFV"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="stopBarButtonItem" destination="gOg-Eg-CcM" id="4Zx-91-VbU"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4UJ-wF-bbx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2545" y="204"/>
+            <point key="canvasLocation" x="3071" y="204"/>
         </scene>
         <!--View Controller - Playback-->
         <scene sceneID="142-sn-RYl">
@@ -375,7 +385,7 @@
                         <viewControllerLayoutGuide type="bottom" id="clb-oj-sXp"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="4Zh-wO-c5r">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -403,6 +413,25 @@
             </objects>
             <point key="canvasLocation" x="841" y="-199"/>
         </scene>
+        <!--Navigation Controller - Live-->
+        <scene sceneID="fYt-du-HPR">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="IFZ-6x-1ex" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Live" image="Live.png" id="Lcm-qW-lC6"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="q9f-99-baN">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="2kF-2S-QPi" kind="relationship" relationship="rootViewController" id="q6m-zi-lyj"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FmG-zT-JzJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2545" y="204"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Live.png" width="30" height="30"/>
@@ -412,6 +441,6 @@
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
+        <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
 </document>
