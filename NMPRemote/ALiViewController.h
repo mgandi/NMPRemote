@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ALiDongleSelectionTableViewcontroller.h"
 
-@interface ALiViewController : UIViewController <NSStreamDelegate>
+@interface ALiViewController : UIViewController <NSStreamDelegate, ALiDongleSelectionTableViewcontrollerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 

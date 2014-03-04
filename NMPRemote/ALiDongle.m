@@ -37,7 +37,7 @@
 }
 
 
-- (void)queryInformation:(Boolean)encode message:(NSString *)message
+- (void)queryInformationAsync:(Boolean)encode message:(NSString *)message
 {
     dispatch_async(network_queue, ^{
         /* Create input and output streams */
@@ -117,6 +117,7 @@
         if (len > 0) {
             
             NSString *input = [[NSString alloc] initWithBytes:[dataIn bytes] length:len - 1 encoding:NSASCIIStringEncoding];
+            NSLog(@"receive json cmd: %@", input);
             
             if (nil != input) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -144,6 +145,10 @@
                                 [self.delegate deviceWifiChannelInformationReceived:self dict:dict];
                                 break;
                                 
+                            case NMP_CMD_ID_WIFILIST:
+                                [self.delegate deviceWifiListInformationReceived:self dict:dict];
+                                break;
+                                
                             default:
                                 break;
                         }
@@ -156,6 +161,98 @@
         [inputStream close];
         [outputStream close];
     });
+}
+
+- (NSDictionary *)queryInformationSync:(Boolean)encode message:(NSString *)message
+{
+    /* Create input and output streams */
+    CFReadStreamRef readStream;
+    CFWriteStreamRef writeStream;
+    CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)self.address, DONGLE_POR, &readStream, &writeStream);
+    inputStream = (__bridge NSInputStream *)readStream;
+    outputStream = (__bridge NSOutputStream *)writeStream;
+    
+    /* Open streams */
+    [inputStream open];
+    [outputStream open];
+    
+    NSLog(@"send json cmd: %@", message);
+    
+    /* Prepare message */
+    NSString *msg = message;
+    if (encode) {
+        msg = [[ALiDongle class] base64String:message];
+    }
+    NSLog(@"Send message: %@", msg);
+    NSData *data = [[NSData alloc] initWithData:[msg dataUsingEncoding:NSASCIIStringEncoding]];
+    
+    /* Send sync word */
+    [outputStream write:[syncWord bytes] maxLength:[syncWord length]];
+    
+    /* Send length of message */
+    int messageLength = CFSwapInt32HostToBig([data length]);
+    NSData *syncLen = [NSData dataWithBytes:&messageLength length:sizeof(messageLength)];
+    [outputStream write:[syncLen bytes] maxLength:[syncLen length]];
+    
+    /* Send message */
+    [outputStream write:[data bytes] maxLength:[data length]];
+    const uint8_t buffer = 0;
+    [outputStream write:&buffer maxLength:sizeof(char)];
+    
+    
+    
+    /* Read answer */
+    uint8_t inBuffer[4];
+    uint32_t syncLength;
+    int len = 0;
+    NSDictionary *dict = nil;
+    
+    /* Wait for bytes available */
+    while (![inputStream hasBytesAvailable]);
+    
+    /* Check syncword */
+    len = [inputStream read:inBuffer maxLength:sizeof(inBuffer)];
+    if (len != 4) {
+        NSLog(@"Syncword length should be 4, but got data length: %d!", len);
+        return dict;
+    }
+    NSData *receivedSyncWord = [NSData dataWithBytes:inBuffer length:sizeof(inBuffer)];
+    if (![receivedSyncWord isEqualToData:syncWord]) {
+        NSLog(@"Syncword error!");
+        return dict;
+    }
+    
+    /* Wait for bytes available */
+    while (![inputStream hasBytesAvailable]);
+    
+    /* Get length of message */
+    len = [inputStream read:(uint8_t *)&syncLength maxLength:sizeof(syncLength)];
+    if (len != 4) {
+        NSLog(@"Synclen length should be 4, but got data length: %d!", len);
+        return dict;
+    }
+    syncLength = CFSwapInt32BigToHost(syncLength);
+    NSLog(@"Size of data: %d", syncLength);
+    
+    /* Wait for bytes available */
+    while (![inputStream hasBytesAvailable]);
+    
+    /* Read data */
+    NSMutableData *dataIn = [NSMutableData dataWithLength:syncLength];
+    len = [inputStream read:(uint8_t *)[dataIn bytes] maxLength:[dataIn length]];
+    if (len > 0) {
+        
+        NSString *input = [[NSString alloc] initWithBytes:[dataIn bytes] length:len - 1 encoding:NSASCIIStringEncoding];
+        
+        if (nil != input)
+            dict = [cmd parse:input];
+    }
+    
+    /* Close streams */
+    [inputStream close];
+    [outputStream close];
+    
+    return dict;
 }
 
 - (void)sendCommand:(Boolean)encode message:(NSString *)message
@@ -202,35 +299,102 @@
 }
 
 
+- (Boolean)checkAppVersionMatch
+{
+    Boolean ret = false;
+    NSDictionary *dict = [self queryInformationSync:false message:[cmd generateAppInfoRequest]];
+    
+    if (dict != nil) {
+        NSNumber *ID = [dict valueForKey:@"id"];
+        
+        //Do Something
+        switch ([ID unsignedIntValue]) {
+            case NMP_CMD_ID_APKINFO: {
+                unsigned int major = [[dict valueForKey:@"major"] unsignedIntValue];
+                unsigned int minor = [[dict valueForKey:@"minor"] unsignedIntValue];
+                
+                if ((major == APP_VERSION_MAJOR) && (minor == APP_VERSION_MINOR))
+                    ret = true;
+                break;
+            }
+                
+            default:
+                break;
+        }
+    }
+    
+    return ret;
+}
+
 - (void)getAppVersionInfo
 {
-    [self queryInformation:true message:[cmd generateAppInfoRequest]];
+    [self queryInformationAsync:false message:[cmd generateAppInfoRequest]];
 }
 
 - (void)getDeviceInfo
 {
-    [self queryInformation:true message:[cmd generateDeviceInfoRequest]];
+    [self queryInformationAsync:true message:[cmd generateDeviceInfoRequest]];
 }
 
 - (void)getDeviceWifiInfo
 {
-    [self queryInformation:true message:[cmd generateDeviceWifiInfoRequest]];
+    [self queryInformationAsync:true message:[cmd generateDeviceWifiInfoRequest]];
 }
 
 - (void)getDeviceWifiChannelInfo
 {
-    [self queryInformation:true message:[cmd generateDeviceWifiChannelInfoRequest]];
+    [self queryInformationAsync:true message:[cmd generateDeviceWifiChannelInfoRequest]];
+}
+
+- (void)getDeviceWifiIsScanningInfo
+{
+    [self queryInformationAsync:true message:[cmd generateWifiScanningInfoRequest]];
+}
+
+- (void)getDeviceWifiListInfo
+{
+    [self queryInformationAsync:true message:[cmd generateWifiListInfoRequest]];
+}
+
+- (void)connectToWifi:(NSString *)ssid protection:(NSString *)protection password:(NSString *)password hidden:(BOOL)hidden
+{
+    [self queryInformationAsync:true message:[cmd generateConnectToWifiRequest:ssid protection:protection password:password hidden:hidden]];
 }
 
 
 - (void)playback:(NSString *)url
 {
-    [self sendCommand:true message:[cmd generatePlaybackRequest:url]];
+    [self sendCommand:true message:[cmd generatePlaybackCmd:url]];
 }
 
 - (void)stopPlayback
 {
-    [self sendCommand:true message:[cmd generateStopPlaybackRequest]];
+    [self sendCommand:true message:[cmd generateStopPlaybackCmd]];
+}
+
+- (void)switchToMainpage
+{
+    [self sendCommand:true message:[cmd generateSwitchToMainPageCmd]];
+}
+
+- (void)switchToIpla
+{
+    [self sendCommand:true message:[cmd generateSwitchToWebkitCmd:WEBKIT_IPLA url:@""]];
+}
+
+- (void)switchToYoutube
+{
+    [self sendCommand:true message:[cmd generateSwitchToWebkitCmd:WEBKIT_YOUTUBE_LEANBACK url:@""]];
+}
+
+- (void)switchToWebpage:(NSString *)url
+{
+    [self sendCommand:true message:[cmd generateSwitchToWebkitCmd:WEBKIT_OTHERS url:url]];
+}
+
+- (void)emulateKey:(NSInteger)code
+{
+    [self sendCommand:true message:[cmd generateEmultaeKeyCmd:code]];
 }
 
 

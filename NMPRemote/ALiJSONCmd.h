@@ -32,6 +32,12 @@ enum ProtocolIDs {
 	NMP_CMD_ID_UPG_PARTITION_UPGRADE = 21
 };
 
+enum WebkitIDs {
+    WEBKIT_OTHERS = 0,
+    WEBKIT_IPLA = 1,
+    WEBKIT_YOUTUBE_LEANBACK = 2
+};
+
 @interface ALiJSONCmd : NSObject
 
 - (NSDictionary *)parse:(NSString *)JSONString;
@@ -40,8 +46,14 @@ enum ProtocolIDs {
 - (NSString *)generateDeviceInfoRequest;
 - (NSString *)generateDeviceWifiInfoRequest;
 - (NSString *)generateDeviceWifiChannelInfoRequest;
+- (NSString *)generateWifiScanningInfoRequest;
+- (NSString *)generateWifiListInfoRequest;
+- (NSString *)generateConnectToWifiRequest:(NSString *)ssid protection:(NSString *)protection password:(NSString *)password hidden:(BOOL)hidden;
 
-- (NSString *)generatePlaybackRequest:(NSString *)url;
-- (NSString *)generateStopPlaybackRequest;
+- (NSString *)generatePlaybackCmd:(NSString *)url;
+- (NSString *)generateStopPlaybackCmd;
+- (NSString *)generateSwitchToMainPageCmd;
+- (NSString *)generateSwitchToWebkitCmd:(NSInteger)type url:(NSString *)url;
+- (NSString *)generateEmultaeKeyCmd:(NSInteger)code;
 
 @end

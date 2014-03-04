@@ -7,6 +7,7 @@
 //
 
 #import "ALiSettingsTableViewController.h"
+#import "ALiWiFiNetworksTableViewController.h"
 
 @interface ALiSettingsTableViewController ()
 
@@ -34,7 +35,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     self.dongle.delegate = self;
     [self.dongle getDeviceInfo];
@@ -45,6 +46,51 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     self.dongle.delegate = nil;
+}
+
+#pragma mark - Table View delegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 35;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 1;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
+    if (sectionTitle == nil) {
+        return nil;
+    }
+    
+    // Create label with section title
+    UILabel *label = [[UILabel alloc] init];
+    label.frame = CGRectMake(15, 10, 300, 20);
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor colorWithHue:171.0/360.0 saturation:1.0 brightness:0.52 alpha:1.0];
+    label.shadowColor = [UIColor whiteColor];
+    label.shadowOffset = CGSizeMake(0.0, 0.0);
+    label.font = [UIFont boldSystemFontOfSize:16];
+    label.text = sectionTitle;
+    
+    // Create header view and add label as a subview
+    // you could also just return the label (instead of making a new view and adding the label as subview. With the view you have more flexibility to make a background color or different paddings
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 20)];
+    [view addSubview:label];
+    return view;
+}
+
+#pragma mark - Table View Controller
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"WiFiNetworksSegue"]) {
+        ALiWiFiNetworksTableViewController *wiFiNetworksTableViewController = segue.destinationViewController;
+        wiFiNetworksTableViewController.dongle = self.dongle;
+    }
 }
 
 #pragma mark - ALi Dongle delegate
@@ -88,6 +134,10 @@
     
     /* Device Hotspot Channel */
     self.deviceHotspotChannelDetail.text = [NSString stringWithFormat:@"Channel: %ld", (long)[[dict valueForKey:@"channel"] integerValue]];
+}
+
+- (void)deviceWifiListInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
 }
 
 @end

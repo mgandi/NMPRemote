@@ -9,10 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "ALiDongle.h"
 
-@interface ALiDongleSelectionTableViewcontroller : UITableViewController <ALiDongleDelegate>
+@class ALiDongleSelectionTableViewcontroller;
+
+@protocol ALiDongleSelectionTableViewcontrollerDelegate <NSObject>
+- (void)dongleSelected:(ALiDongleSelectionTableViewcontroller *)tableViewController dongle:(ALiDongle *)dongle;
+- (void)setSearchForDongle:(ALiDongleSelectionTableViewcontroller *)tableViewController doSearch:(Boolean)doSearch;
+@end
+
+@interface ALiDongleSelectionTableViewcontroller : UITableViewController
 
 @property (nonatomic, strong) NSMutableArray *dongles;
+@property (nonatomic, weak) id <ALiDongleSelectionTableViewcontrollerDelegate> delegate;
 
 - (IBAction)cancel:(id)sender;
+- (IBAction)refresh:(id)sender;
 
 @end

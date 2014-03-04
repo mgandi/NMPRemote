@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2214528618C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528518C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m */; };
+		2214528918C5D65900CA0986 /* ALiWiFiNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */; };
+		2214528C18C5DCC700CA0986 /* ALiWiFiNetworkTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528B18C5DCC700CA0986 /* ALiWiFiNetworkTableViewCell.m */; };
+		22B7F40318C4BDE800ADD9B1 /* Applications.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40118C4BDE800ADD9B1 /* Applications.png */; };
+		22B7F40418C4BDE800ADD9B1 /* Applications@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40218C4BDE800ADD9B1 /* Applications@2x.png */; };
+		22B7F40718C4C17100ADD9B1 /* ALiApplicationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F40618C4C17100ADD9B1 /* ALiApplicationViewController.m */; };
+		22B7F40A18C4CE2300ADD9B1 /* Control.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40818C4CE2300ADD9B1 /* Control.png */; };
+		22B7F40B18C4CE2300ADD9B1 /* Control@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40918C4CE2300ADD9B1 /* Control@2x.png */; };
+		22B7F41418C4DCD000ADD9B1 /* ALiControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F41318C4DCD000ADD9B1 /* ALiControlViewController.m */; };
+		22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */; };
 		22CEC05318B796920031DB99 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CEC05218B796920031DB99 /* Foundation.framework */; };
 		22CEC05518B796920031DB99 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CEC05418B796920031DB99 /* CoreGraphics.framework */; };
 		22CEC05718B796920031DB99 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CEC05618B796920031DB99 /* UIKit.framework */; };
@@ -24,7 +34,6 @@
 		22CEC08B18B7ACE30031DB99 /* ALiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CEC08A18B7ACE30031DB99 /* ALiViewController.m */; };
 		22CEC08E18B7B0C50031DB99 /* ALiNoDongleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CEC08D18B7B0C50031DB99 /* ALiNoDongleViewController.m */; };
 		22CEC09718B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CEC09618B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m */; };
-		22CEC09D18B7C1050031DB99 /* ALiDongleDashboardTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22CEC09C18B7C1050031DB99 /* ALiDongleDashboardTabBarController.m */; };
 		22CEC0A118BB5FD00031DB99 /* Settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 22CEC09F18BB5FD00031DB99 /* Settings.png */; };
 		22CEC0A218BB5FD00031DB99 /* Settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22CEC0A018BB5FD00031DB99 /* Settings@2x.png */; };
 		22CEC0A418BB65D70031DB99 /* Live.png in Resources */ = {isa = PBXBuildFile; fileRef = 22CEC0A318BB65D70031DB99 /* Live.png */; };
@@ -53,6 +62,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2214528418C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiWiFiNetworksTableViewController.h; sourceTree = "<group>"; };
+		2214528518C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetworksTableViewController.m; sourceTree = "<group>"; };
+		2214528718C5D65900CA0986 /* ALiWiFiNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiWiFiNetwork.h; sourceTree = "<group>"; };
+		2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetwork.m; sourceTree = "<group>"; };
+		2214528A18C5DCC700CA0986 /* ALiWiFiNetworkTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiWiFiNetworkTableViewCell.h; sourceTree = "<group>"; };
+		2214528B18C5DCC700CA0986 /* ALiWiFiNetworkTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetworkTableViewCell.m; sourceTree = "<group>"; };
+		22B7F40118C4BDE800ADD9B1 /* Applications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Applications.png; sourceTree = "<group>"; };
+		22B7F40218C4BDE800ADD9B1 /* Applications@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Applications@2x.png"; sourceTree = "<group>"; };
+		22B7F40518C4C17100ADD9B1 /* ALiApplicationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiApplicationViewController.h; path = Images/ALiApplicationViewController.h; sourceTree = "<group>"; };
+		22B7F40618C4C17100ADD9B1 /* ALiApplicationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiApplicationViewController.m; path = Images/ALiApplicationViewController.m; sourceTree = "<group>"; };
+		22B7F40818C4CE2300ADD9B1 /* Control.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Control.png; sourceTree = "<group>"; };
+		22B7F40918C4CE2300ADD9B1 /* Control@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Control@2x.png"; sourceTree = "<group>"; };
+		22B7F41218C4DCD000ADD9B1 /* ALiControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiControlViewController.h; path = ../ALiControlViewController.h; sourceTree = "<group>"; };
+		22B7F41318C4DCD000ADD9B1 /* ALiControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiControlViewController.m; path = ../ALiControlViewController.m; sourceTree = "<group>"; };
+		22B7F41518C4E40200ADD9B1 /* ALiveNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiveNavigationViewController.h; sourceTree = "<group>"; };
+		22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiveNavigationViewController.m; sourceTree = "<group>"; };
 		22CEC04F18B796920031DB99 /* NMPRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NMPRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22CEC05218B796920031DB99 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		22CEC05418B796920031DB99 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -78,8 +103,6 @@
 		22CEC08D18B7B0C50031DB99 /* ALiNoDongleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiNoDongleViewController.m; sourceTree = "<group>"; };
 		22CEC09518B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiDongleSelectionTableViewcontroller.h; sourceTree = "<group>"; };
 		22CEC09618B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiDongleSelectionTableViewcontroller.m; sourceTree = "<group>"; };
-		22CEC09B18B7C1050031DB99 /* ALiDongleDashboardTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiDongleDashboardTabBarController.h; sourceTree = "<group>"; };
-		22CEC09C18B7C1050031DB99 /* ALiDongleDashboardTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiDongleDashboardTabBarController.m; sourceTree = "<group>"; };
 		22CEC09F18BB5FD00031DB99 /* Settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Settings.png; sourceTree = "<group>"; };
 		22CEC0A018BB5FD00031DB99 /* Settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Settings@2x.png"; sourceTree = "<group>"; };
 		22CEC0A318BB65D70031DB99 /* Live.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Live.png; sourceTree = "<group>"; };
@@ -162,31 +185,41 @@
 			children = (
 				22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */,
 				22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */,
-				22FCA11D18C096C90085CAC3 /* m3u */,
-				22CEC09518B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.h */,
-				22CEC09618B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m */,
+				22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */,
+				22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */,
+				2214528718C5D65900CA0986 /* ALiWiFiNetwork.h */,
+				2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */,
 				22CEC0AB18BB9E320031DB99 /* ALiDongle.h */,
 				22CEC0AC18BB9E320031DB99 /* ALiDongle.m */,
 				22CEC0AE18BC9CF30031DB99 /* ALiJSONCmd.h */,
 				22CEC0AF18BC9CF30031DB99 /* ALiJSONCmd.m */,
-				22CEC06118B796920031DB99 /* ALiAppDelegate.h */,
-				22CEC06218B796920031DB99 /* ALiAppDelegate.m */,
-				22CEC06418B796920031DB99 /* Main.storyboard */,
-				22FCA11E18C097B70085CAC3 /* ALiLiveTableViewController.h */,
-				22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */,
-				22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */,
-				22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */,
-				22CEC0B118BCB7A70031DB99 /* ALiSettingsTableViewController.h */,
-				22CEC0B218BCB7A70031DB99 /* ALiSettingsTableViewController.m */,
-				22CEC09E18BB5FD00031DB99 /* Images */,
-				22CEC09B18B7C1050031DB99 /* ALiDongleDashboardTabBarController.h */,
-				22CEC09C18B7C1050031DB99 /* ALiDongleDashboardTabBarController.m */,
-				22CEC08C18B7B0C50031DB99 /* ALiNoDongleViewController.h */,
-				22CEC08D18B7B0C50031DB99 /* ALiNoDongleViewController.m */,
-				22CEC06718B796920031DB99 /* ALiViewController.h */,
-				22CEC08A18B7ACE30031DB99 /* ALiViewController.m */,
 				22CEC08718B798A90031DB99 /* GCDAsyncUdpSocket.h */,
 				22CEC08818B798A90031DB99 /* GCDAsyncUdpSocket.m */,
+				22CEC06118B796920031DB99 /* ALiAppDelegate.h */,
+				22CEC06218B796920031DB99 /* ALiAppDelegate.m */,
+				22FCA11D18C096C90085CAC3 /* m3u */,
+				22CEC06418B796920031DB99 /* Main.storyboard */,
+				22CEC06718B796920031DB99 /* ALiViewController.h */,
+				22CEC08A18B7ACE30031DB99 /* ALiViewController.m */,
+				22CEC09518B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.h */,
+				22CEC09618B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m */,
+				22CEC08C18B7B0C50031DB99 /* ALiNoDongleViewController.h */,
+				22CEC08D18B7B0C50031DB99 /* ALiNoDongleViewController.m */,
+				22B7F41518C4E40200ADD9B1 /* ALiveNavigationViewController.h */,
+				22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */,
+				22FCA11E18C097B70085CAC3 /* ALiLiveTableViewController.h */,
+				22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */,
+				22CEC0B118BCB7A70031DB99 /* ALiSettingsTableViewController.h */,
+				22CEC0B218BCB7A70031DB99 /* ALiSettingsTableViewController.m */,
+				2214528418C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.h */,
+				2214528518C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m */,
+				2214528A18C5DCC700CA0986 /* ALiWiFiNetworkTableViewCell.h */,
+				2214528B18C5DCC700CA0986 /* ALiWiFiNetworkTableViewCell.m */,
+				22B7F40518C4C17100ADD9B1 /* ALiApplicationViewController.h */,
+				22B7F40618C4C17100ADD9B1 /* ALiApplicationViewController.m */,
+				22B7F41218C4DCD000ADD9B1 /* ALiControlViewController.h */,
+				22B7F41318C4DCD000ADD9B1 /* ALiControlViewController.m */,
+				22CEC09E18BB5FD00031DB99 /* Images */,
 				22CEC06A18B796930031DB99 /* Images.xcassets */,
 				22CEC05918B796920031DB99 /* Supporting Files */,
 			);
@@ -225,6 +258,10 @@
 		22CEC09E18BB5FD00031DB99 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				22B7F40818C4CE2300ADD9B1 /* Control.png */,
+				22B7F40918C4CE2300ADD9B1 /* Control@2x.png */,
+				22B7F40118C4BDE800ADD9B1 /* Applications.png */,
+				22B7F40218C4BDE800ADD9B1 /* Applications@2x.png */,
 				22CEC0A718BB7B0D0031DB99 /* Playback.png */,
 				22CEC0A818BB7B0D0031DB99 /* Playback@2x.png */,
 				22CEC0A518BB66CA0031DB99 /* Live@2x.png */,
@@ -325,13 +362,17 @@
 			files = (
 				22CEC0AA18BB7B0D0031DB99 /* Playback@2x.png in Resources */,
 				22FCA11A18C096C20085CAC3 /* Abilis.m3u in Resources */,
+				22B7F40A18C4CE2300ADD9B1 /* Control.png in Resources */,
 				22CEC0A118BB5FD00031DB99 /* Settings.png in Resources */,
+				22B7F40418C4BDE800ADD9B1 /* Applications@2x.png in Resources */,
 				22FCA11B18C096C20085CAC3 /* Cable-Demo.m3u in Resources */,
+				22B7F40318C4BDE800ADD9B1 /* Applications.png in Resources */,
 				22CEC06B18B796930031DB99 /* Images.xcassets in Resources */,
 				22FCA11C18C096C20085CAC3 /* mux_fr2.m3u in Resources */,
 				22CEC0A218BB5FD00031DB99 /* Settings@2x.png in Resources */,
 				22CEC0A418BB65D70031DB99 /* Live.png in Resources */,
 				22CEC05D18B796920031DB99 /* InfoPlist.strings in Resources */,
+				22B7F40B18C4CE2300ADD9B1 /* Control@2x.png in Resources */,
 				22CEC06618B796920031DB99 /* Main.storyboard in Resources */,
 				22CEC0A918BB7B0D0031DB99 /* Playback.png in Resources */,
 				22CEC0A618BB66CA0031DB99 /* Live@2x.png in Resources */,
@@ -357,14 +398,19 @@
 				22CEC08E18B7B0C50031DB99 /* ALiNoDongleViewController.m in Sources */,
 				22CEC08918B798A90031DB99 /* GCDAsyncUdpSocket.m in Sources */,
 				22CEC0B018BC9CF30031DB99 /* ALiJSONCmd.m in Sources */,
+				2214528918C5D65900CA0986 /* ALiWiFiNetwork.m in Sources */,
 				22FCA12018C097B70085CAC3 /* ALiLiveTableViewController.m in Sources */,
 				22FCA12618C0BD1E0085CAC3 /* ALiM3uItem.m in Sources */,
 				22CEC09718B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m in Sources */,
 				22CEC05F18B796920031DB99 /* main.m in Sources */,
-				22CEC09D18B7C1050031DB99 /* ALiDongleDashboardTabBarController.m in Sources */,
+				2214528618C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m in Sources */,
+				22B7F40718C4C17100ADD9B1 /* ALiApplicationViewController.m in Sources */,
 				22CEC0AD18BB9E320031DB99 /* ALiDongle.m in Sources */,
 				22FCA12318C0994F0085CAC3 /* ALiM3uParser.m in Sources */,
+				22B7F41418C4DCD000ADD9B1 /* ALiControlViewController.m in Sources */,
+				2214528C18C5DCC700CA0986 /* ALiWiFiNetworkTableViewCell.m in Sources */,
 				22CEC08B18B7ACE30031DB99 /* ALiViewController.m in Sources */,
+				22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */,
 				22CEC06318B796920031DB99 /* ALiAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

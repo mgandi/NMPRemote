@@ -1,18 +1,18 @@
 //
-//  ALiNoDongleViewController.m
+//  ALiveNavigationViewController.m
 //  NMPRemote
 //
-//  Created by Abilis Systems on 21/02/14.
+//  Created by Abilis Systems on 03/03/14.
 //  Copyright (c) 2014 Abilis Systems. All rights reserved.
 //
 
-#import "ALiNoDongleViewController.h"
+#import "ALiveNavigationViewController.h"
 
-@interface ALiNoDongleViewController ()
+@interface ALiveNavigationViewController ()
 
 @end
 
-@implementation ALiNoDongleViewController
+@implementation ALiveNavigationViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -26,19 +26,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+	// Do any additional setup after loading the view
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
--(IBAction)retry:(id)sender
-{
-    /* Dismiss segue */
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

@@ -19,6 +19,7 @@
 - (void)deviceInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict;
 - (void)deviceWifiInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict;
 - (void)deviceWifiChannelInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict;
+- (void)deviceWifiListInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict;
 @end
 
 @interface ALiDongle : NSObject
@@ -29,16 +30,27 @@
 
 - (id)init;
 
-- (void)queryInformation:(Boolean)encode message:(NSString *)message;
+- (void)queryInformationAsync:(Boolean)encode message:(NSString *)message;
+- (NSDictionary *)queryInformationSync:(Boolean)encode message:(NSString *)message;
 - (void)sendCommand:(Boolean)encode message:(NSString *)message;
+
+- (Boolean)checkAppVersionMatch;
 
 - (void)getAppVersionInfo;
 - (void)getDeviceInfo;
 - (void)getDeviceWifiInfo;
 - (void)getDeviceWifiChannelInfo;
+- (void)getDeviceWifiIsScanningInfo;
+- (void)getDeviceWifiListInfo;
+- (void)connectToWifi:(NSString *)ssid protection:(NSString *)protection password:(NSString *)password hidden:(BOOL)hidden;
 
 - (void)playback:(NSString *)url;
 - (void)stopPlayback;
+- (void)switchToMainpage;
+- (void)switchToIpla;
+- (void)switchToYoutube;
+- (void)switchToWebpage:(NSString *)url;
+- (void)emulateKey:(NSInteger)code;
 
 + (NSString *)base64String:(NSString *)str;
 
