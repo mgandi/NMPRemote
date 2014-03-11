@@ -8,7 +8,7 @@
 
 #import "ALiWiFiNetworksTableViewController.h"
 #import "ALiWiFiNetwork.h"
-#import "ALiWiFiNetworkTableViewCell.h"
+#import "ALiWiFiNetworkPasswordTableViewController.h"
 
 @interface ALiWiFiNetworksTableViewController ()
 
@@ -17,6 +17,7 @@
 @implementation ALiWiFiNetworksTableViewController
 {
     NSMutableArray *wifiNetworks;
+    UIActivityIndicatorView *activityIndicatorView;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -32,6 +33,8 @@
 {
     [super viewDidLoad];
     wifiNetworks = [NSMutableArray arrayWithCapacity:0];
+    activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicatorView.hidesWhenStopped = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -72,34 +75,66 @@
 
 #pragma mark - Table view data source
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return @"CHOOSE A NETWORK...";
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
+    if (sectionTitle == nil) {
+        return nil;
+    }
+    
+    /*
+    // Create label with section title
+    UILabel *label = [[UILabel alloc] init];
+    label.frame = CGRectMake(15, 10, 300, 20);
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor colorWithHue:171.0/360.0 saturation:1.0 brightness:0.52 alpha:1.0];
+    label.shadowColor = [UIColor whiteColor];
+    label.shadowOffset = CGSizeMake(0.0, 0.0);
+    label.font = [UIFont boldSystemFontOfSize:16];
+    label.text = sectionTitle;
+    */
+    
+    [activityIndicatorView startAnimating];
+    
+    // Create header view and add label as a subview
+    // you could also just return the label (instead of making a new view and adding the label as subview. With the view you have more flexibility to make a background color or different paddings
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 20)];
+    [view addSubview:activityIndicatorView];
+    return view;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
     return [wifiNetworks count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ALiWiFiNetworkTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"WiFiNetworkCell"];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"WiFiNetworkCell"];
     
     ALiWiFiNetwork *wifiNetwork = wifiNetworks[indexPath.row];
-    cell.ssid.text = wifiNetwork.ssid;
-    cell.protect.text = [NSString stringWithFormat:@"Protect: %@", wifiNetwork.protection];
-    cell.strength.text = [NSString stringWithFormat:@"Strength: %ld", wifiNetwork.strength];
+    cell.textLabel.text = wifiNetwork.ssid;
     
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    ALiWiFiNetwork *wifiNetwork = wifiNetworks[indexPath.row];
-    [self.dongle connectToWifi:wifiNetwork.ssid protection:wifiNetwork.protection password:@"satipnet" hidden:false];
+    if ([segue.identifier isEqualToString:@"WiFiNetworkPasswordSegue"]) {
+        UINavigationController *nav = segue.destinationViewController;
+        ALiWiFiNetworkPasswordTableViewController *password = (ALiWiFiNetworkPasswordTableViewController *)[nav viewControllers][0];
+        password.dongle = _dongle;
+        password.wifiNetwork = wifiNetworks[[[[password tableView] indexPathForSelectedRow] row]];
+    }
 }
 
 #pragma mark - ALi Dongle delegate
@@ -124,8 +159,11 @@
 {
     NSLog(@"Received Wi-Fi Networks List");
     
+    [activityIndicatorView stopAnimating];
     [wifiNetworks removeAllObjects];
+    [[self tableView] reloadData];
     NSArray *wifiList = [dict valueForKey:@"list"];
+    NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:0];
     for (id wifi in wifiList) {
         ALiWiFiNetwork *wifiNetwork = [[ALiWiFiNetwork alloc] init];
         wifiNetwork.ssid = [wifi valueForKey:@"ssid"];
@@ -133,8 +171,11 @@
         wifiNetwork.strength = [[wifi valueForKey:@"strength"] longValue];
         wifiNetwork.status = [[wifi valueForKey:@"status"] intValue];
         [wifiNetworks addObject:wifiNetwork];
+        
+        [indexPaths addObject:[NSIndexPath indexPathForRow:[wifiNetworks indexOfObject:wifiNetwork] inSection:0]];
     }
-    [[self tableView] reloadData];
+    
+    [[self tableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 @end
