@@ -49,6 +49,7 @@
 		22FCA12018C097B70085CAC3 /* ALiLiveTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */; };
 		22FCA12318C0994F0085CAC3 /* ALiM3uParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */; };
 		22FCA12618C0BD1E0085CAC3 /* ALiM3uItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */; };
+		E03DF1A918D1FB10008E7BA0 /* ALiSSDPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +125,8 @@
 		22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiM3uParser.m; sourceTree = "<group>"; };
 		22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiM3uItem.h; path = ../ALiM3uItem.h; sourceTree = "<group>"; };
 		22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiM3uItem.m; path = ../ALiM3uItem.m; sourceTree = "<group>"; };
+		E03DF1A718D1FB10008E7BA0 /* ALiSSDPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSSDPClient.h; sourceTree = "<group>"; };
+		E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSSDPClient.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +200,8 @@
 				22CEC08818B798A90031DB99 /* GCDAsyncUdpSocket.m */,
 				22CEC06118B796920031DB99 /* ALiAppDelegate.h */,
 				22CEC06218B796920031DB99 /* ALiAppDelegate.m */,
+				E03DF1A718D1FB10008E7BA0 /* ALiSSDPClient.h */,
+				E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */,
 				22FCA11D18C096C90085CAC3 /* m3u */,
 				22CEC06418B796920031DB99 /* Main.storyboard */,
 				22CEC06718B796920031DB99 /* ALiViewController.h */,
@@ -404,6 +409,7 @@
 				22FCA12618C0BD1E0085CAC3 /* ALiM3uItem.m in Sources */,
 				22CEC09718B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m in Sources */,
 				22CEC05F18B796920031DB99 /* main.m in Sources */,
+				E03DF1A918D1FB10008E7BA0 /* ALiSSDPClient.m in Sources */,
 				2214528618C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m in Sources */,
 				22B7F40718C4C17100ADD9B1 /* ALiApplicationViewController.m in Sources */,
 				22CEC0AD18BB9E320031DB99 /* ALiDongle.m in Sources */,
