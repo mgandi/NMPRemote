@@ -1,105 +1,105 @@
 #EXTM3U
 
 #EXTINF:0,0. D8
-http://192.168.19.234/?msys=dvbt&bw=8&freq=474&pids=0,110,120,130,131,140,141,170
+http://0.0.0.0/?msys=dvbt&bw=8&freq=474&pids=0,110,120,130,131,140,141,170
 
 #EXTINF:0,0. BFM TV
-http://192.168.19.234/?msys=dvbt&bw=8&freq=474&pids=0,310,320,330,340
+http://0.0.0.0/?msys=dvbt&bw=8&freq=474&pids=0,310,320,330,340
 
 #EXTINF:0,0. i>TELE
-http://192.168.19.234/?msys=dvbt&bw=8&freq=474&pids=0,410,420,430,440,470
+http://0.0.0.0/?msys=dvbt&bw=8&freq=474&pids=0,410,420,430,440,470
 
 #EXTINF:0,0. D17
-http://192.168.19.234/?msys=dvbt&bw=8&freq=474&pids=0,510,520,530,531,540,541,545,570
+http://0.0.0.0/?msys=dvbt&bw=8&freq=474&pids=0,510,520,530,531,540,541,545,570
 
 #EXTINF:0,0. Gulli
-http://192.168.19.234/?msys=dvbt&bw=8&freq=474&pids=0,610,620,630,631,640,641
+http://0.0.0.0/?msys=dvbt&bw=8&freq=474&pids=0,610,620,630,631,640,641
 
 #EXTINF:0,0. France 4
-http://192.168.19.234/?msys=dvbt&bw=8&freq=474&pids=0,710,720,730,731,740,741,770,771,772
+http://0.0.0.0/?msys=dvbt&bw=8&freq=474&pids=0,710,720,730,731,740,741,770,771,772
 
 #EXTINF:0,0. TF1
-http://192.168.19.234/?msys=dvbt&bw=8&freq=498&pids=0,100,120,130,131,133,140,150,151
+http://0.0.0.0/?msys=dvbt&bw=8&freq=498&pids=0,100,120,130,131,133,140,150,151
 
 #EXTINF:0,0. NRJ12
-http://192.168.19.234/?msys=dvbt&bw=8&freq=498&pids=0,210,220,230,232,233,240,250,251,270,271
+http://0.0.0.0/?msys=dvbt&bw=8&freq=498&pids=0,210,220,230,232,233,240,250,251,270,271
 
 #EXTINF:0,0. LCI
-http://192.168.19.234/?msys=dvbt&bw=8&freq=498&pids=0,300,320,330
+http://0.0.0.0/?msys=dvbt&bw=8&freq=498&pids=0,300,320,330
 
 #EXTINF:0,0. Eurosport 
-http://192.168.19.234/?msys=dvbt&bw=8&freq=498&pids=0,400,420,430
+http://0.0.0.0/?msys=dvbt&bw=8&freq=498&pids=0,400,420,430
 
 #EXTINF:0,0. TF6
-http://192.168.19.234/?msys=dvbt&bw=8&freq=498&pids=0,500,520,530
+http://0.0.0.0/?msys=dvbt&bw=8&freq=498&pids=0,500,520,530
 
 #EXTINF:0,0. TMC
-http://192.168.19.234/?msys=dvbt&bw=8&freq=498&pids=0,600,620,630,631,633,650,651
+http://0.0.0.0/?msys=dvbt&bw=8&freq=498&pids=0,600,620,630,631,633,650,651
 
 #EXTINF:0,0. ARTE
-http://192.168.19.234/?msys=dvbt&bw=8&freq=498&pids=0,700,720,730,731,732,733,740,750,751,775
+http://0.0.0.0/?msys=dvbt&bw=8&freq=498&pids=0,700,720,730,731,732,733,740,750,751,775
 
 #EXTINF:0,0. SRF 1
-http://192.168.19.234/?msys=dvbt&bw=8&freq=578&pids=0,400,32,80,81,160
+http://0.0.0.0/?msys=dvbt&bw=8&freq=578&pids=0,400,32,80,81,160
 
 #EXTINF:0,0. RTS Un
-http://192.168.19.234/?msys=dvbt&bw=8&freq=578&pids=0,401,35,84,85,161
+http://0.0.0.0/?msys=dvbt&bw=8&freq=578&pids=0,401,35,84,85,161
 
 #EXTINF:0,0. RTS Deux
-http://192.168.19.234/?msys=dvbt&bw=8&freq=578&pids=0,404,44,96,97,164
+http://0.0.0.0/?msys=dvbt&bw=8&freq=578&pids=0,404,44,96,97,164
 
 #EXTINF:0,0. RSI LA 1
-http://192.168.19.234/?msys=dvbt&bw=8&freq=578&pids=0,402,38,88,89,162
+http://0.0.0.0/?msys=dvbt&bw=8&freq=578&pids=0,402,38,88,89,162
 
 #EXTINF:0,0. France 2
-http://192.168.19.234/?msys=dvbt&bw=8&freq=666&pids=0,110,120,130,131,132,140,141,170,171
+http://0.0.0.0/?msys=dvbt&bw=8&freq=666&pids=0,110,120,130,131,132,140,141,170,171
 
 #EXTINF:0,0. France 5
-http://192.168.19.234/?msys=dvbt&bw=8&freq=666&pids=0,310,320,330,331,340,370,371,372
+http://0.0.0.0/?msys=dvbt&bw=8&freq=666&pids=0,310,320,330,331,340,370,371,372
 
 #EXTINF:0,0. France O
-http://192.168.19.234/?msys=dvbt&bw=8&freq=666&pids=0,510,520,530,540,570,571,572
+http://0.0.0.0/?msys=dvbt&bw=8&freq=666&pids=0,510,520,530,540,570,571,572
 
 #EXTINF:0,0. LCP
-http://192.168.19.234/?msys=dvbt&bw=8&freq=666&pids=0,610,620,630,640,670
+http://0.0.0.0/?msys=dvbt&bw=8&freq=666&pids=0,610,620,630,640,670
 
 #EXTINF:0,0. Fr3 Rhone
-http://192.168.19.234/?msys=dvbt&bw=8&freq=666&pids=0,210,220,230,231,240,270,271
+http://0.0.0.0/?msys=dvbt&bw=8&freq=666&pids=0,210,220,230,231,240,270,271
 
 #EXTINF:0,0. Fr3 Alpes
-http://192.168.19.234/?msys=dvbt&bw=8&freq=666&pids=0,710,720,730,731,740,770
+http://0.0.0.0/?msys=dvbt&bw=8&freq=666&pids=0,710,720,730,731,740,770
 
 #EXTINF:0,0. TV8 MONT BLANC
-http://192.168.19.234/?msys=dvbt&bw=8&freq=674&pids=0,710,720,730
+http://0.0.0.0/?msys=dvbt&bw=8&freq=674&pids=0,710,720,730
 
 #EXTINF:0,0. LemanBleu
-http://192.168.19.234/?msys=dvbt&bw=8&freq=706&pids=0,256,259,260,261
+http://0.0.0.0/?msys=dvbt&bw=8&freq=706&pids=0,256,259,260,261
 
 #EXTINF:0,0. Rouge TV
-http://192.168.19.234/?msys=dvbt&bw=8&freq=706&pids=0,512,515,516
+http://0.0.0.0/?msys=dvbt&bw=8&freq=706&pids=0,512,515,516
 
 #EXTINF:0,0. M6
-http://192.168.19.234/?msys=dvbt&bw=8&freq=746&pids=0,110,120,130,131,132,141,142
+http://0.0.0.0/?msys=dvbt&bw=8&freq=746&pids=0,110,120,130,131,132,141,142
 
 #EXTINF:0,0. W9
-http://192.168.19.234/?msys=dvbt&bw=8&freq=746&pids=0,210,220,230,231,232,241,242
+http://0.0.0.0/?msys=dvbt&bw=8&freq=746&pids=0,210,220,230,231,232,241,242
 
 #EXTINF:0,0. NT1
-http://192.168.19.234/?msys=dvbt&bw=8&freq=746&pids=0,310,320,330,331,340,341
+http://0.0.0.0/?msys=dvbt&bw=8&freq=746&pids=0,310,320,330,331,340,341
 
 #EXTINF:0,0. PARIS PREMIERE
-http://192.168.19.234/?msys=dvbt&bw=8&freq=746&pids=0,410,420,430,6599
+http://0.0.0.0/?msys=dvbt&bw=8&freq=746&pids=0,410,420,430,6599
 
 #EXTINF:0,0. ARTE HD
-http://192.168.19.234/?msys=dvbt&bw=8&freq=746&pids=0,710,720,730,731,732,733,740,741,742,770
+http://0.0.0.0/?msys=dvbt&bw=8&freq=746&pids=0,710,720,730,731,732,733,740,741,742,770
 
 #EXTINF:0,0. TF1 HD
-http://192.168.19.234/?msys=dvbt&bw=8&freq=770&pids=0,110,120,130,131,132,140,141,170
+http://0.0.0.0/?msys=dvbt&bw=8&freq=770&pids=0,110,120,130,131,132,140,141,170
 
 #EXTINF:0,0. France 2 HD
-http://192.168.19.234/?msys=dvbt&bw=8&freq=770&pids=0,210,220,230,231,232,240,241,270,271,272
+http://0.0.0.0/?msys=dvbt&bw=8&freq=770&pids=0,210,220,230,231,232,240,241,270,271,272
 
 #EXTINF:0,0. M6HD
-http://192.168.19.234/?msys=dvbt&bw=8&freq=770&pids=0,310,320,330,331,332,340,341,370,371,372
+http://0.0.0.0/?msys=dvbt&bw=8&freq=770&pids=0,310,320,330,331,332,340,341,370,371,372
 
 

@@ -11,19 +11,21 @@
 
 @implementation ALiSSDPClient
 {
-    GCDAsyncUdpSocket *udpSocket;
+    GCDAsyncUdpSocket *udpSocket, *ssdpSocket;
 }
 
 - (id)init
 {
-    NSError *error;
     udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     [udpSocket enableBroadcast:YES error:nil];
-    [udpSocket bindToPort:1900 error:nil];
-    if (![udpSocket joinMulticastGroup:@"239.255.255.250" error:&error]) {
-        NSLog(@"Failed joining multicast group: %@", error);
-    }
+    [udpSocket bindToPort:0 error:nil];
     /*BOOL res =*/ [udpSocket beginReceiving:nil];
+    
+    ssdpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [ssdpSocket enableBroadcast:YES error:nil];
+    [ssdpSocket bindToPort:1900 error:nil];
+    [ssdpSocket joinMulticastGroup:@"239.255.255.250" error:nil];
+    /*BOOL res =*/ [ssdpSocket beginReceiving:nil];
     
     return self;
 }
@@ -70,9 +72,47 @@
       fromAddress:(NSData *)address
 withFilterContext:(id)filterContext
 {
-    NSString *name = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-    NSString *addr = [[GCDAsyncUdpSocket class] hostFromAddress:address];
-    NSLog(@"didReceiveData %@ from address %@", name, addr);
+    // Extract received data
+    NSString *dat = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    
+    // Allocate new device resource
+    ALiSSDPDevice *device = [[ALiSSDPDevice alloc] init];
+    
+    // Check if the received message is an SSDP search response or an SSDP notify
+    if ([dat hasPrefix:@"HTTP/1.1 200 OK"]) {
+        device.requestLine = @"HTTP/1.1 200 OK";
+    } else if ([dat hasPrefix:@"NOTIFY * HTTP/1.1"]) {
+        device.requestLine = @"NOTIFY * HTTP/1.1";
+    } else {
+        return;
+    }
+    
+    // Make NSDictionnary of header fields
+    NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithCapacity:0];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([\\w.-]+):\\s?(.*)"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:nil];
+    [regex enumerateMatchesInString:dat options:0 range:NSMakeRange(0, [dat length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+        [arguments setObject:[dat substringWithRange:[match rangeAtIndex:2]] forKey:[dat substringWithRange:[match rangeAtIndex:1]]];
+    }];
+    
+    // Populate device resource and call appropriate callback
+    device.address = [[GCDAsyncUdpSocket class] hostFromAddress:address];
+    device.arguments = arguments;
+    if ([device.requestLine isEqualToString:@"NOTIFY * HTTP/1.1"]) {
+        device.nts = [arguments objectForKey:@"NTS"];
+        if ([device.nts isEqualToString:@"ssdp:alive"]) {
+            device.urn = [arguments objectForKey:@"NT"];
+            [_delegate SSDPDeviceJoin:self device:device];
+        } else if ([device.nts isEqualToString:@"ssdp:byebye"]) {
+            device.urn = [arguments objectForKey:@"NT"];
+            [_delegate SSDPDeviceLeft:self device:device];
+        }
+    } else if ([device.requestLine isEqualToString:@"HTTP/1.1 200 OK"]) {
+        device.urn = [arguments objectForKey:@"ST"];
+        [_delegate foundSSDPDevice:self device:device];
+    }
+    
 }
 
 - (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error

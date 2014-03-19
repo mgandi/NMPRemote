@@ -37,15 +37,19 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    self.dongle.delegate = self;
-    [self.dongle getDeviceInfo];
-    [self.dongle getDeviceWifiInfo];
-    [self.dongle getDeviceWifiChannelInfo];
+    _dongle.delegate = self;
+    [_dongle getDeviceInfo];
+    [_dongle getDeviceWifiInfo];
+    [_dongle getDeviceWifiChannelInfo];
+    
+    // Set Live Stream Server detail
+    if (_dongle.liveServer != nil)
+        self.liveServerInformationDetail.text = _dongle.liveServer.getFriendlyName;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    self.dongle.delegate = nil;
+    _dongle.delegate = nil;
 }
 
 #pragma mark - Table View delegate
@@ -89,7 +93,11 @@
 {
     if ([segue.identifier isEqualToString:@"WiFiNetworksSegue"]) {
         ALiWiFiNetworksTableViewController *wiFiNetworksTableViewController = segue.destinationViewController;
-        wiFiNetworksTableViewController.dongle = self.dongle;
+        wiFiNetworksTableViewController.dongle = _dongle;
+    } else if ([segue.identifier isEqualToString:@"LiveStreamServersSegue"]) {
+        ALiLiveStreamserversTableViewController *liveStreamSeversTableViewController = segue.destinationViewController;
+        liveStreamSeversTableViewController.delegate = self;
+        
     }
 }
 
@@ -138,6 +146,14 @@
 
 - (void)deviceWifiListInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
 {
+}
+
+#pragma mark - ALi Live Stream Server Table View Controller Delegate
+
+- (void)serverSelected:(ALiSatipServer *)liveServer
+{
+    _dongle.liveServer = liveServer;
+    self.liveServerInformationDetail.text = _dongle.liveServer.getFriendlyName;
 }
 
 @end

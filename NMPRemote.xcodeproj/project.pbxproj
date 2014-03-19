@@ -10,6 +10,10 @@
 		2214528618C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528518C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m */; };
 		2214528918C5D65900CA0986 /* ALiWiFiNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */; };
 		2214528F18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528E18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m */; };
+		227F9F4218D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */; };
+		227F9F4518D8912600C4C9F8 /* ALiSSDPDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */; };
+		227F9F4818D8955700C4C9F8 /* ALiSatipServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */; };
+		227F9F4A18D9998F00C4C9F8 /* Background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 227F9F4918D9998F00C4C9F8 /* Background@2x.png */; };
 		22B7F40318C4BDE800ADD9B1 /* Applications.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40118C4BDE800ADD9B1 /* Applications.png */; };
 		22B7F40418C4BDE800ADD9B1 /* Applications@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40218C4BDE800ADD9B1 /* Applications@2x.png */; };
 		22B7F40718C4C17100ADD9B1 /* ALiApplicationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F40618C4C17100ADD9B1 /* ALiApplicationViewController.m */; };
@@ -69,6 +73,13 @@
 		2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetwork.m; sourceTree = "<group>"; };
 		2214528D18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiWiFiNetworkPasswordTableViewController.h; sourceTree = "<group>"; };
 		2214528E18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetworkPasswordTableViewController.m; sourceTree = "<group>"; };
+		227F9F4018D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiLiveStreamserversTableViewController.h; sourceTree = "<group>"; };
+		227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiLiveStreamserversTableViewController.m; sourceTree = "<group>"; };
+		227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSSDPDevice.h; sourceTree = "<group>"; };
+		227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSSDPDevice.m; sourceTree = "<group>"; };
+		227F9F4618D8955700C4C9F8 /* ALiSatipServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSatipServer.h; sourceTree = "<group>"; };
+		227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSatipServer.m; sourceTree = "<group>"; };
+		227F9F4918D9998F00C4C9F8 /* Background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Background@2x.png"; sourceTree = "<group>"; };
 		22B7F40118C4BDE800ADD9B1 /* Applications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Applications.png; sourceTree = "<group>"; };
 		22B7F40218C4BDE800ADD9B1 /* Applications@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Applications@2x.png"; sourceTree = "<group>"; };
 		22B7F40518C4C17100ADD9B1 /* ALiApplicationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiApplicationViewController.h; path = Images/ALiApplicationViewController.h; sourceTree = "<group>"; };
@@ -202,6 +213,10 @@
 				22CEC06218B796920031DB99 /* ALiAppDelegate.m */,
 				E03DF1A718D1FB10008E7BA0 /* ALiSSDPClient.h */,
 				E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */,
+				227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */,
+				227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */,
+				227F9F4618D8955700C4C9F8 /* ALiSatipServer.h */,
+				227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */,
 				22FCA11D18C096C90085CAC3 /* m3u */,
 				22CEC06418B796920031DB99 /* Main.storyboard */,
 				22CEC06718B796920031DB99 /* ALiViewController.h */,
@@ -220,6 +235,8 @@
 				2214528518C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m */,
 				2214528D18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.h */,
 				2214528E18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m */,
+				227F9F4018D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.h */,
+				227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */,
 				22B7F40518C4C17100ADD9B1 /* ALiApplicationViewController.h */,
 				22B7F40618C4C17100ADD9B1 /* ALiApplicationViewController.m */,
 				22B7F41218C4DCD000ADD9B1 /* ALiControlViewController.h */,
@@ -263,6 +280,7 @@
 		22CEC09E18BB5FD00031DB99 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				227F9F4918D9998F00C4C9F8 /* Background@2x.png */,
 				22B7F40818C4CE2300ADD9B1 /* Control.png */,
 				22B7F40918C4CE2300ADD9B1 /* Control@2x.png */,
 				22B7F40118C4BDE800ADD9B1 /* Applications.png */,
@@ -373,6 +391,7 @@
 				22FCA11B18C096C20085CAC3 /* Cable-Demo.m3u in Resources */,
 				22B7F40318C4BDE800ADD9B1 /* Applications.png in Resources */,
 				22CEC06B18B796930031DB99 /* Images.xcassets in Resources */,
+				227F9F4A18D9998F00C4C9F8 /* Background@2x.png in Resources */,
 				22FCA11C18C096C20085CAC3 /* mux_fr2.m3u in Resources */,
 				22CEC0A218BB5FD00031DB99 /* Settings@2x.png in Resources */,
 				22CEC0A418BB65D70031DB99 /* Live.png in Resources */,
@@ -402,11 +421,13 @@
 				22CEC0B318BCB7A70031DB99 /* ALiSettingsTableViewController.m in Sources */,
 				2214528F18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m in Sources */,
 				22CEC08E18B7B0C50031DB99 /* ALiNoDongleViewController.m in Sources */,
+				227F9F4518D8912600C4C9F8 /* ALiSSDPDevice.m in Sources */,
 				22CEC08918B798A90031DB99 /* GCDAsyncUdpSocket.m in Sources */,
 				22CEC0B018BC9CF30031DB99 /* ALiJSONCmd.m in Sources */,
 				2214528918C5D65900CA0986 /* ALiWiFiNetwork.m in Sources */,
 				22FCA12018C097B70085CAC3 /* ALiLiveTableViewController.m in Sources */,
 				22FCA12618C0BD1E0085CAC3 /* ALiM3uItem.m in Sources */,
+				227F9F4818D8955700C4C9F8 /* ALiSatipServer.m in Sources */,
 				22CEC09718B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.m in Sources */,
 				22CEC05F18B796920031DB99 /* main.m in Sources */,
 				E03DF1A918D1FB10008E7BA0 /* ALiSSDPClient.m in Sources */,
@@ -418,6 +439,7 @@
 				22CEC08B18B7ACE30031DB99 /* ALiViewController.m in Sources */,
 				22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */,
 				22CEC06318B796920031DB99 /* ALiAppDelegate.m in Sources */,
+				227F9F4218D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

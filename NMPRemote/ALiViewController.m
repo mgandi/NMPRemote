@@ -14,7 +14,6 @@
 #import "ALiLiveTableViewController.h"
 #import "ALiApplicationViewController.h"
 #import "ALiControlViewController.h"
-#import "ALiSSDPClient.h"
 
 
 @interface ALiViewController ()
@@ -35,13 +34,10 @@
     dongles = [NSMutableArray arrayWithCapacity:0];
     selectedDongle = nil;
     doSearchForDongle = true;
-    ALiSSDPClient *ssdpClient = [[ALiSSDPClient alloc] init];
-    [ssdpClient searchForDevices:@"urn:ses-com:device:SatIPServer:1"];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    /*
     if ((selectedDongle == nil) && (doSearchForDongle)) {
         [self searchForDongles];
     } else if (selectedDongle != nil) {
@@ -53,7 +49,6 @@
             // TODO: display error message
         }
     }
-     */
 }
 
 - (void)didReceiveMemoryWarning

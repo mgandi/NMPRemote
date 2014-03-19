@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ALiJSONCmd.h"
+#import "ALiSatipServer.h"
 
 #define APP_VERSION_MAJOR 1
 #define APP_VERSION_MINOR 6
@@ -27,6 +28,7 @@
 @property (nonatomic, weak) id <ALiDongleDelegate> delegate;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *address;
+@property (nonatomic, strong) ALiSatipServer *liveServer;
 
 - (id)init;
 

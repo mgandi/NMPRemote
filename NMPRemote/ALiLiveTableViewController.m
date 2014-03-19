@@ -90,11 +90,34 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    // Test if liver server is selected
+    if (_dongle.liveServer == nil) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No live stream server selected"
+                                                        message:@"Please select a live stream server in settings tab to watch live content"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    // Extract selected item
     ALiM3uItem *item = (m3uItems)[indexPath.row];
     
-    NSLog(@"Playback %@: connect to %@", item.name, item.url);
+    // Replace ip address with live stream server address=
+    NSString *ipaddress = [NSString stringWithFormat:@"http://%@", _dongle.liveServer.device.address];
+    NSMutableString *url = [NSMutableString stringWithString:item.url];
+    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"http://\\d+\\.\\d+\\.\\d+\\.\\d+"
+                                                                      options:NSRegularExpressionCaseInsensitive
+                                                                        error:nil];
+    [regex replaceMatchesInString:url options:0 range:NSMakeRange(0, [url length]) withTemplate:ipaddress];
     
-    [self.dongle playback:item.url];
+    // Display message that url playback is about to start
+    NSLog(@"Playback %@: connect to %@", item.name, url);
+    
+    // Playback url and enable stop button
+    [self.dongle playback:url];
     [self.stopBarButtonItem setEnabled:true];
 }
 

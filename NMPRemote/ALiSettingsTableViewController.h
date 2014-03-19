@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "ALiDongle.h"
+#import "ALiLiveStreamserversTableViewController.h"
 
-@interface ALiSettingsTableViewController : UITableViewController <ALiDongleDelegate>
+@interface ALiSettingsTableViewController : UITableViewController <ALiDongleDelegate, ALiLiveStreamserversDelegate>
 
 @property (nonatomic, strong) ALiDongle *dongle;
 @property (weak, nonatomic) IBOutlet UILabel *wifiNetworkDetail;

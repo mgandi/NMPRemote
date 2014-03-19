@@ -33,6 +33,9 @@
     /* Create network dispatch queue */
     network_queue = dispatch_queue_create("tw.com.ali.network", NULL);
     
+    // Initialize live server address to @""
+    _liveServer = nil;
+    
     return self;
 }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
         <!--Li View Controller-->
@@ -16,23 +16,33 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Searching for dongles on LAN..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8I2-ep-6pQ">
-                                <rect key="frame" x="38" y="215" width="245" height="21"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Background.png" translatesAutoresizingMaskIntoConstraints="NO" id="wg4-5c-Efd">
+                                <rect key="frame" x="0.0" y="66" width="320" height="320"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Searching for dongles on LAN..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uzb-5x-00e">
+                                <rect key="frame" x="38" y="287" width="245" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="WFH-mO-ZCz">
-                                <rect key="frame" x="150" y="244" width="20" height="20"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1oR-Ve-5la">
+                                <rect key="frame" x="150" y="315" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.52156862745098043" blue="0.4392156862745098" alpha="1" colorSpace="calibratedRGB"/>
-                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="wg4-5c-Efd" secondAttribute="centerY" id="3OH-qz-tNB"/>
+                            <constraint firstAttribute="centerY" secondItem="1oR-Ve-5la" secondAttribute="centerY" constant="-85" id="H6n-Uz-VJ3"/>
+                            <constraint firstAttribute="centerX" secondItem="Uzb-5x-00e" secondAttribute="centerX" id="VgG-9d-12y"/>
+                            <constraint firstAttribute="centerX" secondItem="1oR-Ve-5la" secondAttribute="centerX" id="ZZs-QX-Zdb"/>
+                            <constraint firstAttribute="centerX" secondItem="wg4-5c-Efd" secondAttribute="centerX" id="mWD-qv-5ee"/>
+                            <constraint firstAttribute="centerY" secondItem="Uzb-5x-00e" secondAttribute="centerY" constant="-57" id="w6o-Nb-eRt"/>
+                        </constraints>
                     </view>
                     <connections>
-                        <outlet property="indicator" destination="WFH-mO-ZCz" id="nkh-BB-Tpf"/>
+                        <outlet property="indicator" destination="1oR-Ve-5la" id="Fgt-zh-OuF"/>
                         <segue destination="fH4-xY-nSC" kind="modal" identifier="DongleSelectionSegue" id="rx2-p6-0Wi"/>
                         <segue destination="KfN-1e-Mey" kind="modal" identifier="DongleDashboard" modalTransitionStyle="crossDissolve" id="TNW-Jf-OTI"/>
                         <segue destination="Aog-xo-tj3" kind="modal" identifier="NoDongleSegue" modalTransitionStyle="coverVertical" id="rdY-1c-sTe"/>
@@ -249,11 +259,11 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Epf-Vc-OZu" detailTextLabel="7Ip-Vb-ZTR" style="IBUITableViewCellStyleSubtitle" id="woQ-ub-urg">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Epf-Vc-OZu" detailTextLabel="7Ip-Vb-ZTR" style="IBUITableViewCellStyleSubtitle" id="woQ-ub-urg">
                                         <rect key="frame" x="0.0" y="262" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="woQ-ub-urg" id="GuI-K6-Mhe">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Live Server Information" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Epf-Vc-OZu">
@@ -272,6 +282,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="1vz-i8-yLI" kind="push" identifier="LiveStreamServersSegue" id="LkJ-7W-Ovh"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -353,6 +366,58 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gre-yh-iNu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2905" y="39"/>
+        </scene>
+        <!--Li Live Streamservers Table View Controller - Live stream servers-->
+        <scene sceneID="uNS-48-3I4">
+            <objects>
+                <tableViewController id="1vz-i8-yLI" customClass="ALiLiveStreamserversTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="JEj-yh-pNE">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LiveStreamServerCell" textLabel="IrV-7A-xki" detailTextLabel="YbT-ql-ikE" style="IBUITableViewCellStyleSubtitle" id="a0v-NK-Njz">
+                                <rect key="frame" x="0.0" y="119" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="a0v-NK-Njz" id="Osv-KZ-ujV">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IrV-7A-xki">
+                                            <rect key="frame" x="15" y="3" width="34" height="22"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YbT-ql-ikE">
+                                            <rect key="frame" x="15" y="25" width="43" height="15"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="1vz-i8-yLI" id="SEW-sz-DrJ"/>
+                            <outlet property="delegate" destination="1vz-i8-yLI" id="FKa-V6-BmL"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Live stream servers" id="kVI-WY-gBf">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="1QT-kD-bbw">
+                            <connections>
+                                <action selector="refresh:" destination="1vz-i8-yLI" id="DzY-tk-MDd"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MQQ-m9-j5m" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3517" y="-699"/>
         </scene>
         <!--Li Wi Fi Networks Table View Controller - Wi-Fi Networks-->
         <scene sceneID="m5p-uh-FVB">
@@ -957,6 +1022,7 @@
     </scenes>
     <resources>
         <image name="Applications.png" width="30" height="30"/>
+        <image name="Background.png" width="320" height="320"/>
         <image name="Control.png" width="30" height="30"/>
         <image name="Live.png" width="30" height="30"/>
         <image name="Playback.png" width="30" height="30"/>
