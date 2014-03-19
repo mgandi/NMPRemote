@@ -983,10 +983,10 @@
             </objects>
             <point key="canvasLocation" x="2379" y="1628"/>
         </scene>
-        <!--Table View Controller - Playback-->
+        <!--Li Playback Table View Controller - Playback-->
         <scene sceneID="Moj-1M-1Ba">
             <objects>
-                <tableViewController id="wPo-yA-loc" sceneMemberID="viewController">
+                <tableViewController id="wPo-yA-loc" customClass="ALiPlaybackTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="YMj-ba-k2E">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1129,6 +1129,9 @@
                                                     <state key="normal" title="Play">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <connections>
+                                                        <action selector="play:" destination="wPo-yA-loc" eventType="touchUpInside" id="Yjx-9V-7uI"/>
+                                                    </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0gu-SQ-a6v">
                                                     <rect key="frame" x="216" y="7" width="33" height="30"/>
@@ -1136,6 +1139,9 @@
                                                     <state key="normal" title="Stop">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <connections>
+                                                        <action selector="stop:" destination="wPo-yA-loc" eventType="touchUpInside" id="9It-Uq-hcC"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                         </tableViewCellContentView>
@@ -1149,6 +1155,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Playback" id="MCw-TZ-brw"/>
+                    <connections>
+                        <outlet property="urlTextField" destination="z4t-k0-yYv" id="mie-NS-HgE"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="88g-7g-NmU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

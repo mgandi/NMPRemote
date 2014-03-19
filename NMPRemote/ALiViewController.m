@@ -14,6 +14,7 @@
 #import "ALiLiveTableViewController.h"
 #import "ALiApplicationViewController.h"
 #import "ALiControlViewController.h"
+#import "ALiPlaybackTableViewController.h"
 
 
 @interface ALiViewController ()
@@ -81,6 +82,11 @@
         UINavigationController *liveNavigationController = (UINavigationController *)[dongleDashboardTabBarController viewControllers][1];
         ALiLiveTableViewController *live = (ALiLiveTableViewController *)[liveNavigationController viewControllers][0];
         live.dongle = selectedDongle;
+        
+        // Retrieve instance of Playback Navigation Controller and setup its reference to selected dongle
+        UINavigationController *playbackNavigationController = (UINavigationController *)[dongleDashboardTabBarController viewControllers][2];
+        ALiPlaybackTableViewController *playback = (ALiPlaybackTableViewController *)[playbackNavigationController viewControllers][0];
+        playback.dongle = selectedDongle;
         
         // Retrieve instance of Application Navigation Controller and setup its reference to selected dongle
         UINavigationController *controlNavigationController = (UINavigationController *)[dongleDashboardTabBarController viewControllers][3];

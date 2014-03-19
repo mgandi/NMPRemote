@@ -14,6 +14,7 @@
 		227F9F4518D8912600C4C9F8 /* ALiSSDPDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */; };
 		227F9F4818D8955700C4C9F8 /* ALiSatipServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */; };
 		227F9F4A18D9998F00C4C9F8 /* Background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 227F9F4918D9998F00C4C9F8 /* Background@2x.png */; };
+		227F9F4D18D9A89800C4C9F8 /* ALiPlaybackTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4C18D9A89800C4C9F8 /* ALiPlaybackTableViewController.m */; };
 		22B7F40318C4BDE800ADD9B1 /* Applications.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40118C4BDE800ADD9B1 /* Applications.png */; };
 		22B7F40418C4BDE800ADD9B1 /* Applications@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40218C4BDE800ADD9B1 /* Applications@2x.png */; };
 		22B7F40718C4C17100ADD9B1 /* ALiApplicationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F40618C4C17100ADD9B1 /* ALiApplicationViewController.m */; };
@@ -80,6 +81,8 @@
 		227F9F4618D8955700C4C9F8 /* ALiSatipServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSatipServer.h; sourceTree = "<group>"; };
 		227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSatipServer.m; sourceTree = "<group>"; };
 		227F9F4918D9998F00C4C9F8 /* Background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Background@2x.png"; sourceTree = "<group>"; };
+		227F9F4B18D9A89800C4C9F8 /* ALiPlaybackTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPlaybackTableViewController.h; sourceTree = "<group>"; };
+		227F9F4C18D9A89800C4C9F8 /* ALiPlaybackTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiPlaybackTableViewController.m; sourceTree = "<group>"; };
 		22B7F40118C4BDE800ADD9B1 /* Applications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Applications.png; sourceTree = "<group>"; };
 		22B7F40218C4BDE800ADD9B1 /* Applications@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Applications@2x.png"; sourceTree = "<group>"; };
 		22B7F40518C4C17100ADD9B1 /* ALiApplicationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiApplicationViewController.h; path = Images/ALiApplicationViewController.h; sourceTree = "<group>"; };
@@ -229,6 +232,8 @@
 				22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */,
 				22FCA11E18C097B70085CAC3 /* ALiLiveTableViewController.h */,
 				22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */,
+				227F9F4B18D9A89800C4C9F8 /* ALiPlaybackTableViewController.h */,
+				227F9F4C18D9A89800C4C9F8 /* ALiPlaybackTableViewController.m */,
 				22CEC0B118BCB7A70031DB99 /* ALiSettingsTableViewController.h */,
 				22CEC0B218BCB7A70031DB99 /* ALiSettingsTableViewController.m */,
 				2214528418C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.h */,
@@ -434,6 +439,7 @@
 				2214528618C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m in Sources */,
 				22B7F40718C4C17100ADD9B1 /* ALiApplicationViewController.m in Sources */,
 				22CEC0AD18BB9E320031DB99 /* ALiDongle.m in Sources */,
+				227F9F4D18D9A89800C4C9F8 /* ALiPlaybackTableViewController.m in Sources */,
 				22FCA12318C0994F0085CAC3 /* ALiM3uParser.m in Sources */,
 				22B7F41418C4DCD000ADD9B1 /* ALiControlViewController.m in Sources */,
 				22CEC08B18B7ACE30031DB99 /* ALiViewController.m in Sources */,
