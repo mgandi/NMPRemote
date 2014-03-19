@@ -26,6 +26,7 @@
     NSMutableArray *dongles;
     ALiDongle *selectedDongle;
     bool doSearchForDongle;
+    bool searchingForDongles;
 }
 
 - (void)viewDidLoad
@@ -34,6 +35,7 @@
     dongles = [NSMutableArray arrayWithCapacity:0];
     selectedDongle = nil;
     doSearchForDongle = true;
+    searchingForDongles = false;
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -46,7 +48,9 @@
             // Present dongle navigation controller as a segue
             [self performSegueWithIdentifier:@"DongleDashboard" sender:self];
         } else {
-            // TODO: display error message
+            // Hide search label and activity indicator
+            [_searchLabel setHidden:YES];
+            [_indicator setHidden:YES];
         }
     }
 }
@@ -92,6 +96,10 @@
 
 - (void)searchForDongles
 {
+    // Display search label and activity indicator
+    [_searchLabel setHidden:NO];
+    [_indicator setHidden:NO];
+    
     [_indicator startAnimating];
     [dongles removeAllObjects];
     
@@ -106,12 +114,23 @@
     
     /* Start timer */
     [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(searchForDonglesTimeout) userInfo:nil repeats:FALSE];
+    
+    // Indicate that we've started to search for dongles
+    searchingForDongles = true;
 }
 
 - (void)searchForDonglesTimeout
 {
+    // Indicate that we are done searching for dongles
+    searchingForDongles = false;
+    
     [udpSocket close];
     [_indicator stopAnimating];
+    
+    // Hide search label and activity indicator
+    [_searchLabel setHidden:YES];
+    [_indicator setHidden:YES];
+    
     selectedDongle = nil;
     doSearchForDongle = true;
     
@@ -171,6 +190,16 @@ withFilterContext:(id)filterContext
 - (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error
 {
     NSLog(@"udpSocketDidClose %@", [error helpAnchor]);
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    if (!searchingForDongles) {
+        selectedDongle = nil;
+        doSearchForDongle = true;
+        [self searchForDongles];
+    }
 }
 
 @end

@@ -56,7 +56,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 35;
+    return 55;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
@@ -72,12 +72,12 @@
     
     // Create label with section title
     UILabel *label = [[UILabel alloc] init];
-    label.frame = CGRectMake(15, 10, 300, 20);
+    label.frame = CGRectMake(15, 30, 300, 20);
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [UIColor colorWithHue:171.0/360.0 saturation:1.0 brightness:0.52 alpha:1.0];
     label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(0.0, 0.0);
-    label.font = [UIFont boldSystemFontOfSize:16];
+    label.font = [UIFont systemFontOfSize:14];
     label.text = sectionTitle;
     
     // Create header view and add label as a subview

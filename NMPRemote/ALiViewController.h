@@ -12,5 +12,6 @@
 @interface ALiViewController : UIViewController <NSStreamDelegate, ALiDongleSelectionTableViewcontrollerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (weak, nonatomic) IBOutlet UILabel *searchLabel;
 
 @end

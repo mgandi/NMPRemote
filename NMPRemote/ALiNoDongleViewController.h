@@ -10,6 +10,8 @@
 
 @interface ALiNoDongleViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UIButton *retryButton;
+
 - (IBAction)retry:(id)sender;
 
 @end
