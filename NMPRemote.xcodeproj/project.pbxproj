@@ -12,6 +12,7 @@
 		2214528F18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528E18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m */; };
 		222C180E18DB243900372A41 /* ALiRTCPSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 222C180D18DB243900372A41 /* ALiRTCPSocket.m */; };
 		222C181118DB361D00372A41 /* ALiRTCPReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 222C181018DB361D00372A41 /* ALiRTCPReport.m */; };
+		222C181418DB3AA000372A41 /* ALiRTPSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 222C181318DB3AA000372A41 /* ALiRTPSocket.m */; };
 		227F9F4218D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */; };
 		227F9F4518D8912600C4C9F8 /* ALiSSDPDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */; };
 		227F9F4818D8955700C4C9F8 /* ALiSatipServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */; };
@@ -82,6 +83,8 @@
 		222C180D18DB243900372A41 /* ALiRTCPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTCPSocket.m; path = ../ALiRTCPSocket.m; sourceTree = "<group>"; };
 		222C180F18DB361D00372A41 /* ALiRTCPReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiRTCPReport.h; sourceTree = "<group>"; };
 		222C181018DB361D00372A41 /* ALiRTCPReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiRTCPReport.m; sourceTree = "<group>"; };
+		222C181218DB3AA000372A41 /* ALiRTPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiRTPSocket.h; sourceTree = "<group>"; };
+		222C181318DB3AA000372A41 /* ALiRTPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiRTPSocket.m; sourceTree = "<group>"; };
 		227F9F4018D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiLiveStreamserversTableViewController.h; sourceTree = "<group>"; };
 		227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiLiveStreamserversTableViewController.m; sourceTree = "<group>"; };
 		227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSSDPDevice.h; sourceTree = "<group>"; };
@@ -236,6 +239,8 @@
 				222C180D18DB243900372A41 /* ALiRTCPSocket.m */,
 				222C180F18DB361D00372A41 /* ALiRTCPReport.h */,
 				222C181018DB361D00372A41 /* ALiRTCPReport.m */,
+				222C181218DB3AA000372A41 /* ALiRTPSocket.h */,
+				222C181318DB3AA000372A41 /* ALiRTPSocket.m */,
 				227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */,
 				227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */,
 				227F9F4618D8955700C4C9F8 /* ALiSatipServer.h */,
@@ -465,6 +470,7 @@
 				22FCA12318C0994F0085CAC3 /* ALiM3uParser.m in Sources */,
 				22B7F41418C4DCD000ADD9B1 /* ALiControlViewController.m in Sources */,
 				22CEC08B18B7ACE30031DB99 /* ALiViewController.m in Sources */,
+				222C181418DB3AA000372A41 /* ALiRTPSocket.m in Sources */,
 				22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */,
 				22CEC06318B796920031DB99 /* ALiAppDelegate.m in Sources */,
 				E0EA80D518D9D4CA00CE00D7 /* ALiRTSPSession.m in Sources */,

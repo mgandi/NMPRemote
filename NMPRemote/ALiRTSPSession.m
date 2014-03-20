@@ -30,7 +30,7 @@ enum MessaageTypes {
     ALiRTCPSocket *rtcpSocket;
     
     // RTP Network
-    GCDAsyncUdpSocket *rtpSocket;
+    ALiRTPSocket *rtpSocket;
     
     // RTSP
     unsigned int cseq;
@@ -102,11 +102,8 @@ enum MessaageTypes {
     rtcpSocket.delegate = self;
     
     // Initialize RTP socket
-    rtpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
-    [rtpSocket bindToPort:_rtpClientPort error:nil];
-    _rtpClientPort = [rtpSocket localPort];
-    /*BOOL res =*/ [rtpSocket beginReceiving:nil];
-    
+    rtpSocket = [[ALiRTPSocket alloc] initWithPort:_rtpClientPort];
+    _rtpClientPort = [rtpSocket.socket localPort];
 }
 
 - (void)setup:(NSString *)url
@@ -329,40 +326,6 @@ enum MessaageTypes {
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sender withError:(NSError *)err
 {
 //    NSLog(@"rtspSocket socket disconnected");
-}
-
-#pragma mark - GCDAsyncUdpSocket delegate
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didConnectToAddress:(NSData *)address
-{
-    NSLog(@"didConnectToAddress");
-}
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError *)error
-{
-    NSLog(@"didNotConnect");
-}
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
-{
-    NSLog(@"didSendDataWithTag %ld", tag);
-}
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
-{
-    NSLog(@"didNotSendDataWithTag %ld", tag);
-}
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock
-   didReceiveData:(NSData *)data
-      fromAddress:(NSData *)address
-withFilterContext:(id)filterContext
-{
-}
-
-- (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error
-{
-    NSLog(@"udpSocketDidClose %@", [error helpAnchor]);
 }
 
 #pragma mark - RTCP Socket Delegate
