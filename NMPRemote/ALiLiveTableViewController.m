@@ -18,6 +18,7 @@
 @implementation ALiLiveTableViewController
 {
     NSMutableArray *m3uItems;
+    ALiRTSPSession *session;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -42,8 +43,11 @@
         NSLog(@"Nope there is no file");
     }
     
-    /* Parse file and get list of M3U items */
+    // Parse file and get list of M3U items
     m3uItems = [ALiM3uParser parse:path];
+    
+    // Init session
+    session = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -131,6 +135,7 @@
 
 - (IBAction)refresh:(id)sender
 {
+    // Url formatting
     ALiM3uItem *item = (m3uItems)[0];
     NSString *ipaddress = [NSString stringWithFormat:@"http://%@", _dongle.liveServer.device.address];
     NSMutableString *url = [NSMutableString stringWithString:item.url];
@@ -138,7 +143,10 @@
                                                                       options:NSRegularExpressionCaseInsensitive
                                                                         error:nil];
     [regex replaceMatchesInString:url options:0 range:NSMakeRange(0, [url length]) withTemplate:ipaddress];
-    ALiRTSPSession *session = [[ALiRTSPSession alloc] initWithServer:_dongle.liveServer url:url];
+    
+    
+    if (session == nil)
+        session = [[ALiRTSPSession alloc] initWithServer:_dongle.liveServer url:url];
     [session setup];
 }
 

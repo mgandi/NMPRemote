@@ -9,25 +9,44 @@
 #import "ALiRTSPSession.h"
 #import <dispatch/dispatch.h>
 #import "GCDAsyncSocket.h"
+#import "GCDAsyncUdpSocket.h"
+
+enum MessaageTypes {
+    SETUP = 1,
+    PLAY = 2,
+    OPTIONS = 3,
+    TEARDOWN = 4,
+    DESCRIBE = 5
+};
 
 @implementation ALiRTSPSession
 {
-    GCDAsyncSocket *input, *output;
-//    NSInputStream *input;
-//    NSOutputStream *output;
-    unsigned int cseq;
+    // RTSP Network
+    GCDAsyncSocket *rtspSocket;
     dispatch_queue_t socketQueue;
-    NSMutableArray *connectedSockets;
+    NSMutableData *rtspInputBuffer;
+    
+    // RTCP Network
+    ALiRTCPSocket *rtcpSocket;
+    
+    // RTP Network
+    GCDAsyncUdpSocket *rtpSocket;
+    
+    // RTSP
+    unsigned int cseq;
+    NSString *sessionID;
+    NSUInteger sessionTimeout;
+    NSUInteger streamID;
 }
 
 - (id)init
 {
-    return [self initWithServer:nil url:@"" rtpClientPort:45454 rtcpClientPort:45455 unicast:YES];
+    return [self initWithServer:nil url:@"" rtpClientPort:0 rtcpClientPort:0 unicast:YES];
 }
 
 - (id)initWithServer:(ALiSatipServer *)server url:(NSString *)url
 {
-    return [self initWithServer:server url:url rtpClientPort:45454 rtcpClientPort:45455 unicast:YES];
+    return [self initWithServer:server url:url rtpClientPort:0 rtcpClientPort:0 unicast:YES];
 }
 
 - (id)initWithServer:(ALiSatipServer *)server url:(NSString *)url rtpClientPort:(unsigned short)rtpClientPort rtcpClientPort:(unsigned short)rtcpClientPort unicast:(BOOL)unicast
@@ -47,6 +66,9 @@
     // Set unicast
     _unicast = unicast;
     
+    // Set session ID to nil
+    sessionID = nil;
+    
     // Initialize network communication
     [self initNetworkCommunication];
     
@@ -60,72 +82,41 @@
     // Initialize dispatch queue
     socketQueue = dispatch_queue_create("tw.com.ali.rtsp", NULL);
     
-    // Create our output GCDAsyncSocket instance.
+    // Create our rtspSocket GCDAsyncSocket instance.
 	// Notice that we give it the normal delegate AND a delegate queue.
 	// The socket will do all of its operations in a background queue,
 	// and you can tell it which thread/queue to invoke your delegate on.
-	output = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+	rtspSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
     
-    if (![output connectToHost:_server.device.address onPort:554 error:&error]) {
+    // Connect to host
+    if (![rtspSocket connectToHost:_server.device.address onPort:554 error:&error]) {
 		NSLog(@"Unable to connect to due to invalid configuration: %@", error);
 	}
     
-    // Setup our input socket.
-    // The socket will invoke our delegate methods using the usual delegate paradigm.
-    // However, it will invoke the delegate methods on a specified GCD delegate dispatch queue.
-    input = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+    // Initialize RTSP input buffer
+    rtspInputBuffer = [[NSMutableData alloc] initWithCapacity:0];
     
-    // Setup an array to store all accepted client connections
-    connectedSockets = [[NSMutableArray alloc] initWithCapacity:1];
+    // Initialize RTCP socket
+    rtcpSocket = [[ALiRTCPSocket alloc] initWithPort:_rtcpClientPort];
+    _rtcpClientPort = [rtcpSocket.socket localPort];
+    rtcpSocket.delegate = self;
     
-	if (![input acceptOnPort:0 error:&error]) {
-		NSLog(@"Error in acceptOnPort:error: -> %@", error);
-	}
+    // Initialize RTP socket
+    rtpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+    [rtpSocket bindToPort:_rtpClientPort error:nil];
+    _rtpClientPort = [rtpSocket localPort];
+    /*BOOL res =*/ [rtpSocket beginReceiving:nil];
     
-    /*
-    dispatch_async(socketQueue, ^{
-        CFReadStreamRef readStream;
-        CFWriteStreamRef writeStream;
-        
-        // Initialize sockets
-        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)[NSString stringWithFormat:@"%@", _server.device.address], 554, &readStream, &writeStream);
-        input = (__bridge NSInputStream *)readStream;
-        output = (__bridge NSOutputStream *)writeStream;
-        
-        // Start current queues run loop
-        [[NSRunLoop currentRunLoop] run];
-        
-        // Set delegate to self
-        [input setDelegate:self];
-        [output setDelegate:self];
-        
-        // schedule Socket to current run loop
-        [input scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        [output scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        
-        // Open sockets
-        [input open];
-        [output open];
-    });
-    */
+}
+
+- (void)setup:(NSString *)url
+{
+    _url = url;
+    [self setup];
 }
 
 - (void)setup
 {
-    /*
-    dispatch_async(socketQueue, ^{
-        // Build RTSP request
-        NSMutableString *request = [NSMutableString stringWithFormat:@"SETUP %@ RTSP/1.0\r\n", _url];
-        [request appendFormat:@"CSeq: %d\r\n", ++cseq];
-        [request appendFormat:@"Transport: RTP/AV;%@=%d-%d\r\n", (_unicast ? @"unicast;client_port" : @"multicast;port"), _rtpClientPort, _rtcpClientPort];
-        [request appendString:@"\r\n"];
-        
-        // Send request
-        NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
-        [output write:[data bytes] maxLength:[data length]];
-    });
-    */
-    
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"SETUP %@ RTSP/1.0\r\n", _url];
     [request appendFormat:@"CSeq: %d\r\n", ++cseq];
@@ -134,67 +125,193 @@
     
     // Send request
     NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
-    [output writeData:data withTimeout:-1.0 tag:0];
+    [rtspSocket writeData:data withTimeout:-1.0 tag:SETUP];
+    
+    // Start read data
+    [rtspSocket readDataWithTimeout:-1 buffer:rtspInputBuffer bufferOffset:0 tag:SETUP];
+}
+
+- (void)play:(NSString *)url
+{
+    _url = url;
+    [self play];
+}
+
+- (void)play
+{
+    // Build RTSP request
+    NSMutableString *request = [NSMutableString stringWithFormat:@"PLAY %@ RTSP/1.0\r\n", _url];
+    [request appendFormat:@"CSeq: %d\r\n", ++cseq];
+    [request appendFormat:@"Session: %@\r\n", sessionID];
+    [request appendString:@"\r\n"];
+    
+    // Send request
+    NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
+    [rtspSocket writeData:data withTimeout:-1.0 tag:PLAY];
+    
+    // Start read data
+    [rtspSocket readDataWithTimeout:-1 buffer:rtspInputBuffer bufferOffset:0 tag:PLAY];
+}
+
+- (void)options
+{
+    // Build RTSP request
+    NSMutableString *request = [NSMutableString stringWithFormat:@"OPTIONS %@ RTSP/1.0\r\n", _url];
+    [request appendFormat:@"CSeq: %d\r\n", ++cseq];
+    [request appendFormat:@"Session: %@\r\n", sessionID];
+    [request appendString:@"\r\n"];
+    
+    // Send request
+    NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
+    [rtspSocket writeData:data withTimeout:-1.0 tag:OPTIONS];
+    
+    // Start read data
+    [rtspSocket readDataWithTimeout:-1 buffer:rtspInputBuffer bufferOffset:0 tag:OPTIONS];
+}
+
+- (void)teardown
+{
+    // Build RTSP request
+    NSMutableString *request = [NSMutableString stringWithFormat:@"TEARDOWN %@ RTSP/1.0\r\n", _url];
+    [request appendFormat:@"CSeq: %d\r\n", ++cseq];
+    [request appendFormat:@"Session: %@\r\n", sessionID];
+    [request appendFormat:@"Connection: close\r\n"];
+    [request appendString:@"\r\n"];
+    
+    // Send request
+    NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
+    [rtspSocket writeData:data withTimeout:-1.0 tag:TEARDOWN];
+    
+    // Start read data
+    [rtspSocket readDataWithTimeout:-1 buffer:rtspInputBuffer bufferOffset:0 tag:TEARDOWN];
+}
+
+- (void)describe
+{
+    
+}
+
+- (NSDictionary *)parseRTSPAnswer:(NSString *)answer
+{
+    // Check if the received message is an RTSP answer and extract error code and error message form request line
+    NSRegularExpression *regexHeader = [NSRegularExpression regularExpressionWithPattern:@"RTSP/1\\.0 (\\d+) (.*)"
+                                                                                 options:NSRegularExpressionCaseInsensitive
+                                                                                   error:nil];
+    NSTextCheckingResult *matchHeader = [regexHeader firstMatchInString:answer options:0 range:NSMakeRange(0, [answer length])];
+    if (matchHeader == nil) {
+        NSLog(@"This is not an RTSP message");
+        [_delegate error:@"This is not an RTSP message"];
+        return nil;
+    }
+    NSUInteger errorCode = [[answer substringWithRange:[matchHeader rangeAtIndex:1]] intValue];
+    NSString *errorString = [answer substringWithRange:[matchHeader rangeAtIndex:2]];
+    
+    // Check error code
+    switch (errorCode) {
+        case 200:
+            break;
+        default:
+            NSLog(@"Apparently there is an error: %lu %@", (unsigned long)errorCode, errorString);
+            break;
+    }
+    
+    // Make NSDictionnary of header fields
+    NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithCapacity:0];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([\\w.-]+):\\s?(.*)"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:nil];
+    [regex enumerateMatchesInString:answer options:0 range:NSMakeRange(0, [answer length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+        [arguments setObject:[answer substringWithRange:[match rangeAtIndex:2]] forKey:[answer substringWithRange:[match rangeAtIndex:1]]];
+    }];
+    
+    // Check validity of Cseq
+    if ([[arguments objectForKey:@"CSeq"] intValue] != cseq) {
+        NSLog(@"Wrong CSeq number!");
+        return nil;
+    }
+    
+    return arguments;
 }
 
 #pragma mark - GCDAsynchSocket Delegate
 
-- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
+- (void)socket:(GCDAsyncSocket *)sender didConnectToHost:(NSString *)host port:(UInt16)port
 {
-	// This method is executed on the socketQueue (not the main thread)
-	@synchronized(connectedSockets)
-	{
-		[connectedSockets addObject:newSocket];
-	}
-    
-    /*
-	NSString *host = [newSocket connectedHost];
-	UInt16 port = [newSocket connectedPort];
-    
-	NSString *welcomeMsg = @"Welcome to the AsyncSocket Echo Server\r\n";
-	NSData *welcomeData = [welcomeMsg dataUsingEncoding:NSUTF8StringEncoding];
-    
-	[newSocket writeData:welcomeData withTimeout:-1 tag:WELCOME_MSG];
-    
-	[newSocket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:READ_TIMEOUT tag:0];
-    */
+//    NSLog(@"rtspSocket socket connected to: %@:%d", host, port);
 }
 
-- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+- (void)socket:(GCDAsyncSocket *)sender didWriteDataWithTag:(long)tag
 {
-    /*
-	// This method is executed on the socketQueue (not the main thread)
-	if (tag == ECHO_MSG)
-	{
-		[sock readDataToData:[GCDAsyncSocket CRLFData] withTimeout:READ_TIMEOUT tag:0];
-	}
-    */
+//    NSLog(@"rtspSocket socket wrote data with tag: %ld", tag);
 }
 
-- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
+- (void)socket:(GCDAsyncSocket *)sender didReadData:(NSData *)data withTag:(long)tag
 {
-    /*
-	// This method is executed on the socketQueue (not the main thread)
-	dispatch_async(dispatch_get_main_queue(), ^{
-		@autoreleasepool {
-            
-			NSData *strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
-			NSString *msg = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
-			if (msg)
-			{
-				[self logMessage:msg];
-			}
-			else
-			{
-				[self logError:@"Error converting received data into UTF-8 String"];
-			}
-            
-		}
-	});
+    NSString *receivedString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    NSDictionary *headers = [self parseRTSPAnswer:receivedString];
+    NSString *obj;
     
-	// Echo message back to client
-	[sock writeData:data withTimeout:-1 tag:ECHO_MSG];
-    */
+    switch (tag) {
+            
+        case SETUP: {
+//            NSLog(@"Received answer to SETUP message");
+            
+            // Extract session parameters
+            if ((obj = [headers objectForKey:@"Session"]) != nil) {
+                NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(.*);timeout=(\\d+)"
+                                                                                       options:0
+                                                                                         error:nil];
+                NSTextCheckingResult *match = [regex firstMatchInString:obj options:0 range:NSMakeRange(0, [obj length])];
+                sessionID = [obj substringWithRange:[match rangeAtIndex:1]];
+                sessionTimeout = [[obj substringWithRange:[match rangeAtIndex:2]] intValue] / 2;
+            } else {
+                NSLog(@"Malformed RTSP answer for SETUP message!");
+                [_delegate error:@"Malformed RTSP answer for SETUP message!"];
+                return;
+            }
+            
+            // Extract stream ID
+            if ((obj = [headers objectForKey:@"com.ses.streamID"]) != nil) {
+                streamID = [obj intValue];
+            } else {
+                NSLog(@"Malformed RTSP answer for SETUP message!");
+                [_delegate error:@"Malformed RTSP answer for SETUP message!"];
+                return;
+            }
+            
+            // Start timer to maintain session alive
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NSTimer scheduledTimerWithTimeInterval:sessionTimeout
+                                                 target:self
+                                               selector:@selector(sessionTimeoutCallback)
+                                               userInfo:nil
+                                                repeats:YES];
+            });
+            
+            // Start to playback the stream
+            [self play];
+            
+            break;
+        }
+            
+        case PLAY:
+            NSLog(@"Received answer to PLAY message");
+            break;
+        case OPTIONS:
+            NSLog(@"Received answer to OPTIONS message");
+            break;
+        case TEARDOWN:
+            NSLog(@"Received answer to TEARDOWN message");
+            break;
+        case DESCRIBE:
+            NSLog(@"Received answer to DESCRIBE message");
+            break;
+    }
+}
+
+- (void)sessionTimeoutCallback
+{
+    [self options];
 }
 
 /**
@@ -202,44 +319,66 @@
  * It allows us to optionally extend the timeout.
  * We use this method to issue a warning to the user prior to disconnecting them.
  **/
-- (NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutReadWithTag:(long)tag
+- (NSTimeInterval)socket:(GCDAsyncSocket *)sender shouldTimeoutReadWithTag:(long)tag
                  elapsed:(NSTimeInterval)elapsed
                bytesDone:(NSUInteger)length
 {
-    /*
-	if (elapsed <= READ_TIMEOUT)
-	{
-		NSString *warningMsg = @"Are you still there?\r\n";
-		NSData *warningData = [warningMsg dataUsingEncoding:NSUTF8StringEncoding];
-        
-		[sock writeData:warningData withTimeout:-1 tag:WARNING_MSG];
-        
-		return READ_TIMEOUT_EXTENSION;
-	}
-    */
-    
 	return 0.0;
 }
 
-- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sender withError:(NSError *)err
 {
-	if (sock != input)
-	{
-        /*
-		dispatch_async(dispatch_get_main_queue(), ^{
-			@autoreleasepool {
-                
-				[self logInfo:FORMAT(@"Client Disconnected")];
-                
-			}
-		});
-        */
-        
-		@synchronized(connectedSockets)
-		{
-			[connectedSockets removeObject:sock];
-		}
-	}
+//    NSLog(@"rtspSocket socket disconnected");
+}
+
+#pragma mark - GCDAsyncUdpSocket delegate
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didConnectToAddress:(NSData *)address
+{
+    NSLog(@"didConnectToAddress");
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError *)error
+{
+    NSLog(@"didNotConnect");
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
+{
+    NSLog(@"didSendDataWithTag %ld", tag);
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
+{
+    NSLog(@"didNotSendDataWithTag %ld", tag);
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock
+   didReceiveData:(NSData *)data
+      fromAddress:(NSData *)address
+withFilterContext:(id)filterContext
+{
+}
+
+- (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error
+{
+    NSLog(@"udpSocketDidClose %@", [error helpAnchor]);
+}
+
+#pragma mark - RTCP Socket Delegate
+
+- (void)reportAvailable:(ALiRTCPSocket *)rtcpSocket report:(ALiRTCPReport *)report
+{
+//    NSLog(@"Report available");
+//    NSArray *tunerData = [[report.arguments objectForKey:@"tuner"] componentsSeparatedByString:@","];
+    
+    /*
+    NSLog(@"Front end ID: %d", [tunerData[0] intValue]);
+    NSLog(@"Level: %d", [tunerData[1] intValue]);
+    NSLog(@"Locked: %d", [tunerData[2] intValue]);
+    NSLog(@"Quality: %d", [tunerData[3] intValue]);
+    NSLog(@"Frequency: %@", tunerData[4]);
+    */
 }
 
 @end

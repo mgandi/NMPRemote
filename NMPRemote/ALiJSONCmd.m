@@ -287,7 +287,7 @@
     [dict setObject:[NSNumber numberWithInt:NMP_CMD_ID_SWITCH_TO_WEBKIT] forKey:@"id"];
     [dict setObject:@"switchtowebkit" forKey:@"command"];
     [dict setObject:[NSNumber numberWithInt:session++] forKey:@"session"];
-    [dict setObject:[NSNumber numberWithInt:type] forKey:@"type"];
+    [dict setObject:[NSNumber numberWithLong:type] forKey:@"type"];
     [dict setObject:url forKey:@"url"];
     
     NSError *error;
@@ -313,7 +313,7 @@
     [dict setObject:[NSNumber numberWithInt:NMP_CMD_ID_EMULATE_KEY] forKey:@"id"];
     [dict setObject:@"emulatekey" forKey:@"command"];
     [dict setObject:[NSNumber numberWithInt:session++] forKey:@"session"];
-    [dict setObject:[NSString stringWithFormat:@"%d", code] forKey:@"key"];
+    [dict setObject:[NSString stringWithFormat:@"%ld", (long)code] forKey:@"key"];
     
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict

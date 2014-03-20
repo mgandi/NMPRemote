@@ -10,6 +10,8 @@
 		2214528618C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528518C5CDBA00CA0986 /* ALiWiFiNetworksTableViewController.m */; };
 		2214528918C5D65900CA0986 /* ALiWiFiNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */; };
 		2214528F18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2214528E18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m */; };
+		222C180E18DB243900372A41 /* ALiRTCPSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 222C180D18DB243900372A41 /* ALiRTCPSocket.m */; };
+		222C181118DB361D00372A41 /* ALiRTCPReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 222C181018DB361D00372A41 /* ALiRTCPReport.m */; };
 		227F9F4218D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */; };
 		227F9F4518D8912600C4C9F8 /* ALiSSDPDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */; };
 		227F9F4818D8955700C4C9F8 /* ALiSatipServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */; };
@@ -76,6 +78,10 @@
 		2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetwork.m; sourceTree = "<group>"; };
 		2214528D18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiWiFiNetworkPasswordTableViewController.h; sourceTree = "<group>"; };
 		2214528E18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetworkPasswordTableViewController.m; sourceTree = "<group>"; };
+		222C180C18DB243900372A41 /* ALiRTCPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTCPSocket.h; path = ../ALiRTCPSocket.h; sourceTree = "<group>"; };
+		222C180D18DB243900372A41 /* ALiRTCPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTCPSocket.m; path = ../ALiRTCPSocket.m; sourceTree = "<group>"; };
+		222C180F18DB361D00372A41 /* ALiRTCPReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiRTCPReport.h; sourceTree = "<group>"; };
+		222C181018DB361D00372A41 /* ALiRTCPReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiRTCPReport.m; sourceTree = "<group>"; };
 		227F9F4018D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiLiveStreamserversTableViewController.h; sourceTree = "<group>"; };
 		227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiLiveStreamserversTableViewController.m; sourceTree = "<group>"; };
 		227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSSDPDevice.h; sourceTree = "<group>"; };
@@ -226,6 +232,10 @@
 				E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */,
 				E0EA80D318D9D4CA00CE00D7 /* ALiRTSPSession.h */,
 				E0EA80D418D9D4CA00CE00D7 /* ALiRTSPSession.m */,
+				222C180C18DB243900372A41 /* ALiRTCPSocket.h */,
+				222C180D18DB243900372A41 /* ALiRTCPSocket.m */,
+				222C180F18DB361D00372A41 /* ALiRTCPReport.h */,
+				222C181018DB361D00372A41 /* ALiRTCPReport.m */,
 				227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */,
 				227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */,
 				227F9F4618D8955700C4C9F8 /* ALiSatipServer.h */,
@@ -366,7 +376,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = ALi;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Abilis Systems";
 				TargetAttributes = {
 					22CEC06F18B796930031DB99 = {
@@ -433,6 +443,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				222C181118DB361D00372A41 /* ALiRTCPReport.m in Sources */,
 				22CEC0B318BCB7A70031DB99 /* ALiSettingsTableViewController.m in Sources */,
 				2214528F18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m in Sources */,
 				22CEC08E18B7B0C50031DB99 /* ALiNoDongleViewController.m in Sources */,
@@ -457,6 +468,7 @@
 				22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */,
 				22CEC06318B796920031DB99 /* ALiAppDelegate.m in Sources */,
 				E0EA80D518D9D4CA00CE00D7 /* ALiRTSPSession.m in Sources */,
+				222C180E18DB243900372A41 /* ALiRTCPSocket.m in Sources */,
 				227F9F4218D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -511,7 +523,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -550,7 +561,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -608,7 +618,6 @@
 		22CEC08518B796930031DB99 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/NMPRemote.app/NMPRemote";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -631,7 +640,6 @@
 		22CEC08618B796930031DB99 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/NMPRemote.app/NMPRemote";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
