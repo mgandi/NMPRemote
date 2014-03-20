@@ -9,6 +9,7 @@
 #import "ALiLiveTableViewController.h"
 #import "ALiM3uParser.h"
 #import "ALiM3uItem.h"
+#import "ALiRTSPSession.h"
 
 @interface ALiLiveTableViewController ()
 
@@ -105,7 +106,7 @@
     // Extract selected item
     ALiM3uItem *item = (m3uItems)[indexPath.row];
     
-    // Replace ip address with live stream server address=
+    // Replace ip address with live stream server address
     NSString *ipaddress = [NSString stringWithFormat:@"http://%@", _dongle.liveServer.device.address];
     NSMutableString *url = [NSMutableString stringWithString:item.url];
     NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"http://\\d+\\.\\d+\\.\\d+\\.\\d+"
@@ -126,6 +127,19 @@
 {
     [self.dongle stopPlayback];
     [self.stopBarButtonItem setEnabled:false];
+}
+
+- (IBAction)refresh:(id)sender
+{
+    ALiM3uItem *item = (m3uItems)[0];
+    NSString *ipaddress = [NSString stringWithFormat:@"http://%@", _dongle.liveServer.device.address];
+    NSMutableString *url = [NSMutableString stringWithString:item.url];
+    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"http://\\d+\\.\\d+\\.\\d+\\.\\d+"
+                                                                      options:NSRegularExpressionCaseInsensitive
+                                                                        error:nil];
+    [regex replaceMatchesInString:url options:0 range:NSMakeRange(0, [url length]) withTemplate:ipaddress];
+    ALiRTSPSession *session = [[ALiRTSPSession alloc] initWithServer:_dongle.liveServer url:url];
+    [session setup];
 }
 
 @end

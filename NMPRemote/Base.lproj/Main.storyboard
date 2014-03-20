@@ -551,6 +551,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Live" id="Pfw-cy-ajh">
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="8qk-4N-jTO">
+                            <connections>
+                                <action selector="refresh:" destination="2kF-2S-QPi" id="kB8-pa-Uvm"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="Stop" style="done" id="gOg-Eg-CcM">
                             <connections>
                                 <action selector="stop:" destination="2kF-2S-QPi" id="Mdv-Wv-GFV"/>
@@ -963,7 +968,6 @@
         <!--Navigation Controller - Playback-->
         <scene sceneID="2rb-Ux-C0Q">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Fn7-iM-lQB" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hRI-sf-kG3" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Playback" image="Playback.png" id="hMn-IG-GbT"/>
                     <toolbarItems/>
@@ -980,6 +984,7 @@
                         <segue destination="wPo-yA-loc" kind="relationship" relationship="rootViewController" id="Cx8-X8-TFP"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fn7-iM-lQB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2379" y="1628"/>
         </scene>

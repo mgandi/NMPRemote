@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *stopBarButtonItem;
 
 - (IBAction)stop:(id)sender;
+- (IBAction)refresh:(id)sender;
 
 @end
