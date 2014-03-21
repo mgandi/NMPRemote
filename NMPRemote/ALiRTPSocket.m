@@ -89,6 +89,10 @@ typedef struct {
     }
     
 //    NSLog(@"%d", CFSwapInt16BigToHost(header->sn));
+    
+    // Notify delegate about packets available
+    if ([packets count])
+        [_delegate packetsAvailable:self packets:packets ssrc:ssrc];
 }
 
 #pragma mark - GCDAsyncUdpSocket delegate

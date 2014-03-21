@@ -11,7 +11,7 @@
 #import "GCDAsyncSocket.h"
 #import "GCDAsyncUdpSocket.h"
 
-enum MessaageTypes {
+enum MessageTypes {
     SETUP = 1,
     PLAY = 2,
     OPTIONS = 3,
@@ -31,26 +31,56 @@ enum MessaageTypes {
     
     // RTP Network
     ALiRTPSocket *rtpSocket;
-    
-    // RTSP
-    unsigned int cseq;
-    NSString *sessionID;
-    NSUInteger sessionTimeout;
-    NSUInteger streamID;
 }
 
 - (id)init
 {
-    return [self initWithServer:nil url:@"" rtpClientPort:0 rtcpClientPort:0 unicast:YES];
+    return [self initWithServer:nil
+                            url:@""
+                   rtcpDelegate:self
+                    rtpDelegate:self
+                  rtpClientPort:0
+                 rtcpClientPort:0
+                        unicast:YES];
 }
 
-- (id)initWithServer:(ALiSatipServer *)server url:(NSString *)url
+- (id)initWithServer:(ALiSatipServer *)server
+                 url:(NSString *)url
 {
-    return [self initWithServer:server url:url rtpClientPort:0 rtcpClientPort:0 unicast:YES];
+    return [self initWithServer:server
+                            url:url
+                   rtcpDelegate:self
+                    rtpDelegate:self
+                  rtpClientPort:0
+                 rtcpClientPort:0
+                        unicast:YES];
 }
 
-- (id)initWithServer:(ALiSatipServer *)server url:(NSString *)url rtpClientPort:(unsigned short)rtpClientPort rtcpClientPort:(unsigned short)rtcpClientPort unicast:(BOOL)unicast
+- (id)initWithServer:(ALiSatipServer *)server
+                 url:(NSString *)url
+        rtcpDelegate:(id <ALiRTCPSocketDelegate>)rtcpDelegate
+         rtpDelegate:(id <ALiRTPSocketDelegate>)rtpDelegate
 {
+    return [self initWithServer:server
+                            url:url
+                   rtcpDelegate:rtcpDelegate
+                    rtpDelegate:rtpDelegate
+                  rtpClientPort:0
+                 rtcpClientPort:0
+                        unicast:YES];
+}
+
+- (id)initWithServer:(ALiSatipServer *)server
+                 url:(NSString *)url
+        rtcpDelegate:(id <ALiRTCPSocketDelegate>)rtcpDelegate
+         rtpDelegate:(id <ALiRTPSocketDelegate>)rtpDelegate
+       rtpClientPort:(unsigned short)rtpClientPort
+      rtcpClientPort:(unsigned short)rtcpClientPort
+             unicast:(BOOL)unicast
+{
+    // Set status
+    _status = IDLE;
+    
     // Set server
     _server = server;
     
@@ -67,10 +97,16 @@ enum MessaageTypes {
     _unicast = unicast;
     
     // Set session ID to nil
-    sessionID = nil;
+    _sessionID = nil;
     
     // Initialize network communication
     [self initNetworkCommunication];
+    
+    // Set RTCP delegate
+    rtcpSocket.delegate = rtcpDelegate;
+    
+    // Set RTP delegate
+    rtpSocket.delegate = rtpDelegate;
     
     return self;
 }
@@ -116,7 +152,7 @@ enum MessaageTypes {
 {
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"SETUP %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++cseq];
+    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
     [request appendFormat:@"Transport: RTP/AV;%@=%d-%d\r\n", (_unicast ? @"unicast;client_port" : @"multicast;port"), _rtpClientPort, _rtcpClientPort];
     [request appendString:@"\r\n"];
     
@@ -138,8 +174,8 @@ enum MessaageTypes {
 {
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"PLAY %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++cseq];
-    [request appendFormat:@"Session: %@\r\n", sessionID];
+    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
+    [request appendFormat:@"Session: %@\r\n", _sessionID];
     [request appendString:@"\r\n"];
     
     // Send request
@@ -154,8 +190,8 @@ enum MessaageTypes {
 {
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"OPTIONS %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++cseq];
-    [request appendFormat:@"Session: %@\r\n", sessionID];
+    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
+    [request appendFormat:@"Session: %@\r\n", _sessionID];
     [request appendString:@"\r\n"];
     
     // Send request
@@ -170,8 +206,8 @@ enum MessaageTypes {
 {
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"TEARDOWN %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++cseq];
-    [request appendFormat:@"Session: %@\r\n", sessionID];
+    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
+    [request appendFormat:@"Session: %@\r\n", _sessionID];
     [request appendFormat:@"Connection: close\r\n"];
     [request appendString:@"\r\n"];
     
@@ -222,7 +258,7 @@ enum MessaageTypes {
     }];
     
     // Check validity of Cseq
-    if ([[arguments objectForKey:@"CSeq"] intValue] != cseq) {
+    if ([[arguments objectForKey:@"CSeq"] intValue] != _cseq) {
         NSLog(@"Wrong CSeq number!");
         return nil;
     }
@@ -259,8 +295,8 @@ enum MessaageTypes {
                                                                                        options:0
                                                                                          error:nil];
                 NSTextCheckingResult *match = [regex firstMatchInString:obj options:0 range:NSMakeRange(0, [obj length])];
-                sessionID = [obj substringWithRange:[match rangeAtIndex:1]];
-                sessionTimeout = [[obj substringWithRange:[match rangeAtIndex:2]] intValue] / 2;
+                _sessionID = [obj substringWithRange:[match rangeAtIndex:1]];
+                _sessionTimeout = [[obj substringWithRange:[match rangeAtIndex:2]] intValue] / 2;
             } else {
                 NSLog(@"Malformed RTSP answer for SETUP message!");
                 [_delegate error:@"Malformed RTSP answer for SETUP message!"];
@@ -269,7 +305,7 @@ enum MessaageTypes {
             
             // Extract stream ID
             if ((obj = [headers objectForKey:@"com.ses.streamID"]) != nil) {
-                streamID = [obj intValue];
+                _streamID = [obj intValue];
             } else {
                 NSLog(@"Malformed RTSP answer for SETUP message!");
                 [_delegate error:@"Malformed RTSP answer for SETUP message!"];
@@ -278,31 +314,60 @@ enum MessaageTypes {
             
             // Start timer to maintain session alive
             dispatch_async(dispatch_get_main_queue(), ^{
-                [NSTimer scheduledTimerWithTimeInterval:sessionTimeout
+                [NSTimer scheduledTimerWithTimeInterval:_sessionTimeout
                                                  target:self
                                                selector:@selector(sessionTimeoutCallback)
                                                userInfo:nil
                                                 repeats:YES];
             });
             
-            // Start to playback the stream
-            [self play];
+            // Set status
+            _status = SET;
+            
+            // Notify delegate if status change
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_delegate sessionSetup:self];
+            });
             
             break;
         }
             
-        case PLAY:
-            NSLog(@"Received answer to PLAY message");
+        case PLAY: {
+//            NSLog(@"Received answer to PLAY message");
+            
+            // Set status
+            _status = PLAYING;
+            
+            // Notify delegate of status change
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_delegate sessionPlaying:self];
+            });
+            
             break;
+        }
+            
         case OPTIONS:
-            NSLog(@"Received answer to OPTIONS message");
+//            NSLog(@"Received answer to OPTIONS message");
             break;
-        case TEARDOWN:
-            NSLog(@"Received answer to TEARDOWN message");
+            
+        case TEARDOWN: {
+//            NSLog(@"Received answer to TEARDOWN message");
+            
+            // Set status
+            _status = IDLE;
+            
+            // Notify delegate of status change
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_delegate sessionTeardowned:self];
+            });
+            
             break;
+        }
+            
         case DESCRIBE:
-            NSLog(@"Received answer to DESCRIBE message");
+//            NSLog(@"Received answer to DESCRIBE message");
             break;
+            
     }
 }
 
@@ -332,16 +397,12 @@ enum MessaageTypes {
 
 - (void)reportAvailable:(ALiRTCPSocket *)rtcpSocket report:(ALiRTCPReport *)report
 {
-//    NSLog(@"Report available");
-//    NSArray *tunerData = [[report.arguments objectForKey:@"tuner"] componentsSeparatedByString:@","];
-    
-    /*
-    NSLog(@"Front end ID: %d", [tunerData[0] intValue]);
-    NSLog(@"Level: %d", [tunerData[1] intValue]);
-    NSLog(@"Locked: %d", [tunerData[2] intValue]);
-    NSLog(@"Quality: %d", [tunerData[3] intValue]);
-    NSLog(@"Frequency: %@", tunerData[4]);
-    */
+}
+
+#pragma mark - RTP Socket Delegate
+
+- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets ssrc:(const UInt32)ssrc
+{
 }
 
 @end

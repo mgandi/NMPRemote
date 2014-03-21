@@ -12,13 +12,13 @@
 
 @class ALiRTCPSocket;
 
-@protocol AliRTCPSocketDelegate <NSObject>
+@protocol ALiRTCPSocketDelegate <NSObject>
 - (void)reportAvailable:(ALiRTCPSocket *)rtcpSocket report:(ALiRTCPReport *)erport;
 @end
 
 @interface ALiRTCPSocket : NSObject
 
-@property (nonatomic, weak) id <AliRTCPSocketDelegate> delegate;
+@property (nonatomic, weak) id <ALiRTCPSocketDelegate> delegate;
 @property (nonatomic, copy) GCDAsyncUdpSocket *socket;
 
 - (id) initWithPort:(UInt16)port;

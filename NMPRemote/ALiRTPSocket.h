@@ -9,8 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "GCDAsyncUdpSocket.h"
 
+@class ALiRTPSocket;
+
+@protocol ALiRTPSocketDelegate <NSObject>
+- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets ssrc:(const UInt32)ssrc;
+@end
+
 @interface ALiRTPSocket : NSObject
 
+@property (nonatomic, weak) id <ALiRTPSocketDelegate> delegate;
 @property (nonatomic, copy) GCDAsyncUdpSocket *socket;
 
 - (id) initWithPort:(UInt16)port;

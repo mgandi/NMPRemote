@@ -9,7 +9,7 @@
 #import "ALiLiveTableViewController.h"
 #import "ALiM3uParser.h"
 #import "ALiM3uItem.h"
-#import "ALiRTSPSession.h"
+#import "ALiDvbtScanProcedure.h"
 
 @interface ALiLiveTableViewController ()
 
@@ -18,7 +18,7 @@
 @implementation ALiLiveTableViewController
 {
     NSMutableArray *m3uItems;
-    ALiRTSPSession *session;
+    ALiDvbtScanProcedure *procedure;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -46,8 +46,8 @@
     // Parse file and get list of M3U items
     m3uItems = [ALiM3uParser parse:path];
     
-    // Init session
-    session = nil;
+    // Init procedure
+    procedure = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -145,9 +145,11 @@
     [regex replaceMatchesInString:url options:0 range:NSMakeRange(0, [url length]) withTemplate:ipaddress];
     
     
-    if (session == nil)
-        session = [[ALiRTSPSession alloc] initWithServer:_dongle.liveServer url:url];
-    [session setup];
+    if (procedure == nil) {
+        procedure = [[ALiDvbtScanProcedure alloc] initWithServer:_dongle.liveServer startFrequency:474.0 stepFrequency:8.0 stopFrequency:826.0];
+        [procedure start];
+    }
+//    [session setup];
 }
 
 @end
