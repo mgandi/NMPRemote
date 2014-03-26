@@ -53,16 +53,44 @@ typedef struct {
 
 @implementation ALiRTCPSocket
 {
-    dispatch_queue_t rtcpQueue;
+    dispatch_queue_t rtcpDelegateQueue, rtcpProcessingQueue;
 }
 
 - (id) initWithPort:(UInt16)port
 {
+    // Initialize dispatch queues
+    rtcpProcessingQueue = dispatch_queue_create("tw.com.ali.rtcp", NULL);
+    rtcpDelegateQueue = rtcpProcessingQueue;
+    
+    return [self initWithPort:port processingQueue:rtcpProcessingQueue andDelegateQueue:rtcpDelegateQueue];
+}
+
+- (id) initWithPort:(UInt16)port andProcessingQueue:(dispatch_queue_t)processingQueue
+{
+    // Initialize dispatch queues
+    rtcpProcessingQueue = processingQueue;
+    rtcpDelegateQueue = rtcpProcessingQueue;
+    
+    return [self initWithPort:port processingQueue:rtcpProcessingQueue andDelegateQueue:rtcpDelegateQueue];
+}
+
+- (id) initWithPort:(UInt16)port andDelegateQueue:(dispatch_queue_t)delegateQueue
+{
+    // Initialize dispatch queues
+    rtcpProcessingQueue = dispatch_queue_create("tw.com.ali.rtcp", NULL);
+    rtcpDelegateQueue = delegateQueue;
+    
+    return [self initWithPort:port processingQueue:rtcpProcessingQueue andDelegateQueue:rtcpDelegateQueue];
+}
+
+- (id) initWithPort:(UInt16)port processingQueue:(dispatch_queue_t)processingQueue andDelegateQueue:(dispatch_queue_t)delegateQueue
+{
     // Initialize dispatch queue
-    rtcpQueue = dispatch_queue_create("tw.com.ali.rtsp", NULL);
+    rtcpProcessingQueue = processingQueue;
+    rtcpDelegateQueue = delegateQueue;
     
     // Initialize RTCP socket
-    _socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:rtcpQueue];
+    _socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:rtcpProcessingQueue];
     [_socket bindToPort:port error:nil];
     /*BOOL res =*/ [_socket beginReceiving:nil];
     
@@ -105,7 +133,13 @@ typedef struct {
     } while([self next:(const UInt8 **)&ptr remaining:&remaining]);
     
     // Publish reformated report
-    [_delegate reportAvailable:self report:report];
+    if (rtcpDelegateQueue != rtcpProcessingQueue) {
+        dispatch_async(rtcpDelegateQueue, ^{
+            [_delegate reportAvailable:self report:report];
+        });
+    } else {
+        [_delegate reportAvailable:self report:report];
+    }
 }
 
 - (BOOL)next:(const UInt8 **)ptr remaining:(NSUInteger *)remaining

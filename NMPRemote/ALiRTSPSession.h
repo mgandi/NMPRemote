@@ -56,7 +56,22 @@ typedef enum {
       rtcpClientPort:(unsigned short)rtcpClientPort
              unicast:(BOOL)unicast;
 
-- (void)initNetworkCommunication;
+- (id)initWithServer:(ALiSatipServer *)server
+                 url:(NSString *)url
+       delegateQueue:(dispatch_queue_t)delegateQueue;
+- (id)initWithServer:(ALiSatipServer *)server
+                 url:(NSString *)url
+       delegateQueue:(dispatch_queue_t)delegateQueue
+        rtcpDelegate:(id <ALiRTCPSocketDelegate>)rtcpDelegate
+         rtpDelegate:(id <ALiRTPSocketDelegate>)rtpDelegate;
+- (id)initWithServer:(ALiSatipServer *)server
+                 url:(NSString *)url
+       delegateQueue:(dispatch_queue_t)delegateQueue
+        rtcpDelegate:(id <ALiRTCPSocketDelegate>)rtcpDelegate
+         rtpDelegate:(id <ALiRTPSocketDelegate>)rtpDelegate
+       rtpClientPort:(unsigned short)rtpClientPort
+      rtcpClientPort:(unsigned short)rtcpClientPort
+             unicast:(BOOL)unicast;
 
 - (void)setup;
 - (void)setup:(NSString *)url;
@@ -65,7 +80,5 @@ typedef enum {
 - (void)options;
 - (void)teardown;
 - (void)describe;
-
-- (NSDictionary *)parseRTSPAnswer:(NSString *)answer;
 
 @end

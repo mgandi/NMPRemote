@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "ALiDongle.h"
+#import "ALiDvbtScanProcedure.h"
 
-@interface ALiLiveTableViewController : UITableViewController
+@interface ALiLiveTableViewController : UITableViewController <ALiDvbtScanProcedureDelegate>
 
 @property (nonatomic, strong) ALiDongle *dongle;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *stopBarButtonItem;

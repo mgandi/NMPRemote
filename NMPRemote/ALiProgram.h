@@ -26,4 +26,7 @@
                  number:(const UInt16)number
                     pid:(const UInt16)pid;
 
+- (NSString *)urlWithScheme:(NSString *)scheme
+                       host:(NSString *)host;
+
 @end

@@ -8,7 +8,6 @@
 
 #import "ALiDvbtScanProcedure.h"
 #import "ALiDemuxer.h"
-#import "ALiProgram.h"
 
 #define LOCK_TIMEOUT    3
 #define PAT_TIMEOUT     10
@@ -37,10 +36,21 @@ typedef enum {
     SDT = 0x04
 } TableType;
 
+enum States {
+    Idle = 0,
+    Starting = 1,
+    Stepping = 2,
+    Parsing = 3
+};
+
+// TODO:
+// - Test deallocation of session
+
 @implementation ALiDvbtScanProcedure
 {
     ALiRTSPSession *session;
     ALiDemuxer *demuxer;
+    dispatch_queue_t scanProcessingQueue;
     
     // Scan support variables
     double frequency;
@@ -126,35 +136,37 @@ typedef enum {
 
 - (void)startLockTimeoutTimer
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"Start lock timeout timer!");
+    NSLog(@"Start lock timeout timer!");
+    dispatch_sync(dispatch_get_main_queue(), ^{
         lockTimer = [NSTimer scheduledTimerWithTimeInterval:LOCK_TIMEOUT target:self selector:@selector(lockTimeout) userInfo:nil repeats:FALSE];
     });
 }
 
 - (void)startPatTimeoutTimer
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"Start PAT timeout timer!");
+    NSLog(@"Start PAT timeout timer!");
+    dispatch_sync(dispatch_get_main_queue(), ^{
         patTimer = [NSTimer scheduledTimerWithTimeInterval:PAT_TIMEOUT target:self selector:@selector(patTimeout) userInfo:nil repeats:FALSE];
     });
 }
 
 - (void)killTimers
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (lockTimer != nil) {
-            NSLog(@"Stop lock timeout timer!");
+    if (lockTimer != nil) {
+        NSLog(@"Stop lock timeout timer!");
+        dispatch_sync(dispatch_get_main_queue(), ^{
             [lockTimer invalidate];
-            lockTimer = nil;
-        }
-        
-        if (patTimer != nil) {
-            NSLog(@"Stop PAT timeout timer!");
+        });
+        lockTimer = nil;
+    }
+    
+    if (patTimer != nil) {
+        NSLog(@"Stop PAT timeout timer!");
+        dispatch_sync(dispatch_get_main_queue(), ^{
             [patTimer invalidate];
-            patTimer = nil;
-        }
-    });
+        });
+        patTimer = nil;
+    }
 }
 
 - (void)lockTimeout
@@ -273,9 +285,7 @@ typedef enum {
     
     if (tables == (PAT | SDT | PMT)) {
         NSLog(@"Got all information");
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self step];
-        });
+        [self step];
     } else {
         if (!(tables & PAT)) {
             NSLog(@"No PAT found!");
@@ -301,7 +311,7 @@ typedef enum {
     [handlers removeAllObjects];
     
     // Commit temporary data if any
-    //    [self commitData];
+    [self commitData];
     
     // Update SSRC
     lastSsrc = currentSsrc;
@@ -328,12 +338,54 @@ typedef enum {
     [programs removeAllObjects];
 }
 
+- (void)commitData
+{
+    // TODO:
+    // - Add filtering of none video streams
+    
+    if (tables == (PAT | SDT | PMT)) { // We have all the information required for the listed programs
+        // Notify delegate about each program found
+        for (NSNumber *key in programs) {
+            ALiProgram *program = [programs objectForKey:key];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_delegate foundProgram:(ALiProgram *)program];
+            });
+        }
+    }
+    
+    // Delete all potential temporary programs that where found
+    [programs removeAllObjects];
+}
+
+
+
+
 
 - (id)initWithServer:(ALiSatipServer *)server
       startFrequency:(double)startFrequency
        stepFrequency:(double)stepFrequency
        stopFrequency:(double)stopFrequency
 {
+    // Create and init scan processing queue
+    scanProcessingQueue = dispatch_queue_create("com.tw.ali.scan", NULL);
+    
+    return [self initWithServer:server
+                 startFrequency:startFrequency
+                  stepFrequency:stepFrequency
+                  stopFrequency:stopFrequency
+                processingQueue:scanProcessingQueue];
+}
+
+- (id)initWithServer:(ALiSatipServer *)server
+      startFrequency:(double)startFrequency
+       stepFrequency:(double)stepFrequency
+       stopFrequency:(double)stopFrequency
+     processingQueue:(dispatch_queue_t)processingQueue
+{
+    // Set processing queue
+    scanProcessingQueue = processingQueue;
+    
     // Set the server
     _server = server;
     
@@ -345,6 +397,9 @@ typedef enum {
     
     // Set stop frequency
     _stopFrequency = stopFrequency;
+    
+    // Init step status
+    _stepStatus = 0;
     
     // Init RTSP session
     session = nil;
@@ -385,68 +440,98 @@ typedef enum {
 
 - (void)start
 {
-    [self clearScanSupportVariables];
-    [self step];
+    dispatch_async(scanProcessingQueue, ^{
+        [self clearScanSupportVariables];
+        [self step];
+    });
 }
 
 - (void)stop
 {
-    [self deleteSession];
-    [self killTimers];
-    [self clearScanSupportVariables];
+    dispatch_async(scanProcessingQueue, ^{
+        [self deleteSession];
+        [self killTimers];
+        [self clearScanSupportVariables];
+    });
 }
 
 - (void)step
 {
-    // Clear step variables
-    [self clearStepSupportVariables];
-    
-    // Compute current frequency
-    if (frequency == 0.0) { // Initialize with start frequency
-        frequency = _startFrequency;
-    } else { // Increment frequency
-        frequency += _stepFrequency;
-    }
-    
-    // If current frequency is bigger than stop frequency then it is time to stop
-    if (frequency > _stopFrequency) {
-        [self stop];
-        return;
-    }
-    
-    
-    NSLog(@"=========================================");
-    NSLog(@"Frequency: %f", frequency);
-    
-    // Get current url
-    NSString *url = [self toUrl:RTSP host:_server.device.address purpose:SCAN];
-    
-    // If session is nil create it
-    if (session == nil) {
-        session = [[ALiRTSPSession alloc] initWithServer:_server url:url rtcpDelegate:self rtpDelegate:self];
-        session.delegate = self;
-        [session setup];
-    } else {
-        [session play:url];
-    }
+    dispatch_async(scanProcessingQueue, ^{
+        _stepStatus = 1;
+        
+        // Clear step variables
+        [self clearStepSupportVariables];
+        
+        // Compute current frequency
+        if (frequency == 0.0) { // Initialize with start frequency
+            frequency = _startFrequency;
+        } else { // Increment frequency
+            frequency += _stepFrequency;
+        }
+        
+        // If current frequency is bigger than stop frequency then it is time to stop
+        if (frequency > _stopFrequency) {
+            [self stop];
+            
+            // Notify delegate than scan is done
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_delegate done:self];
+            });
+            
+            return;
+        }
+        
+        
+        NSLog(@"=========================================");
+        NSLog(@"Frequency: %f", frequency);
+        
+        // Get current url
+        NSString *url = [self toUrl:RTSP host:_server.device.address purpose:SCAN];
+        
+        // If session is nil create it
+        if (session == nil) {
+            session = [[ALiRTSPSession alloc] initWithServer:_server
+                                                         url:url
+                                               delegateQueue:scanProcessingQueue
+                                                rtcpDelegate:self
+                                                 rtpDelegate:self];
+            session.delegate = self;
+            [session setup];
+        } else {
+            [session play:url];
+        }
+        
+        _stepStatus = 2;
+        
+    });
 }
 
 #pragma mark - RTSP Session Delegate
 
 - (void)sessionSetup:(ALiRTSPSession *)sess
 {
+    NSLog(@"Session setup!");
+    
     // Start playing the session
     [session play];
 }
 
 - (void)sessionPlaying:(ALiRTSPSession *)sess
 {
-    // Launch lock timeout timer
-    [self startLockTimeoutTimer];
+    NSLog(@"Session playing!");
+    
+    _stepStatus = 3;
+    
+    if ((tables == 0) && !locked) {
+        // Launch lock timeout timer
+        [self startLockTimeoutTimer];
+    }
 }
 
 - (void)sessionTeardowned:(ALiRTSPSession *)sess
 {
+    NSLog(@"Session teared down!");
 }
 
 - (void)error:(NSString *)errorMessage
@@ -459,6 +544,21 @@ typedef enum {
 {
     static ALiRTCPReport *lastReport;
     
+    /*
+    static UInt32 lastLocalSsrc = 0;
+    
+    // check if the packet belong to the current SSRC
+    if (lastLocalSsrc == 0) {
+        lastLocalSsrc = report.ssrc;
+    } else {
+        if (lastLocalSsrc != report)
+    }
+     */
+    
+    // Check if the status of the scan allows to receive data
+    if (_stepStatus < 3)
+        return;
+    
     NSArray *tunerData = [[report.arguments objectForKey:@"tuner"] componentsSeparatedByString:@","];
     
     // Make sure that we don't treat packet from previous frequency
@@ -468,7 +568,7 @@ typedef enum {
 //        NSLog(@"RTCP Report from last SSRC (%d) -> ignored!", report.ssrc);
     }
     
-    // Print report and assign current reoprt to last report
+    // Print report and assign current report to last report
     if (report == lastReport) {
     } else {
 //        NSLog(@"=========================================");
@@ -493,18 +593,25 @@ typedef enum {
 
 - (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets ssrc:(const UInt32)ssrc
 {
+    // Check if the status of the scan allows to receive data
+    if (_stepStatus < 3)
+        return;
+    
     if (currentSsrc == 0) {
         if (lastSsrc == ssrc) {
 //            NSLog(@"=========================================");
-//            NSLog(@"Packet from last SSRC (%d) -> ignored!", ssrc);
+            //            NSLog(@"Packet from last SSRC (%d) -> ignored!", ssrc);
+            
             return;
         } else
             currentSsrc = ssrc;
     }
+    
+    // Push packets to demuxer
     [demuxer push:packets];
 }
 
-#pragma mark - PAT, SDT, PMT Handler Delegeates
+#pragma mark - PAT, SDT, PMT Handler Delegates
 
 - (void)discontinuity:(ALiPidHandler *)pidHandler
 {
@@ -552,6 +659,9 @@ typedef enum {
             [scanPids addObject:[NSString stringWithFormat:@"%d", program.pid]];
         }
     }
+    
+    // Update status
+    _stepStatus = 2;
     
     // Update RTSP request with the new PIDs
     [session play:[self toUrl:RTSP host:_server.device.address purpose:SCAN]];

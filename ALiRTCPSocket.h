@@ -22,6 +22,9 @@
 @property (nonatomic, copy) GCDAsyncUdpSocket *socket;
 
 - (id) initWithPort:(UInt16)port;
+- (id) initWithPort:(UInt16)port andProcessingQueue:(dispatch_queue_t)processingQueue;
+- (id) initWithPort:(UInt16)port andDelegateQueue:(dispatch_queue_t)delegateQueue;
+- (id) initWithPort:(UInt16)port processingQueue:(dispatch_queue_t)processingQueue andDelegateQueue:(dispatch_queue_t)delegateQueue;
 
 - (void)parse:(NSData *)data;
 - (BOOL)next:(const UInt8 **)ptr remaining:(NSUInteger *)remaining;

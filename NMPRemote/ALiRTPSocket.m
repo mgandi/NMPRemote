@@ -27,7 +27,7 @@ typedef struct {
 
 @implementation ALiRTPSocket
 {
-    dispatch_queue_t rtcpQueue;
+    dispatch_queue_t rtpDelegateQueue, rtpProcessingQueue;
     
     UInt32 ssrc;
     UInt16 packetCount;
@@ -38,10 +38,37 @@ typedef struct {
 - (id) initWithPort:(UInt16)port
 {
     // Initialize dispatch queue
-    rtcpQueue = dispatch_queue_create("tw.com.ali.rtsp", NULL);
+    rtpProcessingQueue = dispatch_queue_create("tw.com.ali.rtp", NULL);
+    
+    return [self initWithPort:port andProcessingQueue:rtpProcessingQueue];
+}
+
+- (id) initWithPort:(UInt16)port andProcessingQueue:(dispatch_queue_t)processingQueue
+{
+    // Initialize dispatch queue
+    rtpProcessingQueue = processingQueue;
+    rtpDelegateQueue = processingQueue;
+    
+    return [self initWithPort:port processingQueue:processingQueue andDelegateQueue:rtpDelegateQueue];
+}
+
+- (id) initWithPort:(UInt16)port andDelegateQueue:(dispatch_queue_t)delegateQueue
+{
+    // Initialize dispatch queue
+    rtpProcessingQueue = dispatch_queue_create("tw.com.ali.rtp", NULL);
+    rtpDelegateQueue = delegateQueue;
+    
+    return [self initWithPort:port processingQueue:rtpProcessingQueue andDelegateQueue:rtpDelegateQueue];
+}
+
+- (id) initWithPort:(UInt16)port processingQueue:(dispatch_queue_t)processingQueue andDelegateQueue:(dispatch_queue_t)delegateQueue
+{
+    // Initialize dispatch queues
+    rtpProcessingQueue = processingQueue;
+    rtpDelegateQueue = delegateQueue;
     
     // Initialize RTCP socket
-    _socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:rtcpQueue];
+    _socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:rtpProcessingQueue];
     [_socket bindToPort:port error:nil];
     /*BOOL res =*/ [_socket beginReceiving:nil];
     
@@ -91,8 +118,15 @@ typedef struct {
 //    NSLog(@"%d", CFSwapInt16BigToHost(header->sn));
     
     // Notify delegate about packets available
-    if ([packets count])
-        [_delegate packetsAvailable:self packets:packets ssrc:ssrc];
+    if ([packets count]) {
+        if (rtpDelegateQueue != rtpProcessingQueue) {
+            dispatch_async(rtpDelegateQueue, ^{
+                [_delegate packetsAvailable:self packets:packets ssrc:ssrc];
+            });
+        } else {
+            [_delegate packetsAvailable:self packets:packets ssrc:ssrc];
+        }
+    }
 }
 
 #pragma mark - GCDAsyncUdpSocket delegate

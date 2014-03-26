@@ -1,4 +1,4 @@
-//
+ //
 //  ALiLiveTableViewController.m
 //  NMPRemote
 //
@@ -9,7 +9,6 @@
 #import "ALiLiveTableViewController.h"
 #import "ALiM3uParser.h"
 #import "ALiM3uItem.h"
-#import "ALiDvbtScanProcedure.h"
 
 @interface ALiLiveTableViewController ()
 
@@ -135,6 +134,7 @@
 
 - (IBAction)refresh:(id)sender
 {
+    /*
     // Url formatting
     ALiM3uItem *item = (m3uItems)[0];
     NSString *ipaddress = [NSString stringWithFormat:@"http://%@", _dongle.liveServer.device.address];
@@ -143,13 +143,51 @@
                                                                       options:NSRegularExpressionCaseInsensitive
                                                                         error:nil];
     [regex replaceMatchesInString:url options:0 range:NSMakeRange(0, [url length]) withTemplate:ipaddress];
+    */
     
-    
-    if (procedure == nil) {
-        procedure = [[ALiDvbtScanProcedure alloc] initWithServer:_dongle.liveServer startFrequency:474.0 stepFrequency:8.0 stopFrequency:826.0];
-        [procedure start];
+    // Remove all rows
+    NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:0];
+    for (ALiM3uItem *item in m3uItems) {
+        NSUInteger index = [m3uItems indexOfObject:item];
+        [indexPaths addObject:[NSIndexPath indexPathForRow:index inSection:0]];
     }
-//    [session setup];
+    [m3uItems removeAllObjects];
+    [[self tableView] deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    // Delete scan procedure if any already existing
+    if (procedure != nil) {
+        procedure = nil;
+    }
+    
+    // Create scan procedure and launch it
+    procedure = [[ALiDvbtScanProcedure alloc] initWithServer:_dongle.liveServer startFrequency:474.0 stepFrequency:8.0 stopFrequency:826.0];
+    procedure.delegate = self;
+    [procedure start];
+}
+
+#pragma mark - DVB-T Scan procedure delegate
+
+- (void)done:(ALiDvbtScanProcedure *)proc
+{
+    if (proc == procedure ) {
+        // Delete scan procedure
+        if (procedure != nil) {
+            procedure = nil;
+        }
+    }
+}
+
+- (void)foundProgram:(ALiProgram *)program
+{
+    ALiM3uItem *item = [[ALiM3uItem alloc] init];
+    item.name = program.serviceName;
+    item.url = [program urlWithScheme:@"http" host:_dongle.liveServer.device.address];
+    
+    // Add M3U item to array of items and to table view
+    [m3uItems addObject:item];
+    NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:0];
+    [indexPaths addObject:[NSIndexPath indexPathForRow:[m3uItems indexOfObject:item] inSection:0]];
+    [[self tableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 @end
