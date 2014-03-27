@@ -348,6 +348,9 @@ enum States {
         for (NSNumber *key in programs) {
             ALiProgram *program = [programs objectForKey:key];
             
+            if (![program containsVideo] && ![program containsAudio])
+                continue;
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_delegate foundProgram:(ALiProgram *)program];
             });

@@ -54,18 +54,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)searchForWiFiNetworksTimeout
+{
+    [self.dongle getDeviceWifiListInfo];
+}
+
 - (void)searchForWiFiNetworks
 {
     /* Start thread to search for Wi-Fi Networks */
     [self.dongle getDeviceWifiIsScanningInfo];
     
     /* Start timer */
-    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(searchForWiFiNetworksTimeout) userInfo:nil repeats:FALSE];
-}
-
-- (void)searchForWiFiNetworksTimeout
-{
-    [self.dongle getDeviceWifiListInfo];
+    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(searchForWiFiNetworksTimeout) userInfo:nil repeats:FALSE];
 }
 
 - (IBAction)refresh:(id)sender

@@ -17,4 +17,29 @@
     return self;
 }
 
+- (BOOL)containsVideo
+{
+    switch (_type) {
+        case 0x01:
+        case 0x02:
+        case 0x1B:
+            return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)containsAudio
+{
+    switch (_type) {
+        case 0x03:
+        case 0x04:
+        case 0x0F:
+        case 0x11:
+            return YES;
+    }
+    
+    return NO;
+}
+
 @end

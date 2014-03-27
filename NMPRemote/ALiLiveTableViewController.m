@@ -143,7 +143,13 @@
                                                                       options:NSRegularExpressionCaseInsensitive
                                                                         error:nil];
     [regex replaceMatchesInString:url options:0 range:NSMakeRange(0, [url length]) withTemplate:ipaddress];
-    */
+     */
+    
+    // Delete scan procedure if any already existing
+    if (procedure != nil) {
+        [procedure stop];
+        procedure = nil;
+    }
     
     // Remove all rows
     NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:0];
@@ -153,11 +159,6 @@
     }
     [m3uItems removeAllObjects];
     [[self tableView] deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-    
-    // Delete scan procedure if any already existing
-    if (procedure != nil) {
-        procedure = nil;
-    }
     
     // Create scan procedure and launch it
     procedure = [[ALiDvbtScanProcedure alloc] initWithServer:_dongle.liveServer startFrequency:474.0 stepFrequency:8.0 stopFrequency:826.0];

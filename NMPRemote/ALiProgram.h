@@ -29,4 +29,7 @@
 - (NSString *)urlWithScheme:(NSString *)scheme
                        host:(NSString *)host;
 
+- (BOOL)containsVideo;
+- (BOOL)containsAudio;
+
 @end

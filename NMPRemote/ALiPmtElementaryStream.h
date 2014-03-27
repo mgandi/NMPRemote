@@ -14,5 +14,7 @@
 @property (nonatomic, assign, readonly) UInt16 type;
 
 - (id)initWithPid:(const UInt16)pid andType:(const UInt16)type;
+- (BOOL)containsVideo;
+- (BOOL)containsAudio;
 
 @end

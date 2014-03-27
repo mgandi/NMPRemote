@@ -69,4 +69,26 @@
     return url;
 }
 
+- (BOOL)containsVideo
+{
+    for (NSNumber *key in _elementaryStreams) {
+        ALiPmtElementaryStream *es = [_elementaryStreams objectForKey:key];
+        if ([es containsVideo])
+            return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)containsAudio
+{
+    for (NSNumber *key in _elementaryStreams) {
+        ALiPmtElementaryStream *es = [_elementaryStreams objectForKey:key];
+        if ([es containsAudio])
+            return YES;
+    }
+    
+    return NO;
+}
+
 @end
