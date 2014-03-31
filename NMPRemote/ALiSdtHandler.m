@@ -27,11 +27,6 @@
 
 #pragma mark - Pid Handler Delegate
 
-- (void)discontinuity
-{
-    [_delegate discontinuity:self];
-}
-
 - (void)dumpDescriptorFrom:(const UInt8 *)payload
                   withSize:(const UInt16)payloadSize
 assignServiceProviderNameTo:(NSString **)provider
@@ -41,10 +36,10 @@ assignServiceProviderNameTo:(NSString **)provider
     
     while (index < payloadSize) {
         UInt8 tag = payload[index++];
-        UInt8 length = payload[index++]; // Must keep this line even though length is never used since index is incremented
+        ++index; // Skip length data. If length needed, replace with - UInt8 length = payload[index++];
         switch (tag) {
             case 0x48: {
-                UInt8 type = payload[index++]; // Must keep this line even though type is never used since index is incremented
+                ++index; // Skip type data. If type needed, replace with - UInt8 type = payload[index++];
                 UInt8 serviceProviderNameLength = payload[index++];
                 const UInt8 *serviceProviderName = &payload[index];
                 index += serviceProviderNameLength;
@@ -73,10 +68,12 @@ assignServiceProviderNameTo:(NSString **)provider
     bool changed = false;
     
     // If current next indicator is false then data has changed
-    changed = !section.currentNextIndicator;
+    checkChangedX(!section.currentNextIndicator, changed);
+//    checkChangedXM(!section.currentNextIndicator, changed, @"Current next section indicator is TRUE");
     
     // Capture and check Version
-    checkChanged(_versionNumber, section.versionNumber, changed);
+    checkChangedX((_versionNumber != section.versionNumber), changed);
+//    checkChangedXM((_versionNumber != section.versionNumber), changed, @"Version number of the last and current SDT are not the same");
     
     // Capture original network ID
     _originalNetworkID = (((UInt16)section.payload[0] & 0xFF) << 8) | ((UInt16)section.payload[1] & 0xFF);
@@ -117,13 +114,13 @@ assignServiceProviderNameTo:(NSString **)provider
              assignServiceProviderNameTo:&serviceProviderName
                      assignServiceNameTo:&serviceName];
 
+            // Create service and add it to the services dictionnary
             ALiSdtService *service = [[ALiSdtService alloc] initWithServiceID:serviceID
                                                                  runingStatus:(const RuningStatus)runingStatus
                                                           serviceProviderName:serviceProviderName
                                                                   serviceName:serviceName
                                                                     scrambled:(freeCAMode != 0)];
             [_services setObject:service forKey:[NSNumber numberWithUnsignedShort:serviceID]];
-            changed = true;
         }
         [serviceIDs removeObject:[NSNumber numberWithUnsignedShort:serviceID]];
         

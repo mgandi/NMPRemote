@@ -14,5 +14,6 @@
 @property (nonatomic, assign, readonly) UInt16 number;
 
 - (id)initWithPid:(const UInt16)pid andNumber:(const UInt16)number;
+- (UInt32)uid;
 
 @end

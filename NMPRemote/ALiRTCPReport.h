@@ -12,6 +12,8 @@
 
 @property (nonatomic, assign) UInt32 packetCount;
 @property (nonatomic, assign) UInt32 ssrc;
+@property (nonatomic, assign) UInt64 ntpTimeStamp;
+@property (nonatomic, assign) UInt32 rtpTimeStamp;
 @property (nonatomic, copy) NSDictionary *arguments;
 
 @end

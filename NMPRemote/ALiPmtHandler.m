@@ -39,11 +39,6 @@
 
 #pragma mark - Pid Handler Delegate
 
-- (void)discontinuity
-{
-    [_delegate discontinuity:self];
-}
-
 - (void)parseTable:(ALiSection *)section
 {
     if (section.tableID != 0x02)
@@ -57,13 +52,18 @@
     triggered = true;
 
     // If current next indicator is false then data has changed
-    changed = !section.currentNextIndicator;
+    checkChangedX(!section.currentNextIndicator, changed);
+//    checkChangedXM(!section.currentNextIndicator, changed, @"Current next section indicator is TRUE");
     
-    // Check PMT PID
-    NSAssert(_programNumber == section.serviceID, @"Program number does not match the service ID");
+    // Check PMT PID vs Service ID
+    if (_programNumber != section.serviceID) {
+        NSLog(@"Program number %d does not match the service ID %d!", _programNumber, section.serviceID);
+        return;
+    }
 
     // Capture and check Version
-    checkChanged(_versionNumber, section.versionNumber, changed);
+    checkChangedX((_versionNumber != section.versionNumber), changed);
+//    checkChangedXM((_versionNumber != section.versionNumber), changed, @"Version number of the last and current PMT are not the same");
     
     // Capture PCR PID and program info length
     _pcrPid = (((UInt16)section.payload[0] & 0x1F) << 8) | ((UInt16)section.payload[1] & 0xFF);
@@ -93,7 +93,7 @@
         }
         
         if (esInfoLength + 5 > available) {
-            NSLog(@"This should never happen!");
+            NSLog(@"%@ - This should never happen!", NSStringFromClass([self class]));
         }
         
         // Increment bytes left counter and index
@@ -103,14 +103,13 @@
         if ([_elementaryStreams objectForKey:[NSNumber numberWithUnsignedShort:pid]] == nil) {
             ALiPmtElementaryStream *es = [[ALiPmtElementaryStream alloc] initWithPid:pid andType:type];
             [_elementaryStreams setObject:es forKey:[NSNumber numberWithUnsignedShort:pid]];
-            changed = true;
         }
         [elementaryStreamsPIDs removeObject:[NSNumber numberWithUnsignedShort:pid]];
     }
     
     // Check that all the elementary streams previously discovered are still present
     if ([elementaryStreamsPIDs count]) {
-        changed = true;
+//        checkChangedX(true, changed, @"Some elementary streams in the PMT where removed");
         for (NSNumber *elementaryStreamsPID in elementaryStreamsPIDs) {
             [_elementaryStreams removeObjectForKey:elementaryStreamsPID];
         }

@@ -68,7 +68,7 @@
         [outputStream write:[syncWord bytes] maxLength:[syncWord length]];
         
         /* Send length of message */
-        int messageLength = CFSwapInt32HostToBig([data length]);
+        int messageLength = CFSwapInt32HostToBig((int32_t)[data length]);
         NSData *syncLen = [NSData dataWithBytes:&messageLength length:sizeof(messageLength)];
         [outputStream write:[syncLen bytes] maxLength:[syncLen length]];
         
@@ -82,7 +82,7 @@
         /* Read answer */
         uint8_t inBuffer[4];
         uint32_t syncLength;
-        int len = 0;
+        NSInteger len = 0;
         
         /* Wait for bytes available */
         while (![inputStream hasBytesAvailable]);
@@ -90,7 +90,7 @@
         /* Check syncword */
         len = [inputStream read:inBuffer maxLength:sizeof(inBuffer)];
         if (len != 4) {
-            NSLog(@"Syncword length should be 4, but got data length: %d!", len);
+            NSLog(@"Syncword length should be 4, but got data length: %ld!", (long)len);
             return;
         }
         NSData *receivedSyncWord = [NSData dataWithBytes:inBuffer length:sizeof(inBuffer)];
@@ -105,7 +105,7 @@
         /* Get length of message */
         len = [inputStream read:(uint8_t *)&syncLength maxLength:sizeof(syncLength)];
         if (len != 4) {
-            NSLog(@"Synclen length should be 4, but got data length: %d!", len);
+            NSLog(@"Synclen length should be 4, but got data length: %ld!", (long)len);
             return;
         }
         syncLength = CFSwapInt32BigToHost(syncLength);
@@ -193,7 +193,7 @@
     [outputStream write:[syncWord bytes] maxLength:[syncWord length]];
     
     /* Send length of message */
-    int messageLength = CFSwapInt32HostToBig([data length]);
+    int messageLength = CFSwapInt32HostToBig((int32_t)[data length]);
     NSData *syncLen = [NSData dataWithBytes:&messageLength length:sizeof(messageLength)];
     [outputStream write:[syncLen bytes] maxLength:[syncLen length]];
     
@@ -207,7 +207,7 @@
     /* Read answer */
     uint8_t inBuffer[4];
     uint32_t syncLength;
-    int len = 0;
+    NSInteger len = 0;
     NSDictionary *dict = nil;
     
     /* Wait for bytes available */
@@ -216,7 +216,7 @@
     /* Check syncword */
     len = [inputStream read:inBuffer maxLength:sizeof(inBuffer)];
     if (len != 4) {
-        NSLog(@"Syncword length should be 4, but got data length: %d!", len);
+        NSLog(@"Syncword length should be 4, but got data length: %ld!", (long)len);
         return dict;
     }
     NSData *receivedSyncWord = [NSData dataWithBytes:inBuffer length:sizeof(inBuffer)];
@@ -231,7 +231,7 @@
     /* Get length of message */
     len = [inputStream read:(uint8_t *)&syncLength maxLength:sizeof(syncLength)];
     if (len != 4) {
-        NSLog(@"Synclen length should be 4, but got data length: %d!", len);
+        NSLog(@"Synclen length should be 4, but got data length: %ld!", (long)len);
         return dict;
     }
     syncLength = CFSwapInt32BigToHost(syncLength);
@@ -286,7 +286,7 @@
         [outputStream write:[syncWord bytes] maxLength:[syncWord length]];
         
         /* Send length of message */
-        int messageLength = CFSwapInt32HostToBig([data length]);
+        int messageLength = CFSwapInt32HostToBig((int32_t)[data length]);
         NSData *syncLen = [NSData dataWithBytes:&messageLength length:sizeof(messageLength)];
         [outputStream write:[syncLen bytes] maxLength:[syncLen length]];
         

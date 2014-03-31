@@ -10,10 +10,11 @@
 #import "ALiDongle.h"
 #import "ALiDvbtScanProcedure.h"
 
-@interface ALiLiveTableViewController : UITableViewController <ALiDvbtScanProcedureDelegate>
+@interface ALiLiveTableViewController : UITableViewController <ALiDongleDelegate, ALiDvbtScanProcedureDelegate>
 
 @property (nonatomic, strong) ALiDongle *dongle;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *stopBarButtonItem;
+@property (nonatomic, assign, readonly) BOOL scanning;
 
 - (IBAction)stop:(id)sender;
 - (IBAction)refresh:(id)sender;

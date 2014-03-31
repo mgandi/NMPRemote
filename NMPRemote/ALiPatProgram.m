@@ -17,4 +17,11 @@
     return self;
 }
 
+- (UInt32)uid
+{
+    UInt32 number = (((UInt32)_number) << 8) & 0xFF00;
+    UInt32 pid = (((UInt32)_pid) << 0) & 0x00FF;
+    return (number | pid);
+}
+
 @end

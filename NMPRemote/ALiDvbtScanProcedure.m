@@ -10,7 +10,8 @@
 #import "ALiDemuxer.h"
 
 #define LOCK_TIMEOUT    3
-#define PAT_TIMEOUT     10
+#define PAT_TIMEOUT     12
+#define STEP_TIMEOUT    60
 
 #define TUNER_PARAM_FEID    0
 #define TUNER_PARAM_LVEL    1
@@ -51,18 +52,20 @@ enum States {
     ALiRTSPSession *session;
     ALiDemuxer *demuxer;
     dispatch_queue_t scanProcessingQueue;
+    ScanStatus previousState;
+    NSLock *lock;
+    BOOL changingFrequency;
     
     // Scan support variables
     double frequency;
-    NSMutableDictionary *programs;
+    NSMutableDictionary *programs, *stepPrograms;
     
     // Step support variables
     NSMutableArray *scanPids;
     BOOL locked;
-    NSTimer *lockTimer, *patTimer;
+    NSTimer *lockTimer, *patTimer, *sessionTimer, *stepTimer;
     NSMutableArray *handlers;
     TableType tables;
-    UInt32 lastSsrc;
     UInt32 currentSsrc;
 }
 
@@ -110,7 +113,7 @@ enum States {
     [url appendString:host];
     
     // Set path
-    if (session.status != IDLE) {
+    if (session.status > IDLE) {
         [url appendFormat:@"/stream=%lu", (unsigned long)session.streamID];
     } else {
         [url appendString:@"/"];
@@ -130,13 +133,12 @@ enum States {
 
 - (void)deleteSession
 {
-    [session teardown];
     session = nil;
 }
 
 - (void)startLockTimeoutTimer
 {
-    NSLog(@"Start lock timeout timer!");
+//    NSLog(@"Start lock timeout timer!");
     dispatch_sync(dispatch_get_main_queue(), ^{
         lockTimer = [NSTimer scheduledTimerWithTimeInterval:LOCK_TIMEOUT target:self selector:@selector(lockTimeout) userInfo:nil repeats:FALSE];
     });
@@ -144,16 +146,29 @@ enum States {
 
 - (void)startPatTimeoutTimer
 {
-    NSLog(@"Start PAT timeout timer!");
+//    NSLog(@"Start PAT timeout timer!");
     dispatch_sync(dispatch_get_main_queue(), ^{
         patTimer = [NSTimer scheduledTimerWithTimeInterval:PAT_TIMEOUT target:self selector:@selector(patTimeout) userInfo:nil repeats:FALSE];
     });
 }
 
+- (void)startStepTimeout
+{
+    //    NSLog(@"Start step timeout timer!");
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        stepTimer = [NSTimer scheduledTimerWithTimeInterval:STEP_TIMEOUT target:self selector:@selector(stepTimeout) userInfo:nil repeats:FALSE];
+    });
+}
+
 - (void)killTimers
 {
+    [self killTimers:NO];
+}
+
+- (void)killTimers:(BOOL)all
+{
     if (lockTimer != nil) {
-        NSLog(@"Stop lock timeout timer!");
+//        NSLog(@"Stop lock timeout timer!");
         dispatch_sync(dispatch_get_main_queue(), ^{
             [lockTimer invalidate];
         });
@@ -161,26 +176,89 @@ enum States {
     }
     
     if (patTimer != nil) {
-        NSLog(@"Stop PAT timeout timer!");
+//        NSLog(@"Stop PAT timeout timer!");
         dispatch_sync(dispatch_get_main_queue(), ^{
             [patTimer invalidate];
         });
         patTimer = nil;
     }
+    
+    if ((stepTimer != nil) && all) {
+//        NSLog(@"Stop step timeout timer!");
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [stepTimer invalidate];
+        });
+        stepTimer = nil;
+    }
 }
 
 - (void)lockTimeout
 {
-//    NSLog(@"=========================================");
-    NSLog(@"Lock timeout! (%f MHz)", frequency);
-    [self step];
+    // Check that we are not in the middle of an RTSP request
+    if ((_scanStatus == SCAN_SETUP_REQUEST) ||
+        (_scanStatus == SCAN_PLAY_REQUEST) ||
+        (_scanStatus == SCAN_TEARDOWN_REQUEST)) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+            NSLog(@"- Post pone lock timeout!");
+            [self lockTimeout];
+        });
+        return;
+    }
+    
+    dispatch_async(scanProcessingQueue, ^{
+        NSLog(@"- Lock timeout! (%f MHz)", frequency);
+        
+        // Update status
+        [self updateState:SCAN_LOCK_TIMEOUT];
+        
+        [self step];
+    });
 }
 
 - (void)patTimeout
 {
-//    NSLog(@"=========================================");
-    NSLog(@"PAT timeout! (%f MHz)", frequency);
-    [self step];
+    // Check that we are not in the middle of an RTSP request
+    if ((_scanStatus == SCAN_SETUP_REQUEST) ||
+        (_scanStatus == SCAN_PLAY_REQUEST) ||
+        (_scanStatus == SCAN_TEARDOWN_REQUEST)) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+            NSLog(@"- Post pone PAT timeout!");
+            [self patTimeout];
+        });
+        return;
+    }
+    
+    dispatch_async(scanProcessingQueue, ^{
+        NSLog(@"- PAT timeout! (%f MHz)", frequency);
+        
+        // Update status
+        [self updateState:SCAN_PAT_TIMEOUT];
+        
+        [self step];
+    });
+}
+
+- (void)stepTimeout
+{
+    // Check that we are not in the middle of an RTSP request
+    if ((_scanStatus == SCAN_SETUP_REQUEST) ||
+        (_scanStatus == SCAN_PLAY_REQUEST) ||
+        (_scanStatus == SCAN_TEARDOWN_REQUEST)) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+            NSLog(@"- Post pone step timeout!");
+            [self stepTimeout];
+        });
+        return;
+    }
+    
+    dispatch_async(scanProcessingQueue, ^{
+        NSLog(@"- Step timeout! (%f MHz)", frequency);
+        
+        // Update status
+        [self updateState:SCAN_STEP_TIMEOUT];
+        
+        [self step];
+    });
 }
 
 - (void)attachHandlers
@@ -199,18 +277,26 @@ enum States {
 
 - (void)setLocked
 {
+    [self setLocked:NO];
+}
+
+- (void)setLocked:(BOOL)forced
+{
     // If already locked do nothing
-    if (locked)
+    if (locked && !forced)
         return;
-    
-    //    NSLog(@"=========================================");
-    NSLog(@"Locked!");
     
     // Invalidate timers
     [self killTimers];
     
     // Set status as locked
     locked = YES;
+    
+    // Log
+    NSLog(@"- Locked!");
+    
+    // Update status
+    [self updateState:SCAN_LOCKED];
     
     // Check if a PAT handler already exists and if not create one
     ALiPatHandler *patHandler = nil;
@@ -221,41 +307,69 @@ enum States {
         }
     }
     if (patHandler == nil) {
+//        NSLog(@"Creating a PAT handler!");
         patHandler = [[ALiPatHandler alloc] init];
         patHandler.delegate = self;
+        [patHandler attach];
         [demuxer addPidHandler:0x0 handler:patHandler];
         [handlers addObject:patHandler];
     }
     
     // Attach all handlers
-    [self attachHandlers];
+//    [self attachHandlers];
     
-    // Start PAT timeout timer if PAT has not been yet found
-    if (!(tables & PAT)) {
+    // Check if we've already found the PAT
+    if (tables & PAT) {
+        [self updateState:SCAN_PAT_FOUND];
+    } else {
+        // Launch PAT timeout timer
         [self startPatTimeoutTimer];
     }
 }
 
 - (void)setUnlocked
 {
+    [self setUnlocked:NO];
+}
+
+- (void)setUnlocked:(BOOL)forced
+{
     // If already unlocked do nothing
-    if (!locked)
+    if (!locked && !forced)
         return;
     
-    //    NSLog(@"=========================================");
-    NSLog(@"Unlocked!");
+    // If forced it means the RTP reception is paused, thus, resume it
+    [session resumeRTPReception];
     
     // Invalidate timers
     [self killTimers];
     
-    // Detach all handlers
-    [self dettachHandlers];
-    
     // Set status as unlocked
     locked = NO;
     
+    // Log
+    NSLog(@"- Unlocked!");
+    
+    // Update status
+    [self updateState:SCAN_UNLOCKED];
+    
+    // Detach all handlers
+//    [self dettachHandlers];
+    
     // Re-launch lock timeout timer
     [self startLockTimeoutTimer];
+}
+
+- (void)setReceivingNewStream
+{
+    // Log
+    NSLog(@"- Receiving new stream!");
+    
+    // Update status
+    [self updateState:SCAN_RX_NSTREAM];
+    
+    // Force set to unlock
+    [self setUnlocked:YES];
 }
 
 - (void)checkDone
@@ -271,38 +385,49 @@ enum States {
         }
     }
     
-//    NSLog(@"=========================================");
     if (allPmtTriggered && hasPmtHandler) {
         tables |= PMT;
     } else {
+        /*
         if (!allPmtTriggered) {
             NSLog(@"Not all PMT have been seen yet!");
         }
         if (!hasPmtHandler) {
             NSLog(@"No PMT handlers created!");
         }
+        */
     }
     
     if (tables == (PAT | SDT | PMT)) {
-        NSLog(@"Got all information");
+        NSLog(@"- Got all information");
+        
+        // Update status
+        [self updateState:SCAN_STEP_COMPLETE];
+        
+        // Save all channels we've found so far
+        [self commitData];
+        
+        // Next step
         [self step];
     } else {
+        /*
         if (!(tables & PAT)) {
             NSLog(@"No PAT found!");
         }
         if (!(tables & SDT)) {
             NSLog(@"No SDT found!");
         }
+        */
     }
 }
 
 - (void)clearStepSupportVariables
 {
     // Kill all runing timers
-    [self killTimers];
+    [self killTimers:YES];
     
      // Deatach all handlers
-    [self dettachHandlers];
+//    [self dettachHandlers];
     
     // Remove all handlers from demuxer
     [demuxer removeAllPidHandlers];
@@ -310,11 +435,7 @@ enum States {
     // Delete all handlers and clear handlers container
     [handlers removeAllObjects];
     
-    // Commit temporary data if any
-    [self commitData];
-    
-    // Update SSRC
-    lastSsrc = currentSsrc;
+    // Reset SSRC
     currentSsrc = 0;
     
     // Clear scan pids container
@@ -325,6 +446,9 @@ enum States {
     
     // Clear tables found
     tables = 0;
+    
+    // Clear all programs that could have been found during step
+    [stepPrograms removeAllObjects];
 }
 
 - (void)clearScanSupportVariables
@@ -334,36 +458,270 @@ enum States {
     // set initial frequency to 0
     frequency = 0;
     
-    // Clear all programs that could have been found
+    // Clear all programs that could have been found during scan
     [programs removeAllObjects];
 }
 
 - (void)commitData
 {
-    // TODO:
-    // - Add filtering of none video streams
-    
     if (tables == (PAT | SDT | PMT)) { // We have all the information required for the listed programs
         // Notify delegate about each program found
-        for (NSNumber *key in programs) {
-            ALiProgram *program = [programs objectForKey:key];
+        for (NSNumber *key in stepPrograms) {
+            ALiProgram *program = [stepPrograms objectForKey:key];
             
+            // Copy program to persisten programs dictionnary
+            [programs setObject:program forKey:[NSNumber numberWithUnsignedInt:[program uid]]];
+            
+            // Make sure this program contains audio or video
             if (![program containsVideo] && ![program containsAudio])
                 continue;
             
+            // Notify UI that we found a program
             dispatch_async(dispatch_get_main_queue(), ^{
-                [_delegate foundProgram:(ALiProgram *)program];
+                [_delegate foundProgram:self program:(ALiProgram *)program];
             });
         }
     }
     
     // Delete all potential temporary programs that where found
-    [programs removeAllObjects];
+    [stepPrograms removeAllObjects];
+}
+
+- (void)requestSetup:(NSString *)url
+{
+    // Update status
+    [self updateState:SCAN_SETUP_REQUEST];
+    
+    [session setup:url];
+}
+
+- (void)requestPlay
+{
+    [self requestPlay:session.url doChangeFrequency:NO];
+}
+
+- (void)requestPlay:(NSString *)url doChangeFrequency:(BOOL)doChangeFrequency
+{
+    // Update asking for new stream
+    changingFrequency = doChangeFrequency;
+    
+    // Update status
+    [self updateState:SCAN_PLAY_REQUEST];
+    
+    // Pause socket reception
+    [session pauseReception];
+    
+    [session play:url];
+}
+
+- (void)requestOptions
+{
+    dispatch_async(scanProcessingQueue, ^{
+        [session options];
+    });
+}
+
+- (void)requestTeardown
+{
+    // Update status
+    [self updateState:SCAN_TEARDOWN_REQUEST];
+    
+    // Stop timer that maintains session alive
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (sessionTimer != nil) {
+            [sessionTimer invalidate];
+            sessionTimer = nil;
+        }
+    });
+    
+    [session teardown];
+}
+
+- (NSString *)statusToString:(ScanStatus)status
+{
+    switch (status) {
+        case SCAN_IDLE:
+            return @"SCAN_IDLE";
+            break;
+        case SCAN_START_REQUEST:
+            return @"SCAN_START_REQUEST";
+            break;
+        case SCAN_STEP_REQUEST:
+            return @"SCAN_STEP_REQUEST";
+            break;
+            
+        case SCAN_STOP_REQUEST:
+            return @"SCAN_STOP_REQUEST";
+            break;
+        case SCAN_TEARDOWN_REQUEST:
+            return @"SCAN_TEARDOWN_REQUEST";
+            break;
+        case SCAN_TEARDOWN_DONE:
+            return @"SCAN_TEARDOWN_DONE";
+            break;
+            
+        case SCAN_SETUP_REQUEST:
+            return @"SCAN_SETUP_REQUEST";
+            break;
+        case SCAN_SETUP_DONE:
+            return @"SCAN_SETUP_DONE";
+            break;
+            
+        case SCAN_LOCK_TIMEOUT:
+            return @"SCAN_LOCK_TIMEOUT";
+            break;
+        case SCAN_PAT_TIMEOUT:
+            return @"SCAN_PAT_TIMEOUT";
+            break;
+        case SCAN_STEP_TIMEOUT:
+            return @"SCAN_STEP_TIMEOUT";
+            break;
+            
+        case SCAN_PLAY_REQUEST:
+            return @"SCAN_PLAY_REQUEST";
+            break;
+        case SCAN_PLAY_DONE:
+            return @"SCAN_PLAY_DONE";
+            break;
+        case SCAN_RX_NSTREAM:
+            return @"SCAN_RX_NSTREAM";
+            break;
+            
+        case SCAN_UNLOCKED:
+            return @"SCAN_UNLOCKED";
+            break;
+        case SCAN_LOCKED:
+            return @"SCAN_LOCKED";
+            break;
+        case SCAN_PAT_FOUND:
+            return @"SCAN_PAT_FOUND";
+            break;
+        case SCAN_PMT_FOUND:
+            return @"SCAN_PMT_FOUND";
+            break;
+        case SCAN_SDT_FOUND:
+            return @"SCAN_SDT_FOUND";
+            break;
+        case SCAN_STEP_COMPLETE:
+            return @"SCAN_STEP_COMPLETE";
+            break;
+    }
+}
+
+- (void)updateState:(ScanStatus)status
+{
+    fprintf(stderr, "- %d -> %d -\n", _scanStatus, status);
+    if ((_scanStatus == SCAN_PLAY_REQUEST) && (status == SCAN_STEP_COMPLETE)) {
+        NSLog(@"Special case I don't understand yet");
+    }
+    
+    if ((status == SCAN_STEP_TIMEOUT) || (_scanStatus == SCAN_STEP_TIMEOUT)) {
+        // This is an exception let it go
+        // ...
+    } else {
+        
+        // Check if it is allowed to come from the current state to the requested state
+        switch (_scanStatus) {
+            case SCAN_IDLE:
+                NSAssert(status == SCAN_START_REQUEST,
+                         @"Trying to go from SCAN_IDLE to %@", [self statusToString:status]);
+                break;
+            case SCAN_START_REQUEST:
+                NSAssert(status == SCAN_SETUP_REQUEST,
+                         @"Trying to go from SCAN_START_REQUEST to %@", [self statusToString:status]);
+                break;
+            case SCAN_STEP_REQUEST:
+                NSAssert((status == SCAN_PLAY_REQUEST) || (status == SCAN_STOP_REQUEST),
+                         @"Trying to go from SCAN_STEP_REQUEST to %@", [self statusToString:status]);
+                break;
+                
+            case SCAN_STOP_REQUEST:
+                NSAssert(status == SCAN_TEARDOWN_REQUEST,
+                         @"Trying to go from SCAN_STOP_REQUEST to %@", [self statusToString:status]);
+                break;
+            case SCAN_TEARDOWN_REQUEST:
+                NSAssert(status == SCAN_TEARDOWN_DONE,
+                         @"Trying to go from SCAN_TEARDOWN_REQUEST to %@", [self statusToString:status]);
+                break;
+            case SCAN_TEARDOWN_DONE:
+                NSAssert(status == SCAN_IDLE,
+                         @"Trying to go from SCAN_TEARDOWN_DONE to %@", [self statusToString:status]);
+                break;
+                
+            case SCAN_SETUP_REQUEST:
+                NSAssert(status == SCAN_SETUP_DONE,
+                         @"Trying to go from SCAN_SETUP_REQUEST to %@", [self statusToString:status]);
+                break;
+            case SCAN_SETUP_DONE:
+                NSAssert(status == SCAN_PLAY_REQUEST,
+                         @"Trying to go from SCAN_SETUP_DONE to %@", [self statusToString:status]);
+                break;
+                
+            case SCAN_LOCK_TIMEOUT:
+                NSAssert(status == SCAN_STEP_REQUEST,
+                         @"Trying to go from SCAN_LOCK_TIMEOUT to %@", [self statusToString:status]);
+                break;
+            case SCAN_PAT_TIMEOUT:
+                NSAssert(status == SCAN_STEP_REQUEST,
+                         @"Trying to go from SCAN_PAT_TIMEOUT to %@", [self statusToString:status]);
+                break;
+                
+            case SCAN_PLAY_REQUEST:
+                NSAssert(status == SCAN_PLAY_DONE,
+                         @"Trying to go from SCAN_PLAY_REQUEST to %@", [self statusToString:status]);
+                break;
+            case SCAN_PLAY_DONE:
+                NSAssert((status == SCAN_RX_NSTREAM) || (status == SCAN_UNLOCKED),
+                         @"Trying to go from SCAN_PLAY_DONE to %@", [self statusToString:status]);
+                break;
+            case SCAN_RX_NSTREAM:
+                NSAssert(status == SCAN_UNLOCKED,
+                         @"Trying to go from SCAN_PLAY_DONE to %@", [self statusToString:status]);
+                break;
+                
+            case SCAN_UNLOCKED:
+                NSAssert((status == SCAN_LOCKED) || (status == SCAN_LOCK_TIMEOUT) || (status == SCAN_PAT_FOUND) || (status == SCAN_STEP_COMPLETE),
+                         @"Trying to go from SCAN_UNLOCKED to %@", [self statusToString:status]);
+                break;
+            case SCAN_LOCKED:
+                NSAssert((status == SCAN_UNLOCKED) || (status == SCAN_PAT_FOUND) || (status == SCAN_PAT_TIMEOUT) || (status == SCAN_STEP_COMPLETE),
+                         @"Trying to go from SCAN_LOCKED to %@", [self statusToString:status]);
+                break;
+            case SCAN_PAT_FOUND:
+                NSAssert((status == SCAN_STEP_COMPLETE) || (status == SCAN_PLAY_REQUEST) || (status == SCAN_UNLOCKED) || (status == SCAN_PAT_FOUND),
+                         @"Trying to go from SCAN_PAT_FOUND to %@", [self statusToString:status]);
+                break;
+            case SCAN_PMT_FOUND:
+                break;
+            case SCAN_SDT_FOUND:
+                break;
+            case SCAN_STEP_COMPLETE:
+                NSAssert(status == SCAN_STEP_REQUEST,
+                         @"Trying to go from SCAN_STEP_COMPLETE to %@", [self statusToString:status]);
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
+    
+    // Log
+//    NSLog(@"Status: %@", [self statusToString:status]);
+    
+    // Assign new status
+    _scanStatus = status;
 }
 
 
 
 
+
+- (void)dealloc
+{
+    // Release RTSP session
+    session = nil;
+}
 
 - (id)initWithServer:(ALiSatipServer *)server
       startFrequency:(double)startFrequency
@@ -389,6 +747,15 @@ enum States {
     // Set processing queue
     scanProcessingQueue = processingQueue;
     
+    // Init previous state
+    previousState = SCAN_IDLE;
+    
+    // Init session lock
+    lock = [[NSLock alloc] init];
+    
+    // Init asking for new stream indicator
+    changingFrequency = YES;
+    
     // Set the server
     _server = server;
     
@@ -402,15 +769,21 @@ enum States {
     _stopFrequency = stopFrequency;
     
     // Init step status
-    _stepStatus = 0;
+    _scanStatus = SCAN_IDLE;
     
     // Init RTSP session
-    session = nil;
+    session = [[ALiRTSPSession alloc] initWithServer:_server
+                                                 url:@""
+                                       delegateQueue:scanProcessingQueue
+                                        rtcpDelegate:self
+                                         rtpDelegate:self];
+    session.delegate = self;
     
     // Set frequency
     frequency = 0.0;
     
-    // Init programs dictionary
+    // Init programs dictionaries
+    stepPrograms = [[NSMutableDictionary alloc] initWithCapacity:0];
     programs = [[NSMutableDictionary alloc] initWithCapacity:0];
     
     // Init scan pids array
@@ -425,6 +798,9 @@ enum States {
     // Init PAT timer
     patTimer = nil;
     
+    // Init session timer
+    sessionTimer = nil;
+    
     // Init handlers array
     handlers = [[NSMutableArray alloc] initWithCapacity:0];
     
@@ -434,8 +810,7 @@ enum States {
     // Init tables
     tables = 0;
     
-    // Init SSRC referer
-    lastSsrc = 0;
+    // Init SSRC
     currentSsrc = 0;
     
     return self;
@@ -444,47 +819,15 @@ enum States {
 - (void)start
 {
     dispatch_async(scanProcessingQueue, ^{
+        
+        // Update status
+        [self updateState:SCAN_START_REQUEST];
+        
+        // Reset all scan support variables
         [self clearScanSupportVariables];
-        [self step];
-    });
-}
-
-- (void)stop
-{
-    dispatch_async(scanProcessingQueue, ^{
-        [self deleteSession];
-        [self killTimers];
-        [self clearScanSupportVariables];
-    });
-}
-
-- (void)step
-{
-    dispatch_async(scanProcessingQueue, ^{
-        _stepStatus = 1;
         
-        // Clear step variables
-        [self clearStepSupportVariables];
-        
-        // Compute current frequency
-        if (frequency == 0.0) { // Initialize with start frequency
-            frequency = _startFrequency;
-        } else { // Increment frequency
-            frequency += _stepFrequency;
-        }
-        
-        // If current frequency is bigger than stop frequency then it is time to stop
-        if (frequency > _stopFrequency) {
-            [self stop];
-            
-            // Notify delegate than scan is done
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_delegate done:self];
-            });
-            
-            return;
-        }
-        
+        // Initialize with start frequency
+        frequency = _startFrequency;
         
         NSLog(@"=========================================");
         NSLog(@"Frequency: %f", frequency);
@@ -492,20 +835,67 @@ enum States {
         // Get current url
         NSString *url = [self toUrl:RTSP host:_server.device.address purpose:SCAN];
         
-        // If session is nil create it
-        if (session == nil) {
-            session = [[ALiRTSPSession alloc] initWithServer:_server
-                                                         url:url
-                                               delegateQueue:scanProcessingQueue
-                                                rtcpDelegate:self
-                                                 rtpDelegate:self];
-            session.delegate = self;
-            [session setup];
-        } else {
-            [session play:url];
+        // Setup session
+        [self requestSetup:url];
+        
+        // Start step timeout timer
+        [self startStepTimeout];
+    });
+}
+
+- (void)stop
+{
+    dispatch_async(scanProcessingQueue, ^{
+        
+        // Update status
+        [self updateState:SCAN_STOP_REQUEST];
+        
+        // Request the session to be teared down
+        [self requestTeardown];
+    });
+}
+
+- (void)step
+{
+    dispatch_async(scanProcessingQueue, ^{
+        
+        // Pause RTP & RTCP reception
+        [session pauseReception];
+        
+        // Update status
+        [self updateState:SCAN_STEP_REQUEST];
+        
+        // Clear step variables
+        [self clearStepSupportVariables];
+        
+        // Increment frequency
+        frequency += _stepFrequency;
+        
+        // If current frequency is bigger than stop frequency then it is time to stop
+        if (frequency > _stopFrequency) {
+            
+            // Notify delegate than scan is done however user of scan class will have to wait for scan to be stopped
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_delegate done:self];
+            });
+            
+            // We're done so stop scan
+            [self stop];
+            
+            return;
         }
         
-        _stepStatus = 2;
+        NSLog(@"=========================================");
+        NSLog(@"Frequency: %f", frequency);
+        
+        // Get current url
+        NSString *url = [self toUrl:RTSP host:_server.device.address purpose:SCAN];
+        
+        // Start playing new URL
+        [self requestPlay:url doChangeFrequency:YES];
+        
+        // Start step timeout timer
+        [self startStepTimeout];
         
     });
 }
@@ -514,27 +904,60 @@ enum States {
 
 - (void)sessionSetup:(ALiRTSPSession *)sess
 {
-    NSLog(@"Session setup!");
+//    NSLog(@"Session setup!");
+    
+    // Update status
+    [self updateState:SCAN_SETUP_DONE];
+    
+    // Start timer to maintain session alive
+    dispatch_async(dispatch_get_main_queue(), ^{
+        sessionTimer = [NSTimer scheduledTimerWithTimeInterval:sess.sessionTimeout
+                                                        target:self
+                                                      selector:@selector(requestOptions)
+                                                      userInfo:nil
+                                                       repeats:YES];
+    });
     
     // Start playing the session
-    [session play];
+    [self requestPlay:sess.url doChangeFrequency:YES];
 }
 
 - (void)sessionPlaying:(ALiRTSPSession *)sess
 {
-    NSLog(@"Session playing!");
+//    NSLog(@"Session playing!");
     
-    _stepStatus = 3;
+    // Update status
+    [self updateState:SCAN_PLAY_DONE];
     
-    if ((tables == 0) && !locked) {
-        // Launch lock timeout timer
-        [self startLockTimeoutTimer];
+    // Start reception of RTCP packets
+    [session resumeRTCPReception];
+    
+    // If not asking for a new stream then just go to unlock state
+    if (!changingFrequency) {
+        // Force set to unlock
+        [self setUnlocked:YES];
     }
+}
+
+- (void)sessionOptionsDone:(ALiRTSPSession *)sess
+{
+//    NSLog(@"Session options done!");
 }
 
 - (void)sessionTeardowned:(ALiRTSPSession *)sess
 {
-    NSLog(@"Session teared down!");
+//    NSLog(@"Session teared down!");
+    
+    // Update status
+    [self updateState:SCAN_TEARDOWN_DONE];
+    
+    // Cleanning scan support variables
+    [self clearScanSupportVariables];
+    
+    // Notify delegate than the scan is now stopped
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_delegate stopped:self];
+    });
 }
 
 - (void)error:(NSString *)errorMessage
@@ -545,45 +968,50 @@ enum States {
 
 - (void)reportAvailable:(ALiRTCPSocket *)rtcpSocket report:(ALiRTCPReport *)report
 {
-    static ALiRTCPReport *lastReport;
-    
-    /*
-    static UInt32 lastLocalSsrc = 0;
-    
-    // check if the packet belong to the current SSRC
-    if (lastLocalSsrc == 0) {
-        lastLocalSsrc = report.ssrc;
-    } else {
-        if (lastLocalSsrc != report)
-    }
-     */
-    
-    // Check if the status of the scan allows to receive data
-    if (_stepStatus < 3)
+    // Check if we are in a status that allows us to receive data
+    if (_scanStatus < SCAN_PLAY_DONE)
         return;
     
+    // Extract data array from report
     NSArray *tunerData = [[report.arguments objectForKey:@"tuner"] componentsSeparatedByString:@","];
     
-    // Make sure that we don't treat packet from previous frequency
-    // TODO: Find a way to base it on SSRC
-    if (frequency != [tunerData[TUNER_PARAM_FREQ] intValue]) {
-//        NSLog(@"=========================================");
-//        NSLog(@"RTCP Report from last SSRC (%d) -> ignored!", report.ssrc);
+    /*
+    NSLog(@"#########################################");
+    NSLog(@"RTCP Report");
+    NSLog(@"SSRC: %u", report.ssrc);
+    NSLog(@"RTP time stamp: %u", report.rtpTimeStamp);
+    NSLog(@"NTP time stamp: %llu", report.ntpTimeStamp);
+    NSLog(@"Front end ID: %d", [tunerData[TUNER_PARAM_FEID] intValue]);
+    NSLog(@"Lock status: %d", [tunerData[TUNER_PARAM_LOCK] boolValue]);
+    NSLog(@"Signal level: %d", [tunerData[TUNER_PARAM_LVEL] intValue]);
+    NSLog(@"Signal quality: %d", [tunerData[TUNER_PARAM_QUAL] intValue]);
+    NSLog(@"Frequency: %d", [tunerData[TUNER_PARAM_FREQ] intValue]);
+    */
+    
+    // if changingFrequency is set then check if we are receiving the new stream
+    if (changingFrequency) {
+        if (frequency != [tunerData[TUNER_PARAM_FREQ] intValue])
+            return;
+        
+        // From now on we are receiving the new stream
+        changingFrequency = NO;
+        
+        // Assign current ssrc value
+        currentSsrc = report.ssrc;
+        
+        // Update status
+        [self setReceivingNewStream];
     }
     
-    // Print report and assign current report to last report
-    if (report == lastReport) {
-    } else {
-//        NSLog(@"=========================================");
-//        NSLog(@"RTCP Report");
-//        NSLog(@"SSRC: %d", report.ssrc);
-//        NSLog(@"Front end ID: %d", [tunerData[TUNER_PARAM_FEID] intValue]);
-//        NSLog(@"Lock status: %d", [tunerData[TUNER_PARAM_LOCK] boolValue]);
-//        NSLog(@"Signal level: %d", [tunerData[TUNER_PARAM_LVEL] intValue]);
-//        NSLog(@"Signal quality: %d", [tunerData[TUNER_PARAM_QUAL] intValue]);
-//        NSLog(@"Frequency: %d", [tunerData[TUNER_PARAM_FREQ] intValue]);
-        lastReport = report;
+    // Ignore packets that do not belong to current SSRC
+    if (currentSsrc != report.ssrc) {
+//        NSLog(@"Packet from last SSRC (%d) -> ignored!", ssrc);
+        return;
     }
+    
+    // Check if we are in a status that allows us to receive data
+    if (_scanStatus < SCAN_UNLOCKED)
+        return;
     
     // check on lock status
     if ([tunerData[TUNER_PARAM_LOCK] boolValue] && !locked)
@@ -594,21 +1022,23 @@ enum States {
 
 #pragma mark - RTP Socket Delegate
 
-- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets ssrc:(const UInt32)ssrc
+- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets header:(const RtpHeader *)header
 {
-    // Check if the status of the scan allows to receive data
-    if (_stepStatus < 3)
+    // Check if we are in a status that allows us to receive data
+    if (_scanStatus < SCAN_UNLOCKED)
         return;
     
-    if (currentSsrc == 0) {
-        if (lastSsrc == ssrc) {
-//            NSLog(@"=========================================");
-            //            NSLog(@"Packet from last SSRC (%d) -> ignored!", ssrc);
-            
-            return;
-        } else
-            currentSsrc = ssrc;
+    // Ignore packets that do not belong to current SSRC
+    if (currentSsrc != header->ssrc) {
+        //        NSLog(@"Packet from last SSRC (%d) -> ignored!", ssrc);
+        return;
     }
+    
+    // Check that the array contains packets
+    if (![packets count])
+        return;
+    
+//    NSLog(@"Time stamp: %u", CFSwapInt32(header->ts));
     
     // Push packets to demuxer
     [demuxer push:packets];
@@ -616,29 +1046,31 @@ enum States {
 
 #pragma mark - PAT, SDT, PMT Handler Delegates
 
-- (void)discontinuity:(ALiPidHandler *)pidHandler
-{
-}
-
 - (void)foundPAT:(ALiPatHandler *)patHandler
 {
-//    NSLog(@"=========================================");
-    NSLog(@"Found a PAT for TS ID %d! @ %f MHz", patHandler.originalNetworkID, frequency);
-    
     // Invalidate runing timers
     [self killTimers];
     
-    // Take notes that we found a PAT
-    tables |= PAT;
-
-    // A PAT was found so we can create an sdt handler
-    ALiSdtHandler *sdtHandler = [[ALiSdtHandler alloc] initWithWhichTs:CurrentTs];
-    [sdtHandler attach];
-    sdtHandler.delegate = self;
-    [demuxer addPidHandler:0x11 handler:sdtHandler];
-    [handlers addObject:sdtHandler];
-
-    // Go through all PMT
+    // Log
+    NSLog(@"+ Found a PAT for TS ID %d! @ %f MHz", patHandler.originalNetworkID, frequency);
+    
+    // Go through all PMTs to test if any of them has already been found
+    BOOL hasDuplicate = NO;
+    for (NSNumber *key in patHandler.programs) {
+        ALiPatProgram *program = [patHandler.programs objectForKey:key];
+        UInt32 uid = [program uid];
+        ALiProgram *tmp = [programs objectForKey:[NSNumber numberWithUnsignedInt:uid]];
+        if ([programs objectForKey:[NSNumber numberWithUnsignedInt:[program uid]]] != nil) {
+            NSLog(@"| %d PID 0x%04x (%d)", program.number, program.pid, program.pid);
+            hasDuplicate |= YES;
+        }
+    }
+    if (hasDuplicate) {
+        NSLog(@"- The PAT contains duplicated programs dismiss it!");
+        return;
+    }
+    
+    // Go through all PMTs
     for (NSNumber *key in patHandler.programs) {
         ALiPatProgram *program = [patHandler.programs objectForKey:key];
         NSLog(@"| %d PID 0x%04x (%d)", program.number, program.pid, program.pid);
@@ -649,7 +1081,7 @@ enum States {
                                                                 tsId:patHandler.originalNetworkID
                                                               number:program.number
                                                                  pid:program.pid];
-            [programs setObject:prgm forKey:[NSNumber numberWithUnsignedShort:prgm.number]];
+            [stepPrograms setObject:prgm forKey:[NSNumber numberWithUnsignedShort:prgm.number]];
             
             // Create a PMT handler for each PMT
             ALiPmtHandler *pmtHandler = [[ALiPmtHandler alloc] initWithProgramNumber:program.number];
@@ -663,19 +1095,39 @@ enum States {
         }
     }
     
+    // Remove PAT handler from handlers list and demuxer
+    [patHandler dettach];
+    [demuxer removePidHandler:patHandler];
+//    [handlers removeObject:patHandler];
+    
     // Update status
-    _stepStatus = 2;
+    [self updateState:SCAN_PAT_FOUND];
+    
+    // Take notes that we found a PAT
+    tables |= PAT;
+
+    // A PAT was found so we can create an sdt handler
+    ALiSdtHandler *sdtHandler = [[ALiSdtHandler alloc] initWithWhichTs:CurrentTs];
+    [sdtHandler attach];
+    sdtHandler.delegate = self;
+    [demuxer addPidHandler:0x11 handler:sdtHandler];
+    [handlers addObject:sdtHandler];
     
     // Update RTSP request with the new PIDs
-    [session play:[self toUrl:RTSP host:_server.device.address purpose:SCAN]];
+    [self requestPlay:[self toUrl:RTSP host:_server.device.address purpose:SCAN] doChangeFrequency:NO];
 
     [self checkDone];
 }
 
 - (void)foundSDT:(ALiSdtHandler *)sdtHandler
 {
-//    NSLog(@"=========================================");
-    NSLog(@"Found an SDT!");
+    // Remove PMT handler from handlers list and demuxer
+    [sdtHandler dettach];
+    [demuxer removePidHandler:sdtHandler];
+//    [handlers removeObject:sdtHandler];
+    
+    // Log
+    NSLog(@"+ Found an SDT!");
     
     // Take notes that we found an SDT
     tables |= SDT;
@@ -683,11 +1135,11 @@ enum States {
     // Update information for each program
     for (NSNumber *key in sdtHandler.services) {
         ALiSdtService *service = [sdtHandler.services objectForKey:key];
-        ALiProgram *program = [programs objectForKey:[NSNumber numberWithUnsignedShort:service.serviceId]];
+        ALiProgram *program = [stepPrograms objectForKey:[NSNumber numberWithUnsignedShort:service.serviceId]];
         if (program != nil) {
             program.serviceProviderName = service.serviceProviderName;
             program.serviceName = service.serviceName;
-            NSLog(@"%@", program.serviceName);
+            NSLog(@"| %@", program.serviceName);
         }
     }
     
@@ -696,16 +1148,24 @@ enum States {
 
 - (void)foundPMT:(ALiPmtHandler *)pmtHandler
 {
-//    NSLog(@"=========================================");
-    NSLog(@"Found an PMT!");
+    // Remove PMT handler from handlers list and demuxer
+    [pmtHandler dettach];
+    [demuxer removePidHandler:pmtHandler];
+//    [handlers removeObject:pmtHandler];
+    
+    // Extract corresponding program
+    ALiProgram *program = [stepPrograms objectForKey:[NSNumber numberWithUnsignedShort:pmtHandler.programNumber]];
+    
+    // Log
+    NSLog(@"+ Found a PMT %d 0x%04x (%d)!", program.number, program.pid, program.pid);
     
     // Update information for each program
-    ALiProgram *program = [programs objectForKey:[NSNumber numberWithUnsignedShort:pmtHandler.programNumber]];
     if (program != nil) {
         program.pcrPid = pmtHandler.pcrPid;
         for (NSNumber *key in pmtHandler.elementaryStreams) {
             ALiPmtElementaryStream *es = [pmtHandler.elementaryStreams objectForKey:key];
-            [program.elementaryStreams setObject:es forKey:[NSNumber numberWithUnsignedShort:es.type]];
+            [program.elementaryStreams setObject:es forKey:[NSNumber numberWithUnsignedShort:es.pid]];
+            NSLog(@"| PID 0x%04x (%d) - %d", es.pid, es.pid, es.type);
         }
     }
     

@@ -25,6 +25,7 @@
 		22B7F40B18C4CE2300ADD9B1 /* Control@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22B7F40918C4CE2300ADD9B1 /* Control@2x.png */; };
 		22B7F41418C4DCD000ADD9B1 /* ALiControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F41318C4DCD000ADD9B1 /* ALiControlViewController.m */; };
 		22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */; };
+		22BADF5118E965EB001D2F74 /* ALiRTSPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */; };
 		22C8632918DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8632818DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m */; };
 		22C8632C18DC5436000E7FF2 /* ALiPidHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8632B18DC5436000E7FF2 /* ALiPidHandler.m */; };
 		22C8632F18DC5775000E7FF2 /* ALiSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8632E18DC5775000E7FF2 /* ALiSection.m */; };
@@ -115,6 +116,8 @@
 		22B7F41318C4DCD000ADD9B1 /* ALiControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiControlViewController.m; path = ../ALiControlViewController.m; sourceTree = "<group>"; };
 		22B7F41518C4E40200ADD9B1 /* ALiveNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiveNavigationViewController.h; sourceTree = "<group>"; };
 		22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiveNavigationViewController.m; sourceTree = "<group>"; };
+		22BADF4F18E965EB001D2F74 /* ALiRTSPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTSPRequest.h; path = NMPRemote/ALiRTSPRequest.h; sourceTree = "<group>"; };
+		22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTSPRequest.m; path = NMPRemote/ALiRTSPRequest.m; sourceTree = "<group>"; };
 		22C8632718DC3DA2000E7FF2 /* ALiDvbtScanProcedure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiDvbtScanProcedure.h; sourceTree = "<group>"; };
 		22C8632818DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiDvbtScanProcedure.m; sourceTree = "<group>"; };
 		22C8632A18DC5436000E7FF2 /* ALiPidHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPidHandler.h; sourceTree = "<group>"; };
@@ -218,6 +221,8 @@
 		22CEC04618B796920031DB99 = {
 			isa = PBXGroup;
 			children = (
+				22BADF4F18E965EB001D2F74 /* ALiRTSPRequest.h */,
+				22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */,
 				22CEC05818B796920031DB99 /* NMPRemote */,
 				22CEC07718B796930031DB99 /* NMPRemoteTests */,
 				22CEC05118B796920031DB99 /* Frameworks */,
@@ -530,6 +535,7 @@
 				22CEC0AD18BB9E320031DB99 /* ALiDongle.m in Sources */,
 				22C8633518DC6923000E7FF2 /* ALiDemuxer.m in Sources */,
 				22C8632918DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m in Sources */,
+				22BADF5118E965EB001D2F74 /* ALiRTSPRequest.m in Sources */,
 				227F9F4D18D9A89800C4C9F8 /* ALiPlaybackTableViewController.m in Sources */,
 				22FCA12318C0994F0085CAC3 /* ALiM3uParser.m in Sources */,
 				22B7F41418C4DCD000ADD9B1 /* ALiControlViewController.m in Sources */,

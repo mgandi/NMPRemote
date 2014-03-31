@@ -22,6 +22,7 @@ typedef enum {
 @protocol ALiRTSPSessionDelegate <NSObject>
 - (void)sessionSetup:(ALiRTSPSession *)session;
 - (void)sessionPlaying:(ALiRTSPSession *)session;
+- (void)sessionOptionsDone:(ALiRTSPSession *)session;
 - (void)sessionTeardowned:(ALiRTSPSession *)session;
 - (void)error:(NSString *)errorMessage;
 @end
@@ -37,7 +38,7 @@ typedef enum {
 @property (nonatomic, assign) Status status;
 
 // RTSP
-@property (nonatomic, assign, readonly) unsigned int cseq;
+@property (atomic, assign, readonly) unsigned int cseq;
 @property (nonatomic, copy, readonly) NSString *sessionID;
 @property (nonatomic, assign, readonly) NSUInteger sessionTimeout;
 @property (nonatomic, assign, readonly) NSUInteger streamID;
@@ -80,5 +81,12 @@ typedef enum {
 - (void)options;
 - (void)teardown;
 - (void)describe;
+
+- (void)pauseReception;
+- (void)pauseRTCPReception;
+- (void)pauseRTPReception;
+- (void)resumeReception;
+- (void)resumeRTCPReception;
+- (void)resumeRTPReception;
 
 @end

@@ -142,6 +142,7 @@ static UInt32 crc32Table[256] =
         // Check if packet is duplicate and just ignore it if it the case
         if (ecc == ccc) {
             NSLog(@"Duplicate TS packet?!?!?!");
+            [self deleteCurrentSection];
             return;
         }
         
@@ -152,7 +153,8 @@ static UInt32 crc32Table[256] =
         if (ecc != ccc) {
             NSLog(@"Discontinuity!\n");
             ecc = ccc;
-            [_pidHandlerDelegate discontinuity];
+            [self deleteCurrentSection];
+            return;
         }
     }
     

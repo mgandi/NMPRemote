@@ -17,7 +17,6 @@ typedef enum {
 @class ALiSdtHandler;
 
 @protocol ALiSdtHandlerDelegate <NSObject>
-- (void)discontinuity:(ALiPidHandler *)pidhandler;
 - (void)foundSDT:(ALiSdtHandler *)sdtHandler;
 @end
 

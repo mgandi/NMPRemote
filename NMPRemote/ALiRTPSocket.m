@@ -9,22 +9,6 @@
 #import "ALiRTPSocket.h"
 #import <dispatch/dispatch.h>
 
-typedef struct {
-    UInt8 cc:4;
-    UInt8 x:1;
-    UInt8 p:1;
-    UInt8 version:2;
-    
-    UInt8 type:7;
-    UInt8 m:1;
-    
-    UInt16 sn;
-    
-    UInt32 ts;
-    UInt32 ssrc;
-    UInt32 csrc;
-} RtpHeader;
-
 @implementation ALiRTPSocket
 {
     dispatch_queue_t rtpDelegateQueue, rtpProcessingQueue;
@@ -70,7 +54,7 @@ typedef struct {
     // Initialize RTCP socket
     _socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:rtpProcessingQueue];
     [_socket bindToPort:port error:nil];
-    /*BOOL res =*/ [_socket beginReceiving:nil];
+//    /*BOOL res =*/ [_socket beginReceiving:nil];
     
     // Init ssrc
     ssrc = 0;
@@ -108,6 +92,8 @@ typedef struct {
     const void *ptr = ((const void *)header) + 12;
     NSInteger remaining = [data length] - 12;
     
+    
+    // Create array of packets
     NSMutableArray *packets = [[NSMutableArray alloc] initWithCapacity:0];
     while (remaining >= 188) {
         [packets addObject:[[NSData alloc] initWithBytes:ptr length:188]];
@@ -115,16 +101,14 @@ typedef struct {
         remaining -= 188;
     }
     
-//    NSLog(@"%d", CFSwapInt16BigToHost(header->sn));
-    
     // Notify delegate about packets available
     if ([packets count]) {
         if (rtpDelegateQueue != rtpProcessingQueue) {
             dispatch_async(rtpDelegateQueue, ^{
-                [_delegate packetsAvailable:self packets:packets ssrc:ssrc];
+                [_delegate packetsAvailable:self packets:packets header:header];
             });
         } else {
-            [_delegate packetsAvailable:self packets:packets ssrc:ssrc];
+            [_delegate packetsAvailable:self packets:packets header:header];
         }
     }
 }

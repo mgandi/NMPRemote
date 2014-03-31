@@ -12,7 +12,6 @@
 @class ALiPmtHandler;
 
 @protocol ALiPmtHandlerDelegate <NSObject>
-- (void)discontinuity:(ALiPidHandler *)pidhandler;
 - (void)foundPMT:(ALiPmtHandler *)pmtHandler;
 @end
 

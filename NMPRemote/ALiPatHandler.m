@@ -24,11 +24,6 @@
 
 #pragma mark - Pid Handler Delegate
 
-- (void)discontinuity
-{
-    [_delegate discontinuity:self];
-}
-
 - (void)parseTable:(ALiSection *)section
 {
     if (section.tableID != 0x0)
@@ -39,10 +34,13 @@
     bool changed = false;
     
     // If current next indicator is false then data has changed
-    changed = !section.currentNextIndicator;
+    checkChangedX(!section.currentNextIndicator, changed);
+//    checkChangedXM(!section.currentNextIndicator, changed, @"Current next section indicator is TRUE");
     
     // Capture and check Version
-    checkChanged(_versionNumber, section.versionNumber, changed);
+    checkChangedX((_versionNumber != section.versionNumber), changed);
+//    checkChangedXM((_versionNumber != section.versionNumber), changed, @"Version number of the last and current PAT are not the same");
+    _versionNumber = section.versionNumber;
     
     // Capture all programs mentioned in pat
     NSSet *set = [_programs keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
@@ -69,7 +67,7 @@
     
     // Check that all the programs previously discovered are still present
     if ([programNumbers count]) {
-        changed = true;
+//        checkChangedX(true, changed, @"Some programs in the PAT where removed");
         for (NSNumber *programNumber in programNumbers) {
             [_programs removeObjectForKey:programNumber];
         }

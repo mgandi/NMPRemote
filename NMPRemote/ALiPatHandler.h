@@ -12,7 +12,6 @@
 @class ALiPatHandler;
 
 @protocol ALiPatHandlerDelegate <NSObject>
-- (void)discontinuity:(ALiPidHandler *)pidhandler;
 - (void)foundPAT:(ALiPatHandler *)pathandler;
 @end
 

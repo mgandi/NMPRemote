@@ -10,13 +10,14 @@
 #import "ALiSection.h"
 
 #ifndef checkChanged
+#define checkChangedX(condition, changed) if (condition) { changed |= true; }
+#define checkChangedXM(condition, changed, message) if (condition) { changed |= true; NSLog(@"%@ - changed: %@", NSStringFromClass([self class]), message); }
 #define checkChanged(a, b, c) if (a != b) { a = b; c = true; }
 #endif // checkChanged
 
 @class ALiPidHandler;
 
 @protocol ALiPidHandlerDelegate <NSObject>
-- (void)discontinuity;
 - (void)parseTable:(ALiSection *)section;
 @end
 

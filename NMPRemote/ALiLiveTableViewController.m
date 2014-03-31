@@ -47,6 +47,9 @@
     
     // Init procedure
     procedure = nil;
+    
+    // Init scanning indicator
+    _scanning = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -128,24 +131,24 @@
 
 - (IBAction)stop:(id)sender
 {
-    [self.dongle stopPlayback];
+    if (_scanning) {
+        // Stop and delete scan procedure if any already existing
+        if (procedure != nil) {
+            [procedure stop];
+            procedure = nil;
+        }
+    } else {
+        [self.dongle stopPlayback];
+    }
+    
+    // Set stop bar buttonitem to disabled state and refresh control to enabled state
+    [self.refreshControl setEnabled:true];
     [self.stopBarButtonItem setEnabled:false];
 }
 
 - (IBAction)refresh:(id)sender
 {
-    /*
-    // Url formatting
-    ALiM3uItem *item = (m3uItems)[0];
-    NSString *ipaddress = [NSString stringWithFormat:@"http://%@", _dongle.liveServer.device.address];
-    NSMutableString *url = [NSMutableString stringWithString:item.url];
-    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"http://\\d+\\.\\d+\\.\\d+\\.\\d+"
-                                                                      options:NSRegularExpressionCaseInsensitive
-                                                                        error:nil];
-    [regex replaceMatchesInString:url options:0 range:NSMakeRange(0, [url length]) withTemplate:ipaddress];
-     */
-    
-    // Delete scan procedure if any already existing
+    // Stop and delete scan procedure if any already existing
     if (procedure != nil) {
         [procedure stop];
         procedure = nil;
@@ -163,6 +166,15 @@
     // Create scan procedure and launch it
     procedure = [[ALiDvbtScanProcedure alloc] initWithServer:_dongle.liveServer startFrequency:474.0 stepFrequency:8.0 stopFrequency:826.0];
     procedure.delegate = self;
+    
+    // We are now in scanning mode
+    _scanning = YES;
+    
+    // Set stop bar button item to enabled state refresh control to disabled
+    [self.refreshControl setEnabled:false];
+    [self.stopBarButtonItem setEnabled:true];
+    
+    // Start the scan procedure
     [procedure start];
 }
 
@@ -170,15 +182,22 @@
 
 - (void)done:(ALiDvbtScanProcedure *)proc
 {
+}
+
+- (void)stopped:(ALiDvbtScanProcedure *)proc
+{
     if (proc == procedure ) {
         // Delete scan procedure
         if (procedure != nil) {
             procedure = nil;
         }
     }
+    
+    // We are no longer in scanning mode
+    _scanning = NO;
 }
 
-- (void)foundProgram:(ALiProgram *)program
+- (void)foundProgram:(ALiDvbtScanProcedure *)proc program:(ALiProgram *)program
 {
     ALiM3uItem *item = [[ALiM3uItem alloc] init];
     item.name = program.serviceName;
@@ -190,5 +209,28 @@
     [indexPaths addObject:[NSIndexPath indexPathForRow:[m3uItems indexOfObject:item] inSection:0]];
     [[self tableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
+
+#pragma mark - ALi Dongle delegate
+
+- (void)appInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+}
+
+- (void)deviceInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+}
+
+- (void)deviceWifiInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+}
+
+- (void)deviceWifiChannelInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+}
+
+- (void)deviceWifiListInformationReceived:(ALiDongle *)dongle dict:(NSDictionary *)dict
+{
+}
+
 
 @end

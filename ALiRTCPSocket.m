@@ -29,8 +29,7 @@ typedef struct {
 
 
 typedef struct {
-    UInt32 ntp_timestamp_msw;
-    UInt32 ntp_timestamp_lsw;
+    UInt64 ntp_timestamp;
     UInt32 rtp_timestamp;
     UInt32 senders_packet_count;
     UInt32 senders_octet_count;
@@ -92,7 +91,7 @@ typedef struct {
     // Initialize RTCP socket
     _socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:rtcpProcessingQueue];
     [_socket bindToPort:port error:nil];
-    /*BOOL res =*/ [_socket beginReceiving:nil];
+//    /*BOOL res =*/ [_socket beginReceiving:nil];
     
     return self;
 }
@@ -108,6 +107,8 @@ typedef struct {
         
         if ([self isSR:ptr remaining:remaining]) {
             RtcpSR *sr = (RtcpSR *)ptr;
+            report.ntpTimeStamp = CFSwapInt64BigToHost(sr->si.ntp_timestamp);
+            report.rtpTimeStamp = CFSwapInt32BigToHost(sr->si.rtp_timestamp);
             report.packetCount = CFSwapInt32BigToHost(sr->si.senders_packet_count);
         }
         

@@ -9,10 +9,26 @@
 #import <Foundation/Foundation.h>
 #import "GCDAsyncUdpSocket.h"
 
+typedef struct {
+    UInt8 cc:4;
+    UInt8 x:1;
+    UInt8 p:1;
+    UInt8 version:2;
+    
+    UInt8 type:7;
+    UInt8 m:1;
+    
+    UInt16 sn;
+    
+    UInt32 ts;
+    UInt32 ssrc;
+    UInt32 csrc;
+} RtpHeader;
+
 @class ALiRTPSocket;
 
 @protocol ALiRTPSocketDelegate <NSObject>
-- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets ssrc:(const UInt32)ssrc;
+- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets header:(const RtpHeader *)header;
 @end
 
 @interface ALiRTPSocket : NSObject

@@ -10,14 +10,7 @@
 #import <dispatch/dispatch.h>
 #import "GCDAsyncSocket.h"
 #import "GCDAsyncUdpSocket.h"
-
-enum MessageTypes {
-    SETUP = 1,
-    PLAY = 2,
-    OPTIONS = 3,
-    TEARDOWN = 4,
-    DESCRIBE = 5
-};
+#import "ALiRTSPRequest.h"
 
 @implementation ALiRTSPSession
 {
@@ -25,14 +18,13 @@ enum MessageTypes {
     GCDAsyncSocket *rtspSocket;
     dispatch_queue_t socketQueue, rtspProcessingQueue, rtspDelegateQueue;
     NSMutableData *rtspInputBuffer;
+    NSMutableDictionary *cseqs;
     
     // RTCP Network
     ALiRTCPSocket *rtcpSocket;
     
     // RTP Network
     ALiRTPSocket *rtpSocket;
-    
-    NSTimer *sessionTimer;
 }
 
 - (void)initNetworkCommunication
@@ -182,9 +174,9 @@ enum MessageTypes {
     
     // Initialize dispatch queues
     if (delegateQueue != 0) {
-        rtspDelegateQueue = delegateQueue;
         socketQueue = dispatch_queue_create("tw.com.ali.rtsp", NULL);
-        rtspProcessingQueue = rtspDelegateQueue;
+        rtspDelegateQueue = delegateQueue;
+        rtspProcessingQueue = delegateQueue;
     } else {
         socketQueue = dispatch_queue_create("tw.com.ali.rtsp", NULL);
         rtspProcessingQueue = dispatch_queue_create("tw.com.ali.rtspProcesing", NULL);
@@ -200,9 +192,9 @@ enum MessageTypes {
     // Set RTP delegate
     rtpSocket.delegate = rtpDelegate;
     
-    // Init session timer
-    sessionTimer = nil;
-    
+    // Init cseq disciotnary
+    cseqs = [[NSMutableDictionary alloc] initWithCapacity:0];
+
     return self;
 }
 
@@ -214,14 +206,21 @@ enum MessageTypes {
 
 - (void)setup
 {
+    // Get next cseq
+    unsigned int cseq = ++_cseq;
+    
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"SETUP %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
+    [request appendFormat:@"CSeq: %d\r\n", cseq];
     [request appendFormat:@"Transport: RTP/AV;%@=%d-%d\r\n", (_unicast ? @"unicast;client_port" : @"multicast;port"), _rtpClientPort, _rtcpClientPort];
     [request appendString:@"\r\n"];
     
-    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
-    NSLog(@"\n%@", request);
+    // Create corresponding ALiRTSPRequest and add it to the dictionnary
+    ALiRTSPRequest *rtsprequest = [[ALiRTSPRequest alloc] initWithType:SETUP andRequest:request];
+    [cseqs setObject:rtsprequest forKey:[NSNumber numberWithUnsignedInt:cseq]];
+    
+//    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
+//    NSLog(@"\n%@", request);
     
     // Send request
     NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
@@ -239,14 +238,21 @@ enum MessageTypes {
 
 - (void)play
 {
+    // Get next cseq
+    unsigned int cseq = ++_cseq;
+    
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"PLAY %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
+    [request appendFormat:@"CSeq: %d\r\n", cseq];
     [request appendFormat:@"Session: %@\r\n", _sessionID];
     [request appendString:@"\r\n"];
     
-    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
-    NSLog(@"\n%@", request);
+    // Create corresponding ALiRTSPRequest and add it to the dictionnary
+    ALiRTSPRequest *rtsprequest = [[ALiRTSPRequest alloc] initWithType:PLAY andRequest:request];
+    [cseqs setObject:rtsprequest forKey:[NSNumber numberWithUnsignedInt:cseq]];
+    
+//    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
+//    NSLog(@"\n%@", request);
     
     // Send request
     NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
@@ -258,14 +264,21 @@ enum MessageTypes {
 
 - (void)options
 {
+    // Get next cseq
+    unsigned int cseq = ++_cseq;
+    
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"OPTIONS %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
+    [request appendFormat:@"CSeq: %d\r\n", cseq];
     [request appendFormat:@"Session: %@\r\n", _sessionID];
     [request appendString:@"\r\n"];
     
-    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
-    NSLog(@"\n%@", request);
+    // Create corresponding ALiRTSPRequest and add it to the dictionnary
+    ALiRTSPRequest *rtsprequest = [[ALiRTSPRequest alloc] initWithType:OPTIONS andRequest:request];
+    [cseqs setObject:rtsprequest forKey:[NSNumber numberWithUnsignedInt:cseq]];
+    
+//    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
+//    NSLog(@"\n%@", request);
     
     // Send request
     NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
@@ -273,19 +286,28 @@ enum MessageTypes {
     
     // Start read data
     [rtspSocket readDataWithTimeout:-1 buffer:rtspInputBuffer bufferOffset:0 tag:OPTIONS];
+    
+    fprintf(stderr, "OPTIONS %d\n", cseq);
 }
 
 - (void)teardown
 {
+    // Get next cseq
+    unsigned int cseq = ++_cseq;
+    
     // Build RTSP request
     NSMutableString *request = [NSMutableString stringWithFormat:@"TEARDOWN %@ RTSP/1.0\r\n", _url];
-    [request appendFormat:@"CSeq: %d\r\n", ++_cseq];
+    [request appendFormat:@"CSeq: %d\r\n", cseq];
     [request appendFormat:@"Session: %@\r\n", _sessionID];
     [request appendFormat:@"Connection: close\r\n"];
     [request appendString:@"\r\n"];
     
-    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
-    NSLog(@"\n%@", request);
+    // Create corresponding ALiRTSPRequest and add it to the dictionnary
+    ALiRTSPRequest *rtsprequest = [[ALiRTSPRequest alloc] initWithType:TEARDOWN andRequest:request];
+    [cseqs setObject:rtsprequest forKey:[NSNumber numberWithUnsignedInt:cseq]];
+    
+//    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
+//    NSLog(@"\n%@", request);
     
     // Send request
     NSData *data = [[NSData alloc] initWithData:[request dataUsingEncoding:NSASCIIStringEncoding]];
@@ -300,11 +322,43 @@ enum MessageTypes {
     
 }
 
-- (NSDictionary *)parseRTSPAnswer:(NSString *)answer
+- (void)pauseReception
+{
+    [self pauseRTCPReception];
+    [self pauseRTPReception];
+}
+
+- (void)pauseRTCPReception
+{
+    [rtcpSocket.socket pauseReceiving];
+}
+
+- (void)pauseRTPReception
+{
+    [rtpSocket.socket pauseReceiving];
+}
+
+- (void)resumeReception
+{
+    [self resumeRTCPReception];
+    [self resumeRTPReception];
+}
+
+- (void)resumeRTCPReception
+{
+    [rtcpSocket.socket beginReceiving:nil];
+}
+
+- (void)resumeRTPReception
+{
+    [rtpSocket.socket beginReceiving:nil];
+}
+
+- (NSDictionary *)parseRTSPAnswer:(NSString *)answer withTag:(long)tag
 {
     
-    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
-    NSLog(@"\n%@", answer);
+//    NSLog(@"+++++++++++++++++++++++++++++++++++++++++");
+//    NSLog(@"\n%@", answer);
     
     // Check if the received message is an RTSP answer and extract error code and error message form request line
     NSRegularExpression *regexHeader = [NSRegularExpression regularExpressionWithPattern:@"RTSP/1\\.0 (\\d+) (.*)"
@@ -340,10 +394,14 @@ enum MessageTypes {
     }];
     
     // Check validity of Cseq
-    if ([[arguments objectForKey:@"CSeq"] intValue] != _cseq) {
+    unsigned int answerCseq = [[arguments objectForKey:@"CSeq"] intValue];
+    ALiRTSPRequest *rtspRequest = [cseqs objectForKey:[NSNumber numberWithUnsignedInt:answerCseq]];
+    if ((rtspRequest == nil) || (rtspRequest.type != tag)) {
         NSLog(@"Wrong CSeq number!");
+        [cseqs removeObjectForKey:[NSNumber numberWithUnsignedInt:answerCseq]];
         return nil;
     }
+    [cseqs removeObjectForKey:[NSNumber numberWithUnsignedInt:answerCseq]];
     
     return arguments;
 }
@@ -363,7 +421,7 @@ enum MessageTypes {
 - (void)socket:(GCDAsyncSocket *)sender didReadData:(NSData *)data withTag:(long)tag
 {
     NSString *receivedString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-    NSDictionary *headers = [self parseRTSPAnswer:receivedString];
+    NSDictionary *headers = [self parseRTSPAnswer:receivedString withTag:tag];
     NSString *obj;
     
     switch (tag) {
@@ -398,15 +456,6 @@ enum MessageTypes {
                 return;
             }
             
-            // Start timer to maintain session alive
-            dispatch_async(dispatch_get_main_queue(), ^{
-                sessionTimer = [NSTimer scheduledTimerWithTimeInterval:_sessionTimeout
-                                                                target:self
-                                                              selector:@selector(sessionTimeoutCallback)
-                                                              userInfo:nil
-                                                               repeats:YES];
-            });
-            
             // Set status
             _status = SET;
             
@@ -432,18 +481,19 @@ enum MessageTypes {
             break;
         }
             
-        case OPTIONS:
+        case OPTIONS: {
 //            NSLog(@"Received answer to OPTIONS message");
+            
+            // Notify delegate if status change
+            dispatch_async(rtspDelegateQueue, ^{
+                [_delegate sessionOptionsDone:self];
+            });
+            
             break;
+        }
             
         case TEARDOWN: {
 //            NSLog(@"Received answer to TEARDOWN message");
-            
-            // Stop timer that maintain session alive
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [sessionTimer invalidate];
-                sessionTimer = nil;
-            });
             
             // Set status
             _status = IDLE;
@@ -461,11 +511,6 @@ enum MessageTypes {
             break;
             
     }
-}
-
-- (void)sessionTimeoutCallback
-{
-    [self options];
 }
 
 /**
@@ -493,7 +538,7 @@ enum MessageTypes {
 
 #pragma mark - RTP Socket Delegate
 
-- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets ssrc:(const UInt32)ssrc
+- (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets header:(const RtpHeader *)header
 {
 }
 

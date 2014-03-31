@@ -31,5 +31,6 @@
 
 - (BOOL)containsVideo;
 - (BOOL)containsAudio;
+- (UInt32)uid;
 
 @end
