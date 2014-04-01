@@ -26,6 +26,7 @@
 		22B7F41418C4DCD000ADD9B1 /* ALiControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F41318C4DCD000ADD9B1 /* ALiControlViewController.m */; };
 		22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */; };
 		22BADF5118E965EB001D2F74 /* ALiRTSPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */; };
+		22C6E3C418EAFA7600C19107 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C6E3C318EAFA7600C19107 /* MBProgressHUD.m */; };
 		22C8632918DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8632818DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m */; };
 		22C8632C18DC5436000E7FF2 /* ALiPidHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8632B18DC5436000E7FF2 /* ALiPidHandler.m */; };
 		22C8632F18DC5775000E7FF2 /* ALiSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8632E18DC5775000E7FF2 /* ALiSection.m */; };
@@ -118,6 +119,8 @@
 		22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiveNavigationViewController.m; sourceTree = "<group>"; };
 		22BADF4F18E965EB001D2F74 /* ALiRTSPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTSPRequest.h; path = NMPRemote/ALiRTSPRequest.h; sourceTree = "<group>"; };
 		22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTSPRequest.m; path = NMPRemote/ALiRTSPRequest.m; sourceTree = "<group>"; };
+		22C6E3C218EAFA7600C19107 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		22C6E3C318EAFA7600C19107 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		22C8632718DC3DA2000E7FF2 /* ALiDvbtScanProcedure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiDvbtScanProcedure.h; path = NMPRemote/ALiDvbtScanProcedure.h; sourceTree = "<group>"; };
 		22C8632818DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiDvbtScanProcedure.m; path = NMPRemote/ALiDvbtScanProcedure.m; sourceTree = "<group>"; };
 		22C8632A18DC5436000E7FF2 /* ALiPidHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiPidHandler.h; path = NMPRemote/ALiPidHandler.h; sourceTree = "<group>"; };
@@ -329,6 +332,8 @@
 		22CEC05818B796920031DB99 /* NMPRemote */ = {
 			isa = PBXGroup;
 			children = (
+				22C6E3C218EAFA7600C19107 /* MBProgressHUD.h */,
+				22C6E3C318EAFA7600C19107 /* MBProgressHUD.m */,
 				E021113418DADCBF007D5CF9 /* GCDAsyncSocket.h */,
 				E021113518DADCBF007D5CF9 /* GCDAsyncSocket.m */,
 				22CEC08718B798A90031DB99 /* GCDAsyncUdpSocket.h */,
@@ -559,6 +564,7 @@
 				222C181418DB3AA000372A41 /* ALiRTPSocket.m in Sources */,
 				22B7F41718C4E40200ADD9B1 /* ALiveNavigationViewController.m in Sources */,
 				22CEC06318B796920031DB99 /* ALiAppDelegate.m in Sources */,
+				22C6E3C418EAFA7600C19107 /* MBProgressHUD.m in Sources */,
 				E0EA80D518D9D4CA00CE00D7 /* ALiRTSPSession.m in Sources */,
 				22C8632F18DC5775000E7FF2 /* ALiSection.m in Sources */,
 				222C180E18DB243900372A41 /* ALiRTCPSocket.m in Sources */,

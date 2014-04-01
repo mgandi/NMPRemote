@@ -771,6 +771,9 @@ enum States {
     // Init step status
     _scanStatus = SCAN_IDLE;
     
+    // Init progress to 0
+    _progress = 0.0f;
+    
     // Init RTSP session
     session = [[ALiRTSPSession alloc] initWithServer:_server
                                                  url:@""
@@ -887,6 +890,9 @@ enum States {
             
             return;
         }
+        
+        // Update progress
+        _progress = (frequency - _startFrequency) / (_stopFrequency - _startFrequency);
         
         NSLog(@"=========================================");
         NSLog(@"Frequency: %f", frequency);

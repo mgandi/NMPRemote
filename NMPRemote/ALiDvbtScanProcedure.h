@@ -58,6 +58,7 @@ typedef enum {
 @property (nonatomic, readonly, assign) double stepFrequency;
 @property (nonatomic, readonly, assign) double stopFrequency;
 @property (atomic, readonly, assign) ScanStatus scanStatus;
+@property (atomic, assign, readonly) float progress;
 
 - (id)initWithServer:(ALiSatipServer *)server
       startFrequency:(double)startFrequency

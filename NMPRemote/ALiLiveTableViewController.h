@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "ALiDongle.h"
 #import "ALiDvbtScanProcedure.h"
+#import "MBProgressHUD.h"
 
-@interface ALiLiveTableViewController : UITableViewController <ALiDongleDelegate, ALiDvbtScanProcedureDelegate>
+@interface ALiLiveTableViewController : UITableViewController <ALiDongleDelegate, ALiDvbtScanProcedureDelegate, MBProgressHUDDelegate>
 
 @property (nonatomic, strong) ALiDongle *dongle;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *stopBarButtonItem;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *refreshBarButtonItem;
-@property (nonatomic, assign, readonly) BOOL scanning;
+@property (atomic, assign, readonly) BOOL scanning;
 
 - (IBAction)stop:(id)sender;
 - (IBAction)refresh:(id)sender;

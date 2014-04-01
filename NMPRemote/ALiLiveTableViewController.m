@@ -18,6 +18,8 @@
 {
     NSMutableArray *m3uItems;
     ALiDvbtScanProcedure *procedure;
+    MBProgressHUD *HUD;
+    NSMutableArray *programs;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -50,6 +52,9 @@
     
     // Init scanning indicator
     _scanning = NO;
+    
+    // Init programs array
+    programs = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
 - (void)didReceiveMemoryWarning
@@ -154,6 +159,22 @@
         procedure = nil;
     }
     
+    // We are now in scanning mode
+    _scanning = YES;
+    
+    // Create instance of HUD and add it as a sub view
+	HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+	[self.navigationController.view addSubview:HUD];
+	
+	// Set determinate mode
+	HUD.mode = MBProgressHUDModeDeterminate;
+	
+	HUD.delegate = self;
+	HUD.labelText = @"Scanning";
+	
+	// myProgressTask uses the HUD instance to update progress
+	[HUD showWhileExecuting:@selector(progressTask) onTarget:self withObject:nil animated:YES];
+    
     // Remove all rows
     NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:0];
     for (ALiM3uItem *item in m3uItems) {
@@ -166,9 +187,6 @@
     // Create scan procedure and launch it
     procedure = [[ALiDvbtScanProcedure alloc] initWithServer:_dongle.liveServer startFrequency:474.0 stepFrequency:8.0 stopFrequency:826.0];
     procedure.delegate = self;
-    
-    // We are now in scanning mode
-    _scanning = YES;
     
     // Set stop bar button item to enabled state refresh control to disabled
     [self.refreshBarButtonItem setEnabled:false];
@@ -212,6 +230,9 @@
     NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:0];
     [indexPaths addObject:[NSIndexPath indexPathForRow:[m3uItems indexOfObject:item] inSection:0]];
     [[self tableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    // Add to programs array (for progress dialog)
+    [programs addObject:item];
 }
 
 #pragma mark - ALi Dongle delegate
@@ -236,5 +257,39 @@
 {
 }
 
+#pragma mark - MBProgressHUDDelegate methods
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+	// Remove HUD from screen when the HUD was hidded
+	[HUD removeFromSuperview];
+	HUD = nil;
+}
+
+- (void)progressTask
+{
+    static NSUInteger counter = 0;
+    
+    while (_scanning) {
+        HUD.progress = procedure.progress;
+        
+        if ([programs count]) {
+            if (counter == 0) {
+                ALiM3uItem *item = [programs firstObject];
+                [programs removeObject:item];
+                HUD.detailsLabelText = item.name;
+                counter = 20;
+            } else {
+                --counter;
+            }
+        } else {
+            if (counter == 0)
+                HUD.detailsLabelText = @"";
+            else
+                --counter;
+        }
+        
+        usleep(50000);
+    }
+}
 
 @end
