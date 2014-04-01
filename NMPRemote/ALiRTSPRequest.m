@@ -10,10 +10,11 @@
 
 @implementation ALiRTSPRequest
 
-- (id)initWithType:(MessageTypes)type andRequest:(NSString *)request
+- (id)initWithType:(MessageTypes)type request:(NSString *)request andCseq:(NSUInteger)cseq
 {
     _type = type;
     _request = request;
+    _cseq = cseq;
     return self;
 }
 

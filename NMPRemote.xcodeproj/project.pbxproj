@@ -91,18 +91,18 @@
 		2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetwork.m; sourceTree = "<group>"; };
 		2214528D18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiWiFiNetworkPasswordTableViewController.h; sourceTree = "<group>"; };
 		2214528E18C6110C00CA0986 /* ALiWiFiNetworkPasswordTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiWiFiNetworkPasswordTableViewController.m; sourceTree = "<group>"; };
-		222C180C18DB243900372A41 /* ALiRTCPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTCPSocket.h; path = ../ALiRTCPSocket.h; sourceTree = "<group>"; };
-		222C180D18DB243900372A41 /* ALiRTCPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTCPSocket.m; path = ../ALiRTCPSocket.m; sourceTree = "<group>"; };
-		222C180F18DB361D00372A41 /* ALiRTCPReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiRTCPReport.h; sourceTree = "<group>"; };
-		222C181018DB361D00372A41 /* ALiRTCPReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiRTCPReport.m; sourceTree = "<group>"; };
-		222C181218DB3AA000372A41 /* ALiRTPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiRTPSocket.h; sourceTree = "<group>"; };
-		222C181318DB3AA000372A41 /* ALiRTPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiRTPSocket.m; sourceTree = "<group>"; };
+		222C180C18DB243900372A41 /* ALiRTCPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiRTCPSocket.h; sourceTree = "<group>"; };
+		222C180D18DB243900372A41 /* ALiRTCPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiRTCPSocket.m; sourceTree = "<group>"; };
+		222C180F18DB361D00372A41 /* ALiRTCPReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTCPReport.h; path = NMPRemote/ALiRTCPReport.h; sourceTree = "<group>"; };
+		222C181018DB361D00372A41 /* ALiRTCPReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTCPReport.m; path = NMPRemote/ALiRTCPReport.m; sourceTree = "<group>"; };
+		222C181218DB3AA000372A41 /* ALiRTPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTPSocket.h; path = NMPRemote/ALiRTPSocket.h; sourceTree = "<group>"; };
+		222C181318DB3AA000372A41 /* ALiRTPSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTPSocket.m; path = NMPRemote/ALiRTPSocket.m; sourceTree = "<group>"; };
 		227F9F4018D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiLiveStreamserversTableViewController.h; sourceTree = "<group>"; };
 		227F9F4118D88EDE00C4C9F8 /* ALiLiveStreamserversTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiLiveStreamserversTableViewController.m; sourceTree = "<group>"; };
-		227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSSDPDevice.h; sourceTree = "<group>"; };
-		227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSSDPDevice.m; sourceTree = "<group>"; };
-		227F9F4618D8955700C4C9F8 /* ALiSatipServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSatipServer.h; sourceTree = "<group>"; };
-		227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSatipServer.m; sourceTree = "<group>"; };
+		227F9F4318D8912600C4C9F8 /* ALiSSDPDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiSSDPDevice.h; path = NMPRemote/ALiSSDPDevice.h; sourceTree = "<group>"; };
+		227F9F4418D8912600C4C9F8 /* ALiSSDPDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiSSDPDevice.m; path = NMPRemote/ALiSSDPDevice.m; sourceTree = "<group>"; };
+		227F9F4618D8955700C4C9F8 /* ALiSatipServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiSatipServer.h; path = NMPRemote/ALiSatipServer.h; sourceTree = "<group>"; };
+		227F9F4718D8955700C4C9F8 /* ALiSatipServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiSatipServer.m; path = NMPRemote/ALiSatipServer.m; sourceTree = "<group>"; };
 		227F9F4918D9998F00C4C9F8 /* Background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Background@2x.png"; sourceTree = "<group>"; };
 		227F9F4B18D9A89800C4C9F8 /* ALiPlaybackTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPlaybackTableViewController.h; sourceTree = "<group>"; };
 		227F9F4C18D9A89800C4C9F8 /* ALiPlaybackTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiPlaybackTableViewController.m; sourceTree = "<group>"; };
@@ -118,28 +118,28 @@
 		22B7F41618C4E40200ADD9B1 /* ALiveNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiveNavigationViewController.m; sourceTree = "<group>"; };
 		22BADF4F18E965EB001D2F74 /* ALiRTSPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTSPRequest.h; path = NMPRemote/ALiRTSPRequest.h; sourceTree = "<group>"; };
 		22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTSPRequest.m; path = NMPRemote/ALiRTSPRequest.m; sourceTree = "<group>"; };
-		22C8632718DC3DA2000E7FF2 /* ALiDvbtScanProcedure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiDvbtScanProcedure.h; sourceTree = "<group>"; };
-		22C8632818DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiDvbtScanProcedure.m; sourceTree = "<group>"; };
-		22C8632A18DC5436000E7FF2 /* ALiPidHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPidHandler.h; sourceTree = "<group>"; };
-		22C8632B18DC5436000E7FF2 /* ALiPidHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiPidHandler.m; sourceTree = "<group>"; };
-		22C8632D18DC5775000E7FF2 /* ALiSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSection.h; sourceTree = "<group>"; };
-		22C8632E18DC5775000E7FF2 /* ALiSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSection.m; sourceTree = "<group>"; };
-		22C8633018DC6724000E7FF2 /* ALiPatHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPatHandler.h; sourceTree = "<group>"; };
-		22C8633118DC6724000E7FF2 /* ALiPatHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiPatHandler.m; sourceTree = "<group>"; };
-		22C8633318DC6923000E7FF2 /* ALiDemuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiDemuxer.h; sourceTree = "<group>"; };
-		22C8633418DC6923000E7FF2 /* ALiDemuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiDemuxer.m; sourceTree = "<group>"; };
-		22C8633618DC7984000E7FF2 /* ALiPatProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPatProgram.h; sourceTree = "<group>"; };
-		22C8633718DC7984000E7FF2 /* ALiPatProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiPatProgram.m; sourceTree = "<group>"; };
-		22C8633918DC8120000E7FF2 /* ALiSdtHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSdtHandler.h; sourceTree = "<group>"; };
-		22C8633A18DC8120000E7FF2 /* ALiSdtHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSdtHandler.m; sourceTree = "<group>"; };
-		22C8633C18DC84F4000E7FF2 /* ALiSdtService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSdtService.h; sourceTree = "<group>"; };
-		22C8633D18DC84F4000E7FF2 /* ALiSdtService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSdtService.m; sourceTree = "<group>"; };
-		22C8634218DC8F4B000E7FF2 /* ALiPmtHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPmtHandler.h; sourceTree = "<group>"; };
-		22C8634318DC8F4B000E7FF2 /* ALiPmtHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiPmtHandler.m; sourceTree = "<group>"; };
-		22C8634518DC9388000E7FF2 /* ALiPmtElementaryStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiPmtElementaryStream.h; sourceTree = "<group>"; };
-		22C8634618DC9388000E7FF2 /* ALiPmtElementaryStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiPmtElementaryStream.m; sourceTree = "<group>"; };
-		22C8634818DC9598000E7FF2 /* ALiProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiProgram.h; sourceTree = "<group>"; };
-		22C8634918DC9598000E7FF2 /* ALiProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiProgram.m; sourceTree = "<group>"; };
+		22C8632718DC3DA2000E7FF2 /* ALiDvbtScanProcedure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiDvbtScanProcedure.h; path = NMPRemote/ALiDvbtScanProcedure.h; sourceTree = "<group>"; };
+		22C8632818DC3DA2000E7FF2 /* ALiDvbtScanProcedure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiDvbtScanProcedure.m; path = NMPRemote/ALiDvbtScanProcedure.m; sourceTree = "<group>"; };
+		22C8632A18DC5436000E7FF2 /* ALiPidHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiPidHandler.h; path = NMPRemote/ALiPidHandler.h; sourceTree = "<group>"; };
+		22C8632B18DC5436000E7FF2 /* ALiPidHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiPidHandler.m; path = NMPRemote/ALiPidHandler.m; sourceTree = "<group>"; };
+		22C8632D18DC5775000E7FF2 /* ALiSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiSection.h; path = NMPRemote/ALiSection.h; sourceTree = "<group>"; };
+		22C8632E18DC5775000E7FF2 /* ALiSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiSection.m; path = NMPRemote/ALiSection.m; sourceTree = "<group>"; };
+		22C8633018DC6724000E7FF2 /* ALiPatHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiPatHandler.h; path = NMPRemote/ALiPatHandler.h; sourceTree = "<group>"; };
+		22C8633118DC6724000E7FF2 /* ALiPatHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiPatHandler.m; path = NMPRemote/ALiPatHandler.m; sourceTree = "<group>"; };
+		22C8633318DC6923000E7FF2 /* ALiDemuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiDemuxer.h; path = NMPRemote/ALiDemuxer.h; sourceTree = "<group>"; };
+		22C8633418DC6923000E7FF2 /* ALiDemuxer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiDemuxer.m; path = NMPRemote/ALiDemuxer.m; sourceTree = "<group>"; };
+		22C8633618DC7984000E7FF2 /* ALiPatProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiPatProgram.h; path = NMPRemote/ALiPatProgram.h; sourceTree = "<group>"; };
+		22C8633718DC7984000E7FF2 /* ALiPatProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiPatProgram.m; path = NMPRemote/ALiPatProgram.m; sourceTree = "<group>"; };
+		22C8633918DC8120000E7FF2 /* ALiSdtHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiSdtHandler.h; path = NMPRemote/ALiSdtHandler.h; sourceTree = "<group>"; };
+		22C8633A18DC8120000E7FF2 /* ALiSdtHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiSdtHandler.m; path = NMPRemote/ALiSdtHandler.m; sourceTree = "<group>"; };
+		22C8633C18DC84F4000E7FF2 /* ALiSdtService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiSdtService.h; path = NMPRemote/ALiSdtService.h; sourceTree = "<group>"; };
+		22C8633D18DC84F4000E7FF2 /* ALiSdtService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiSdtService.m; path = NMPRemote/ALiSdtService.m; sourceTree = "<group>"; };
+		22C8634218DC8F4B000E7FF2 /* ALiPmtHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiPmtHandler.h; path = NMPRemote/ALiPmtHandler.h; sourceTree = "<group>"; };
+		22C8634318DC8F4B000E7FF2 /* ALiPmtHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiPmtHandler.m; path = NMPRemote/ALiPmtHandler.m; sourceTree = "<group>"; };
+		22C8634518DC9388000E7FF2 /* ALiPmtElementaryStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiPmtElementaryStream.h; path = NMPRemote/ALiPmtElementaryStream.h; sourceTree = "<group>"; };
+		22C8634618DC9388000E7FF2 /* ALiPmtElementaryStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiPmtElementaryStream.m; path = NMPRemote/ALiPmtElementaryStream.m; sourceTree = "<group>"; };
+		22C8634818DC9598000E7FF2 /* ALiProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiProgram.h; path = NMPRemote/ALiProgram.h; sourceTree = "<group>"; };
+		22C8634918DC9598000E7FF2 /* ALiProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiProgram.m; path = NMPRemote/ALiProgram.m; sourceTree = "<group>"; };
 		22CEC04F18B796920031DB99 /* NMPRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NMPRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22CEC05218B796920031DB99 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		22CEC05418B796920031DB99 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -182,16 +182,16 @@
 		22FCA11918C096C20085CAC3 /* mux_fr2.m3u */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mux_fr2.m3u; sourceTree = "<group>"; };
 		22FCA11E18C097B70085CAC3 /* ALiLiveTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiLiveTableViewController.h; sourceTree = "<group>"; };
 		22FCA11F18C097B70085CAC3 /* ALiLiveTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiLiveTableViewController.m; sourceTree = "<group>"; };
-		22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiM3uParser.h; sourceTree = "<group>"; };
-		22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiM3uParser.m; sourceTree = "<group>"; };
-		22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiM3uItem.h; path = ../ALiM3uItem.h; sourceTree = "<group>"; };
-		22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiM3uItem.m; path = ../ALiM3uItem.m; sourceTree = "<group>"; };
+		22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiM3uParser.h; path = NMPRemote/ALiM3uParser.h; sourceTree = "<group>"; };
+		22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiM3uParser.m; path = NMPRemote/ALiM3uParser.m; sourceTree = "<group>"; };
+		22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiM3uItem.h; sourceTree = "<group>"; };
+		22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiM3uItem.m; sourceTree = "<group>"; };
 		E021113418DADCBF007D5CF9 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		E021113518DADCBF007D5CF9 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
-		E03DF1A718D1FB10008E7BA0 /* ALiSSDPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiSSDPClient.h; sourceTree = "<group>"; };
-		E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiSSDPClient.m; sourceTree = "<group>"; };
-		E0EA80D318D9D4CA00CE00D7 /* ALiRTSPSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALiRTSPSession.h; sourceTree = "<group>"; };
-		E0EA80D418D9D4CA00CE00D7 /* ALiRTSPSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALiRTSPSession.m; sourceTree = "<group>"; };
+		E03DF1A718D1FB10008E7BA0 /* ALiSSDPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiSSDPClient.h; path = NMPRemote/ALiSSDPClient.h; sourceTree = "<group>"; };
+		E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiSSDPClient.m; path = NMPRemote/ALiSSDPClient.m; sourceTree = "<group>"; };
+		E0EA80D318D9D4CA00CE00D7 /* ALiRTSPSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALiRTSPSession.h; path = NMPRemote/ALiRTSPSession.h; sourceTree = "<group>"; };
+		E0EA80D418D9D4CA00CE00D7 /* ALiRTSPSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALiRTSPSession.m; path = NMPRemote/ALiRTSPSession.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,57 +218,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		22CEC04618B796920031DB99 = {
+		22BADF5218EADFF9001D2F74 /* SAT>IP */ = {
 			isa = PBXGroup;
 			children = (
-				22BADF4F18E965EB001D2F74 /* ALiRTSPRequest.h */,
-				22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */,
-				22CEC05818B796920031DB99 /* NMPRemote */,
-				22CEC07718B796930031DB99 /* NMPRemoteTests */,
-				22CEC05118B796920031DB99 /* Frameworks */,
-				22CEC05018B796920031DB99 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		22CEC05018B796920031DB99 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				22CEC04F18B796920031DB99 /* NMPRemote.app */,
-				22CEC07018B796930031DB99 /* NMPRemoteTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		22CEC05118B796920031DB99 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				22CEC05218B796920031DB99 /* Foundation.framework */,
-				22CEC05418B796920031DB99 /* CoreGraphics.framework */,
-				22CEC05618B796920031DB99 /* UIKit.framework */,
-				22CEC07118B796930031DB99 /* XCTest.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		22CEC05818B796920031DB99 /* NMPRemote */ = {
-			isa = PBXGroup;
-			children = (
-				E021113418DADCBF007D5CF9 /* GCDAsyncSocket.h */,
-				E021113518DADCBF007D5CF9 /* GCDAsyncSocket.m */,
-				22CEC08718B798A90031DB99 /* GCDAsyncUdpSocket.h */,
-				22CEC08818B798A90031DB99 /* GCDAsyncUdpSocket.m */,
-				22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */,
-				22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */,
-				22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */,
-				22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */,
-				2214528718C5D65900CA0986 /* ALiWiFiNetwork.h */,
-				2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */,
-				22CEC0AB18BB9E320031DB99 /* ALiDongle.h */,
-				22CEC0AC18BB9E320031DB99 /* ALiDongle.m */,
-				22CEC0AE18BC9CF30031DB99 /* ALiJSONCmd.h */,
-				22CEC0AF18BC9CF30031DB99 /* ALiJSONCmd.m */,
-				22CEC06118B796920031DB99 /* ALiAppDelegate.h */,
-				22CEC06218B796920031DB99 /* ALiAppDelegate.m */,
 				E03DF1A718D1FB10008E7BA0 /* ALiSSDPClient.h */,
 				E03DF1A818D1FB10008E7BA0 /* ALiSSDPClient.m */,
 				E0EA80D318D9D4CA00CE00D7 /* ALiRTSPSession.h */,
@@ -305,8 +257,15 @@
 				22C8634618DC9388000E7FF2 /* ALiPmtElementaryStream.m */,
 				22C8634818DC9598000E7FF2 /* ALiProgram.h */,
 				22C8634918DC9598000E7FF2 /* ALiProgram.m */,
-				22FCA11D18C096C90085CAC3 /* m3u */,
-				22CEC06418B796920031DB99 /* Main.storyboard */,
+				22BADF4F18E965EB001D2F74 /* ALiRTSPRequest.h */,
+				22BADF5018E965EB001D2F74 /* ALiRTSPRequest.m */,
+			);
+			name = "SAT>IP";
+			sourceTree = "<group>";
+		};
+		22BADF5318EAE05E001D2F74 /* Views */ = {
+			isa = PBXGroup;
+			children = (
 				22CEC06718B796920031DB99 /* ALiViewController.h */,
 				22CEC08A18B7ACE30031DB99 /* ALiViewController.m */,
 				22CEC09518B7B3B80031DB99 /* ALiDongleSelectionTableViewcontroller.h */,
@@ -331,6 +290,59 @@
 				22B7F40618C4C17100ADD9B1 /* ALiApplicationViewController.m */,
 				22B7F41218C4DCD000ADD9B1 /* ALiControlViewController.h */,
 				22B7F41318C4DCD000ADD9B1 /* ALiControlViewController.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		22CEC04618B796920031DB99 = {
+			isa = PBXGroup;
+			children = (
+				22BADF5218EADFF9001D2F74 /* SAT>IP */,
+				22FCA11D18C096C90085CAC3 /* m3u */,
+				22CEC05818B796920031DB99 /* NMPRemote */,
+				22CEC07718B796930031DB99 /* NMPRemoteTests */,
+				22CEC05118B796920031DB99 /* Frameworks */,
+				22CEC05018B796920031DB99 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		22CEC05018B796920031DB99 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				22CEC04F18B796920031DB99 /* NMPRemote.app */,
+				22CEC07018B796930031DB99 /* NMPRemoteTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		22CEC05118B796920031DB99 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				22CEC05218B796920031DB99 /* Foundation.framework */,
+				22CEC05418B796920031DB99 /* CoreGraphics.framework */,
+				22CEC05618B796920031DB99 /* UIKit.framework */,
+				22CEC07118B796930031DB99 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		22CEC05818B796920031DB99 /* NMPRemote */ = {
+			isa = PBXGroup;
+			children = (
+				E021113418DADCBF007D5CF9 /* GCDAsyncSocket.h */,
+				E021113518DADCBF007D5CF9 /* GCDAsyncSocket.m */,
+				22CEC08718B798A90031DB99 /* GCDAsyncUdpSocket.h */,
+				22CEC08818B798A90031DB99 /* GCDAsyncUdpSocket.m */,
+				2214528718C5D65900CA0986 /* ALiWiFiNetwork.h */,
+				2214528818C5D65900CA0986 /* ALiWiFiNetwork.m */,
+				22CEC0AB18BB9E320031DB99 /* ALiDongle.h */,
+				22CEC0AC18BB9E320031DB99 /* ALiDongle.m */,
+				22CEC0AE18BC9CF30031DB99 /* ALiJSONCmd.h */,
+				22CEC0AF18BC9CF30031DB99 /* ALiJSONCmd.m */,
+				22CEC06118B796920031DB99 /* ALiAppDelegate.h */,
+				22CEC06218B796920031DB99 /* ALiAppDelegate.m */,
+				22CEC06418B796920031DB99 /* Main.storyboard */,
+				22BADF5318EAE05E001D2F74 /* Views */,
 				22CEC09E18BB5FD00031DB99 /* Images */,
 				22CEC06A18B796930031DB99 /* Images.xcassets */,
 				22CEC05918B796920031DB99 /* Supporting Files */,
@@ -388,12 +400,15 @@
 		22FCA11D18C096C90085CAC3 /* m3u */ = {
 			isa = PBXGroup;
 			children = (
+				22FCA12418C0BD1E0085CAC3 /* ALiM3uItem.h */,
+				22FCA12518C0BD1E0085CAC3 /* ALiM3uItem.m */,
+				22FCA12118C0994F0085CAC3 /* ALiM3uParser.h */,
+				22FCA12218C0994F0085CAC3 /* ALiM3uParser.m */,
 				22FCA11718C096C10085CAC3 /* Abilis.m3u */,
 				22FCA11818C096C20085CAC3 /* Cable-Demo.m3u */,
 				22FCA11918C096C20085CAC3 /* mux_fr2.m3u */,
 			);
 			name = m3u;
-			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

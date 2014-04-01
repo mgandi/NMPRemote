@@ -38,10 +38,13 @@ typedef enum {
 @property (nonatomic, assign) Status status;
 
 // RTSP
-@property (atomic, assign, readonly) unsigned int cseq;
+@property (atomic, assign, readonly) NSUInteger cseq;
 @property (nonatomic, copy, readonly) NSString *sessionID;
 @property (nonatomic, assign, readonly) NSUInteger sessionTimeout;
 @property (nonatomic, assign, readonly) NSUInteger streamID;
+
+// Loop control
+@property (atomic, assign, readonly) BOOL running, waitingAnswer;
 
 - (id)initWithServer:(ALiSatipServer *)server
                  url:(NSString *)url;

@@ -563,6 +563,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="refreshBarButtonItem" destination="8qk-4N-jTO" id="9u4-Nh-TC3"/>
                         <outlet property="stopBarButtonItem" destination="gOg-Eg-CcM" id="4Zx-91-VbU"/>
                     </connections>
                 </tableViewController>

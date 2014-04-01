@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) ALiDongle *dongle;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *stopBarButtonItem;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *refreshBarButtonItem;
 @property (nonatomic, assign, readonly) BOOL scanning;
 
 - (IBAction)stop:(id)sender;

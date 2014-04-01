@@ -142,7 +142,7 @@
     }
     
     // Set stop bar buttonitem to disabled state and refresh control to enabled state
-    [self.refreshControl setEnabled:true];
+    [self.refreshBarButtonItem setEnabled:true];
     [self.stopBarButtonItem setEnabled:false];
 }
 
@@ -171,7 +171,7 @@
     _scanning = YES;
     
     // Set stop bar button item to enabled state refresh control to disabled
-    [self.refreshControl setEnabled:false];
+    [self.refreshBarButtonItem setEnabled:false];
     [self.stopBarButtonItem setEnabled:true];
     
     // Start the scan procedure
@@ -192,6 +192,10 @@
             procedure = nil;
         }
     }
+    
+    // Set stop bar button item to enabled state refresh control to disabled
+    [self.refreshBarButtonItem setEnabled:true];
+    [self.stopBarButtonItem setEnabled:false];
     
     // We are no longer in scanning mode
     _scanning = NO;

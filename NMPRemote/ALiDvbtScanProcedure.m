@@ -9,7 +9,7 @@
 #import "ALiDvbtScanProcedure.h"
 #import "ALiDemuxer.h"
 
-#define LOCK_TIMEOUT    3
+#define LOCK_TIMEOUT    5
 #define PAT_TIMEOUT     12
 #define STEP_TIMEOUT    60
 
@@ -610,12 +610,12 @@ enum States {
 
 - (void)updateState:(ScanStatus)status
 {
-    fprintf(stderr, "- %d -> %d -\n", _scanStatus, status);
+//    fprintf(stderr, "- %d -> %d -\n", _scanStatus, status);
     if ((_scanStatus == SCAN_PLAY_REQUEST) && (status == SCAN_STEP_COMPLETE)) {
         NSLog(@"Special case I don't understand yet");
     }
     
-    if ((status == SCAN_STEP_TIMEOUT) || (_scanStatus == SCAN_STEP_TIMEOUT)) {
+    if ((status == SCAN_STEP_TIMEOUT) || (_scanStatus == SCAN_STEP_TIMEOUT) || (status == SCAN_STOP_REQUEST)) {
         // This is an exception let it go
         // ...
     } else {
@@ -873,6 +873,9 @@ enum States {
         
         // If current frequency is bigger than stop frequency then it is time to stop
         if (frequency > _stopFrequency) {
+            NSLog(@"=========================================");
+            NSLog(@"Scan done");
+            NSLog(@"=========================================");
             
             // Notify delegate than scan is done however user of scan class will have to wait for scan to be stopped
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1001,17 +1004,19 @@ enum States {
         
         // Update status
         [self setReceivingNewStream];
-    }
-    
-    // Ignore packets that do not belong to current SSRC
-    if (currentSsrc != report.ssrc) {
-//        NSLog(@"Packet from last SSRC (%d) -> ignored!", ssrc);
+        
         return;
     }
     
     // Check if we are in a status that allows us to receive data
-    if (_scanStatus < SCAN_UNLOCKED)
+    if (_scanStatus < SCAN_RX_NSTREAM)
         return;
+    
+    // Ignore packets that do not belong to current SSRC
+    if (currentSsrc != report.ssrc) {
+//        NSLog(@"Packet does not belong to current SSRC -> ignored!");
+        return;
+    }
     
     // check on lock status
     if ([tunerData[TUNER_PARAM_LOCK] boolValue] && !locked)
@@ -1025,12 +1030,12 @@ enum States {
 - (void)packetsAvailable:(ALiRTPSocket *)socket packets:(NSArray *)packets header:(const RtpHeader *)header
 {
     // Check if we are in a status that allows us to receive data
-    if (_scanStatus < SCAN_UNLOCKED)
+    if (_scanStatus < SCAN_LOCKED)
         return;
     
     // Ignore packets that do not belong to current SSRC
     if (currentSsrc != header->ssrc) {
-        //        NSLog(@"Packet from last SSRC (%d) -> ignored!", ssrc);
+//        NSLog(@"Packet does not belong to current SSRC -> ignored!");
         return;
     }
     
@@ -1059,10 +1064,11 @@ enum States {
     for (NSNumber *key in patHandler.programs) {
         ALiPatProgram *program = [patHandler.programs objectForKey:key];
         UInt32 uid = [program uid];
+//        NSLog(@"UID: 0x%08x", uid);
         ALiProgram *tmp = [programs objectForKey:[NSNumber numberWithUnsignedInt:uid]];
-        if ([programs objectForKey:[NSNumber numberWithUnsignedInt:[program uid]]] != nil) {
-            NSLog(@"| %d PID 0x%04x (%d)", program.number, program.pid, program.pid);
-            hasDuplicate |= YES;
+        if (tmp != nil) {
+            NSLog(@"| Duplicate %d PID 0x%04x (%d)", program.number, program.pid, program.pid);
+            hasDuplicate = YES;
         }
     }
     if (hasDuplicate) {
@@ -1140,6 +1146,8 @@ enum States {
             program.serviceProviderName = service.serviceProviderName;
             program.serviceName = service.serviceName;
             NSLog(@"| %@", program.serviceName);
+        } else {
+            NSLog(@"| Missing program associated to %@", service.serviceName);
         }
     }
     

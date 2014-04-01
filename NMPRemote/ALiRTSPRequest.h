@@ -19,9 +19,10 @@ typedef enum {
 @interface ALiRTSPRequest : NSObject
 
 @property (nonatomic, assign) MessageTypes type;
+@property (nonatomic, assign) NSUInteger cseq;
 @property (nonatomic, copy) NSString *request;
 @property (nonatomic, copy) NSString *answer;
 
-- (id)initWithType:(MessageTypes)type andRequest:(NSString *)request;
+- (id)initWithType:(MessageTypes)type request:(NSString *)request andCseq:(NSUInteger)cseq;
 
 @end
