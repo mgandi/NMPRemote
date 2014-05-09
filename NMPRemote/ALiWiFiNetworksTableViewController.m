@@ -133,7 +133,9 @@
         UINavigationController *nav = segue.destinationViewController;
         ALiWiFiNetworkPasswordTableViewController *password = (ALiWiFiNetworkPasswordTableViewController *)[nav viewControllers][0];
         password.dongle = _dongle;
-        password.wifiNetwork = wifiNetworks[[[[password tableView] indexPathForSelectedRow] row]];
+        NSIndexPath *indexPath = [[self tableView] indexPathForCell:sender];
+        NSUInteger index = [indexPath row];
+        password.wifiNetwork = wifiNetworks[index];
     }
 }
 
